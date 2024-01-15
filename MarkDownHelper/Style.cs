@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace MarkDownHelper
 {
@@ -449,7 +445,7 @@ pre code, pre tt {
             // find end of head
             int endOfHead = html.IndexOf("</head>");
 
-            if(endOfHead == -1)
+            if (endOfHead == -1)
             {
                 sb.Insert(0, @"<head>
 </head>");
@@ -476,6 +472,11 @@ pre code, pre tt {
 
         public static string TranslatePaths(this string html, string root)
         {
+            if (string.IsNullOrEmpty(root))
+            {
+                return html;
+            }
+
             string FILE_URL_PREFIX = "file://";
             string PATH_SEPARATOR = Path.AltDirectorySeparatorChar.ToString();
 
@@ -535,37 +536,37 @@ pre code, pre tt {
                 level = 0;
                 if (!string.IsNullOrEmpty(str))
                 {
-                // there may be "better" ways, but since we are only looking for H1 .. H6, I'm hard coding
-                if (str.StartsWith("# "))
-                {
-                    level = 1;
-                }
-                else if (str.StartsWith("## "))
-                {
-                    level = 2;
-                }
-                else if (str.StartsWith("### "))
-                {
-                    level = 3;
-                }
-                else if (str.StartsWith("#### "))
-                {
-                    level = 4;
-                }
-                else if (str.StartsWith("##### "))
-                {
-                    level = 5;
-                }
-                else if (str.StartsWith("###### "))
-                {
-                    level = 6;
-                }
-                text = str.Substring(level + 1);
+                    // there may be "better" ways, but since we are only looking for H1 .. H6, I'm hard coding
+                    if (str.StartsWith("# "))
+                    {
+                        level = 1;
+                    }
+                    else if (str.StartsWith("## "))
+                    {
+                        level = 2;
+                    }
+                    else if (str.StartsWith("### "))
+                    {
+                        level = 3;
+                    }
+                    else if (str.StartsWith("#### "))
+                    {
+                        level = 4;
+                    }
+                    else if (str.StartsWith("##### "))
+                    {
+                        level = 5;
+                    }
+                    else if (str.StartsWith("###### "))
+                    {
+                        level = 6;
+                    }
+                    text = str.Substring(level + 1);
 
-                if (level > 0)
-                {
-                    coll.Add(text, level);
-                }
+                    if (level > 0)
+                    {
+                        coll.Add(text, level);
+                    }
 
                 }
             }
@@ -596,7 +597,8 @@ pre code, pre tt {
 
         // http://pandoc.org/MANUAL.html#extension-auto_identifiers
 
-        public class HeadingItemCollection : List<HeadingItem> { 
+        public class HeadingItemCollection : List<HeadingItem>
+        {
             public void Add(string text)
             {
                 Add(new HeadingItem(text));
@@ -637,29 +639,38 @@ pre code, pre tt {
                 this.anchorName = anchorName;
             }
 
-            public string Text {
-                get {
+            public string Text
+            {
+                get
+                {
                     return this.text;
                 }
-                set {
+                set
+                {
                     this.text = value;
                 }
             }
 
-            public int Level {
-                get {
+            public int Level
+            {
+                get
+                {
                     return this.level;
                 }
-                set {
+                set
+                {
                     this.level = value;
                 }
             }
 
-            public string AnchorName {
-                get {
+            public string AnchorName
+            {
+                get
+                {
                     return this.anchorName;
                 }
-                set {
+                set
+                {
                     this.anchorName = value;
                 }
             }

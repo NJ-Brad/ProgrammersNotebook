@@ -1,5 +1,4 @@
-﻿using Markdig;
-using System.Drawing.Imaging;
+﻿using System.Drawing.Imaging;
 using System.Text;
 
 namespace MarkDownHelper
@@ -109,6 +108,15 @@ namespace MarkDownHelper
             //ed.Focus();
         }
 
+        //        bool created = false;
+
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+            //webView21.EnsureCoreWebView2Async();
+            //created = true;
+        }
+
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
@@ -135,53 +143,97 @@ namespace MarkDownHelper
 
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
-            Show();
+            //            Show();
+            //ShowText(richTextBox1.Text, webBrowser1);
+            ShowText(richTextBox1.Text);
         }
 
-        private new void Show()
+        //private new void Show()
+        //{
+        //    base.Show();
+        //    ShowText(richTextBox1.Text, webBrowser1);
+        //}
+
+        private void ShowText(string rawText)
         {
-            base.Show();
-            ShowText(richTextBox1.Text, webBrowser1);
+            browserWrapper1.ShowMarkdownText(rawText);
         }
 
-        private void ShowText(string rawText, WebBrowser control)
-        {
-            string readmeText = rawText;
+        //private void ShowText(string rawText, WebBrowser control)
+        //{
+        //    if (!created)
+        //        return;
 
-            // https://talk.commonmark.org/t/markdig-markdown-processor-for-net/2106
+        //    string readmeText = rawText;
 
-            //https://github.com/lunet-io/markdig
-            // https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor
-            // http://markdownpad.com/
-            // https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf
-            // https://confluence.atlassian.com/bitbucketserver/markdown-syntax-guide-776639995.html
-            // https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables
+        //    // https://talk.commonmark.org/t/markdig-markdown-processor-for-net/2106
 
-            // https://github.github.com/github-flavored-markdown/sample_content.html
+        //    //https://github.com/lunet-io/markdig
+        //    // https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor
+        //    // http://markdownpad.com/
+        //    // https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf
+        //    // https://confluence.atlassian.com/bitbucketserver/markdown-syntax-guide-776639995.html
+        //    // https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#tables
 
-            // Configure the pipeline with all advanced extensions active
-            //var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Use<EmbeddedImageExtension>().Build();
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseAdvancedExtensions()
-                .UseSoftlineBreakAsHardlineBreak()
-                .UsePredefinedImageExtension()
-                //.Use<PredefinedImageExtension>()
-                .UseEmbeddedImageExtension(GetEmbedText)
-                //.Use<EmbeddedImageExtension>(new EmbeddedImageExtension(GetEmbedText))
-                .Build();
+        //    // https://github.github.com/github-flavored-markdown/sample_content.html
 
-            //string val = Markdig.Markdown.ToHtml(readmeText.FixLineFeeds(), pipeline);
-            //            ShowContent(control, Markdig.Markdown.ToHtml(readmeText.FixLineFeeds().TranslatePaths(Path.GetDirectoryName(fileName).GenerateToc()), pipeline));
+        //    // Configure the pipeline with all advanced extensions active
+        //    //var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Use<EmbeddedImageExtension>().Build();
+        //    var pipeline = new MarkdownPipelineBuilder()
+        //        .UseAdvancedExtensions()
+        //        .UseSoftlineBreakAsHardlineBreak()
+        //        .UsePredefinedImageExtension()
+        //        //.Use<PredefinedImageExtension>()
+        //        .UseEmbeddedImageExtension(GetEmbedText)
+        //        //.Use<EmbeddedImageExtension>(new EmbeddedImageExtension(GetEmbedText))
+        //        .Build();
 
-            if (!string.IsNullOrEmpty(fileName))
-            {
-                ShowContent(control, Markdig.Markdown.ToHtml(readmeText.TranslatePaths(Path.GetDirectoryName(fileName)).GenerateToc(), pipeline));
-            }
-            else
-            {
-                ShowContent(control, Markdig.Markdown.ToHtml(readmeText.GenerateToc(), pipeline));
-            }
-        }
+        //    //string val = Markdig.Markdown.ToHtml(readmeText.FixLineFeeds(), pipeline);
+        //    //            ShowContent(control, Markdig.Markdown.ToHtml(readmeText.FixLineFeeds().TranslatePaths(Path.GetDirectoryName(fileName).GenerateToc()), pipeline));
+
+        //    // https://weblogs.asp.net/gunnarpeipman/displaying-custom-html-in-webbrowser-control
+        //    control.Navigate("about:blank");
+        //    if (control.Document != null)
+        //    {
+        //        control.Document.Write(string.Empty);
+        //    }
+
+        //    if (!string.IsNullOrEmpty(fileName))
+        //    {
+        //        //ShowContent(control, Markdig.Markdown.ToHtml(readmeText
+        //        //    .EnableNewerFeatures()
+        //        //    .AddGitHubStyle()
+        //        //    .TranslatePaths(Path.GetDirectoryName(fileName))
+        //        //    .GenerateToc(), 
+        //        //    pipeline));
+
+        //        control.DocumentText = Markdig.Markdown.ToHtml(readmeText
+        //            .EnableNewerFeatures()
+        //            .AddGitHubStyle()
+        //            .TranslatePaths(Path.GetDirectoryName(fileName))
+        //            .GenerateToc(),
+        //            pipeline);
+        //    }
+        //    else
+        //    {
+        //        //                ShowContent(control, Markdig.Markdown.ToHtml(readmeText.GenerateToc(), pipeline));
+
+        //        control.DocumentText = Markdig.Markdown.ToHtml(readmeText
+        //            .EnableNewerFeatures()
+        //            .AddGitHubStyle()
+        //            .GenerateToc(),
+        //            pipeline);
+
+        //        if (created)
+        //        {
+        //            webView21.NavigateToString(Markdig.Markdown.ToHtml(readmeText
+        //            .EnableNewerFeatures()
+        //            .AddGitHubStyle()
+        //            .GenerateToc(),
+        //            pipeline));
+        //        }
+        //    }
+        //}
 
         private string GetEmbedText(string key)
         {
@@ -194,40 +246,43 @@ namespace MarkDownHelper
             {
                 string readmeText = File.ReadAllText(fileName);
 
-                // Configure the pipeline with all advanced extensions active
-                var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Build();
-
-                string val = Markdig.Markdown.ToHtml(readmeText, pipeline);
-                ShowContent(control, Markdig.Markdown.ToHtml(readmeText.GenerateToc(), pipeline));
+                //ShowText(readmeText, control);
+                ShowText(readmeText);
             }
             else
             {
-                ShowContent(control, string.Format("<H3>No {0} found</H3>", Path.GetFileName(fileName)));
+                //ShowText(string.Format("<H3>No {0} found</H3>", Path.GetFileName(fileName)), control);
+                ShowText(string.Format("<H3>No {0} found</H3>", Path.GetFileName(fileName)));
             }
         }
 
-        private void ShowContent(WebBrowser control, string html)
-        {
-            // https://weblogs.asp.net/gunnarpeipman/displaying-custom-html-in-webbrowser-control
-            control.Navigate("about:blank");
-            if (control.Document != null)
-            {
-                control.Document.Write(string.Empty);
-            }
-            if (!string.IsNullOrEmpty(fileName))
-            {
-                control.DocumentText = html.EnableNewerFeatures().AddGitHubStyle().TranslatePaths(Path.GetDirectoryName(fileName));
-            }
-            else
-            {
-                control.DocumentText = html.EnableNewerFeatures().AddGitHubStyle();
-            }
-        }
+        //private void ShowContent(WebBrowser control, string html)
+        //{
+        //    // https://weblogs.asp.net/gunnarpeipman/displaying-custom-html-in-webbrowser-control
+        //    control.Navigate("about:blank");
+        //    if (control.Document != null)
+        //    {
+        //        control.Document.Write(string.Empty);
+        //    }
+        //    if (!string.IsNullOrEmpty(fileName))
+        //    {
+        //        control.DocumentText = html.EnableNewerFeatures().AddGitHubStyle().TranslatePaths(Path.GetDirectoryName(fileName));
+        //    }
+        //    else
+        //    {
+        //        control.DocumentText = html.EnableNewerFeatures().AddGitHubStyle();
 
-        private void Modify(RichTextBox control, string prefix)
-        {
-            Modify(control, prefix, string.Empty, true);
-        }
+        //        if (created)
+        //        {
+        //            webView21.NavigateToString(html.EnableNewerFeatures().AddGitHubStyle());
+        //        }
+        //    }
+        //}
+
+        //private void Modify(RichTextBox control, string prefix)
+        //{
+        //    Modify(control, prefix, string.Empty, true);
+        //}
 
         private void Modify(RichTextBox control, Operation op)
         {
@@ -326,7 +381,8 @@ namespace MarkDownHelper
             set
             {
                 richTextBox1.Text = value;
-                Show();
+                //ShowText(richTextBox1.Text, webBrowser1);
+                ShowText(richTextBox1.Text);
                 Dirty = false;
             }
         }
@@ -691,6 +747,20 @@ Finally, include a section for the license of your project. For more information
         {
             OnSaveClicked();
             Dirty = false;
+        }
+
+        private void SetEditorFontSize(object sender, EventArgs e)
+        {
+            //+AccessibilityObject { ToolStripItemAccessibleObject: Owner = 10}
+            //System.Windows.Forms.AccessibleObject { System.Windows.Forms.ToolStripMenuItem.ToolStripMenuItemAccessibleObject}
+            string txt = (sender as ToolStripMenuItem).Text;
+
+            Font f = richTextBox1.Font;
+            int newSize = int.Parse(txt);
+
+            Font newFont = new Font(f.FontFamily, newSize);
+
+            richTextBox1.Font = newFont;
         }
     }
 

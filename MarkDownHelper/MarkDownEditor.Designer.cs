@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MarkDownEditor));
             splitContainer1 = new SplitContainer();
             richTextBox1 = new RichTextBox();
-            webBrowser1 = new WebBrowser();
+            browserWrapper1 = new BrowserWrapper();
             toolStrip1 = new ToolStrip();
             toolStripDropDownButton5 = new ToolStripDropDownButton();
             openToolStripMenuItem = new ToolStripMenuItem();
@@ -42,6 +42,15 @@
             gitHubToolStripMenuItem = new ToolStripMenuItem();
             toolStripButtonEditView = new ToolStripButton();
             toolStripButtonSave = new ToolStripButton();
+            toolStripDropDownButton1 = new ToolStripDropDownButton();
+            toolStripMenuItem2 = new ToolStripMenuItem();
+            toolStripMenuItem3 = new ToolStripMenuItem();
+            toolStripMenuItem4 = new ToolStripMenuItem();
+            toolStripMenuItem5 = new ToolStripMenuItem();
+            toolStripMenuItem6 = new ToolStripMenuItem();
+            toolStripMenuItem7 = new ToolStripMenuItem();
+            toolStripMenuItem8 = new ToolStripMenuItem();
+            toolStripSeparator8 = new ToolStripSeparator();
             toolStripSeparator1 = new ToolStripSeparator();
             toolStripButton1 = new ToolStripButton();
             toolStripButton2 = new ToolStripButton();
@@ -95,7 +104,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(webBrowser1);
+            splitContainer1.Panel2.Controls.Add(browserWrapper1);
             splitContainer1.Size = new Size(1003, 560);
             splitContainer1.SplitterDistance = 291;
             splitContainer1.SplitterWidth = 5;
@@ -116,23 +125,21 @@
             richTextBox1.TextChanged += richTextBox1_TextChanged;
             richTextBox1.MouseUp += richTextBox1_MouseUp;
             // 
-            // webBrowser1
+            // browserWrapper1
             // 
-            webBrowser1.Dock = DockStyle.Fill;
-            webBrowser1.Location = new Point(0, 0);
-            webBrowser1.Margin = new Padding(4);
-            webBrowser1.MinimumSize = new Size(23, 26);
-            webBrowser1.Name = "webBrowser1";
-            webBrowser1.Size = new Size(1003, 264);
-            webBrowser1.TabIndex = 0;
-            webBrowser1.Navigating += webBrowser1_Navigating;
+            browserWrapper1.Dock = DockStyle.Fill;
+            browserWrapper1.Location = new Point(0, 0);
+            browserWrapper1.Name = "browserWrapper1";
+            browserWrapper1.RootPath = "";
+            browserWrapper1.Size = new Size(1003, 264);
+            browserWrapper1.TabIndex = 2;
             // 
             // toolStrip1
             // 
             toolStrip1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
             toolStrip1.ImageScalingSize = new Size(24, 24);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton5, toolStripButtonEditView, toolStripButtonSave, toolStripSeparator1, toolStripButton1, toolStripButton2, toolStripButton3, toolStripSeparator2, toolStripButton5, toolStripButton6, toolStripButton7, toolStripButton8, toolStripButton9, toolStripButton10, toolStripSeparator3, toolStripButton11, toolStripButton29, toolStripButton28, toolStripButton27, toolStripButton26, toolStripButton25, toolStripSeparator5, toolStripButton24, toolStripButton23, toolStripSeparator4, toolStripButton22, toolStripButton21, toolStripSeparator6, toolStripButton12, toolStripButton13, toolStripSeparator7, toolStripButton4 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton5, toolStripButtonEditView, toolStripButtonSave, toolStripDropDownButton1, toolStripSeparator8, toolStripSeparator1, toolStripButton1, toolStripButton2, toolStripButton3, toolStripSeparator2, toolStripButton5, toolStripButton6, toolStripButton7, toolStripButton8, toolStripButton9, toolStripButton10, toolStripSeparator3, toolStripButton11, toolStripButton29, toolStripButton28, toolStripButton27, toolStripButton26, toolStripButton25, toolStripSeparator5, toolStripButton24, toolStripButton23, toolStripSeparator4, toolStripButton22, toolStripButton21, toolStripSeparator6, toolStripButton12, toolStripButton13, toolStripSeparator7, toolStripButton4 });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1003, 31);
@@ -208,6 +215,70 @@
             toolStripButtonSave.Size = new Size(47, 28);
             toolStripButtonSave.Text = "Save";
             toolStripButtonSave.Click += toolStripButtonSave_Click;
+            // 
+            // toolStripDropDownButton1
+            // 
+            toolStripDropDownButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownButton1.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItem2, toolStripMenuItem3, toolStripMenuItem4, toolStripMenuItem5, toolStripMenuItem6, toolStripMenuItem7, toolStripMenuItem8 });
+            toolStripDropDownButton1.Image = (Image)resources.GetObject("toolStripDropDownButton1.Image");
+            toolStripDropDownButton1.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            toolStripDropDownButton1.Size = new Size(86, 28);
+            toolStripDropDownButton1.Text = "Font Size";
+            // 
+            // toolStripMenuItem2
+            // 
+            toolStripMenuItem2.Name = "toolStripMenuItem2";
+            toolStripMenuItem2.Size = new Size(98, 26);
+            toolStripMenuItem2.Text = "10";
+            toolStripMenuItem2.Click += SetEditorFontSize;
+            // 
+            // toolStripMenuItem3
+            // 
+            toolStripMenuItem3.Name = "toolStripMenuItem3";
+            toolStripMenuItem3.Size = new Size(98, 26);
+            toolStripMenuItem3.Text = "11";
+            toolStripMenuItem3.Click += SetEditorFontSize;
+            // 
+            // toolStripMenuItem4
+            // 
+            toolStripMenuItem4.Name = "toolStripMenuItem4";
+            toolStripMenuItem4.Size = new Size(98, 26);
+            toolStripMenuItem4.Text = "12";
+            toolStripMenuItem4.Click += SetEditorFontSize;
+            // 
+            // toolStripMenuItem5
+            // 
+            toolStripMenuItem5.Name = "toolStripMenuItem5";
+            toolStripMenuItem5.Size = new Size(98, 26);
+            toolStripMenuItem5.Text = "13";
+            toolStripMenuItem5.Click += SetEditorFontSize;
+            // 
+            // toolStripMenuItem6
+            // 
+            toolStripMenuItem6.Name = "toolStripMenuItem6";
+            toolStripMenuItem6.Size = new Size(98, 26);
+            toolStripMenuItem6.Text = "14";
+            toolStripMenuItem6.Click += SetEditorFontSize;
+            // 
+            // toolStripMenuItem7
+            // 
+            toolStripMenuItem7.Name = "toolStripMenuItem7";
+            toolStripMenuItem7.Size = new Size(98, 26);
+            toolStripMenuItem7.Text = "15";
+            toolStripMenuItem7.Click += SetEditorFontSize;
+            // 
+            // toolStripMenuItem8
+            // 
+            toolStripMenuItem8.Name = "toolStripMenuItem8";
+            toolStripMenuItem8.Size = new Size(98, 26);
+            toolStripMenuItem8.Text = "16";
+            toolStripMenuItem8.Click += SetEditorFontSize;
+            // 
+            // toolStripSeparator8
+            // 
+            toolStripSeparator8.Name = "toolStripSeparator8";
+            toolStripSeparator8.Size = new Size(6, 31);
             // 
             // toolStripSeparator1
             // 
@@ -516,7 +587,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripButton toolStripButton3;
         private System.Windows.Forms.ToolStripButton toolStripButton4;
-        private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.ToolStripButton toolStripButton5;
         private System.Windows.Forms.ToolStripButton toolStripButton6;
         private System.Windows.Forms.ToolStripButton toolStripButton7;
@@ -553,5 +623,15 @@
         private ToolStripButton toolStripButtonSave;
         private ToolStrip toolStrip2;
         private ToolStripButton toolStripButtonEdit;
+        private BrowserWrapper browserWrapper1;
+        private ToolStripDropDownButton toolStripDropDownButton1;
+        private ToolStripMenuItem toolStripMenuItem2;
+        private ToolStripMenuItem toolStripMenuItem3;
+        private ToolStripMenuItem toolStripMenuItem4;
+        private ToolStripMenuItem toolStripMenuItem5;
+        private ToolStripMenuItem toolStripMenuItem6;
+        private ToolStripMenuItem toolStripMenuItem7;
+        private ToolStripMenuItem toolStripMenuItem8;
+        private ToolStripSeparator toolStripSeparator8;
     }
 }
