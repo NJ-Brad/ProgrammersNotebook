@@ -1,6 +1,7 @@
 ﻿using Markdig;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
+using System.Text;
 
 namespace MarkDownHelper
 {
@@ -26,13 +27,26 @@ namespace MarkDownHelper
 
         public void SetUp()
         {
-            webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
-            //webView21.CoreWebView2.AddWebResourceRequestedFilter("https://www.microsoft.com/*", CoreWebView2WebResourceContext.All);
-            webView21.CoreWebView2.AddWebResourceRequestedFilter("notebook://*", CoreWebView2WebResourceContext.All);
-            //            webView21.CoreWebView2.Navigate("https://www.microsoft.com");
+            if (ProtocolHandlers.Count > 0)
+            {
+                webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
 
-            //webView21.CoreWebView2.NavigateToString("<html><body><img src=\"notebook://Image+One.jpg\"></body></html>");
+                foreach (CustomProtocolHandler handler in ProtocolHandlers)
+                {
+                    webView21.CoreWebView2.AddWebResourceRequestedFilter(handler.Prefix, CoreWebView2WebResourceContext.All);
+                }
+            }
+            //webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+            ////webView21.CoreWebView2.AddWebResourceRequestedFilter("https://www.microsoft.com/*", CoreWebView2WebResourceContext.All);
+            //webView21.CoreWebView2.AddWebResourceRequestedFilter("notebook://*", CoreWebView2WebResourceContext.All);
+            ////            webView21.CoreWebView2.Navigate("https://www.microsoft.com");
+
+            ////webView21.CoreWebView2.NavigateToString("<html><body><img src=\"notebook://Image+One.jpg\"></body></html>");
         }
+
+        public EventHandler<EmbeddedFragmentEventArgs>? EmbeddedFragmentHandler { get; set; } = null;
+
+        public List<CustomProtocolHandler> ProtocolHandlers { get; set; } = new();
 
         // ShowUrl
         public void ShowUrl(string url)
@@ -103,7 +117,100 @@ namespace MarkDownHelper
         // https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/working-with-local-content?tabs=dotnetcsharp#loading-local-content-by-handling-the-webresourcerequested-event
         private void CoreWebView2_WebResourceRequested(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestedEventArgs e)
         {
-            //            throw new NotImplementedException();
+
+            if (ProtocolHandlers.Count > 0)
+            {
+                webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+
+                foreach (CustomProtocolHandler handler in ProtocolHandlers)
+                {
+                    string protocolValue = handler.Prefix.Substring(0, handler.Prefix.Length - 1);
+
+                    if (e.Request.Uri.Substring(0, handler.Prefix.Length - 1).Equals(protocolValue, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // testing purposes only (empty args)
+                        //                        handler.Handler(this, new CustomProtocolEventArgs());
+
+
+                        CustomProtocolEventArgs args = new CustomProtocolEventArgs
+                        {
+                            Protocol = protocolValue,
+                            Requested = e.Request.Uri.Substring(handler.Prefix.Length - 1)
+                        };
+                        handler.Handler(this, args);
+
+                        /*
+                                public string Protocol { get; set; } = "*";
+                                public string Requested { get; set; } = string.Empty;
+                                public bool Found { get; set; } = false;
+                                public Stream? ReturnData { get; set; } = null;
+                                public List<string> Headers { get; set; } = new();
+                         */
+
+                        if (args.Found)
+                        {
+
+                            StringBuilder headers = new StringBuilder();
+                            foreach (string str in args.Headers)
+                            {
+                                headers.AppendLine(str);
+                            }
+                            e.Response = webView21.CoreWebView2.Environment.CreateWebResourceResponse(
+                                                                                args.ReturnData, 200, "OK", headers.ToString());
+                        }
+                        else
+                        {
+                            e.Response = webView21.CoreWebView2.Environment.CreateWebResourceResponse(
+                                                                            null, 404, "Not found", "");
+
+                        }
+                    }
+                }
+            }
+            // this goes in Setup - one for each protocol
+            // webView.CoreWebView2.AddWebResourceRequestedFilter("https://demo/*", CoreWebView2WebResourceContext.All);
+
+            // this goes in Setup - Once - This calls a separate method
+            // webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+
+            // this uses an inline delegate
+            //webView.CoreWebView2.WebResourceRequested += delegate (object sender, CoreWebView2WebResourceRequestedEventArgs args)
+            //{
+            //    string assetsFilePath = "C:\\Demo\\" + args.Request.Uri.Substring("https://demo/*".Length - 1);
+            //    try
+            //    {
+            //        FileStream fs = File.OpenRead(assetsFilePath);
+            //        ManagedStream ms = new ManagedStream(fs);
+            //        string headers = "";
+            //        if (assetsFilePath.EndsWith(".html"))
+            //        {
+            //            headers = "Content-Type: text/html";
+            //        }
+            //        else if (assetsFilePath.EndsWith(".jpg"))
+            //        {
+            //            headers = "Content-Type: image/jpeg";
+            //        } else if (assetsFilePath.EndsWith(".png"))
+            //{
+            //    headers = "Content-Type: image/png";
+            //}
+            //else if (assetsFilePath.EndsWith(".css"))
+            //{
+            //    headers = "Content-Type: text/css";
+            //}
+            //else if (assetsFilePath.EndsWith(".js"))
+            //{
+            //    headers = "Content-Type: application/javascript";
+            //}
+
+            //args.Response = webView.CoreWebView2.Environment.CreateWebResourceResponse(
+            //                                                    ms, 200, "OK", headers);
+            //    }
+            //    catch (Exception)
+            //    {
+            //    args.Response = webView.CoreWebView2.Environment.CreateWebResourceResponse(
+            //                                                    null, 404, "Not found", "");
+            //}
+            //};
         }
 
         public void ShowMarkdownText(string rawText)
@@ -127,10 +234,11 @@ namespace MarkDownHelper
             var pipeline = new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
                 .UseSoftlineBreakAsHardlineBreak()
-                .UsePredefinedImageExtension()
-                //.Use<PredefinedImageExtension>()
-                .UseEmbeddedImageExtension(GetEmbedText)
-                //.Use<EmbeddedImageExtension>(new EmbeddedImageExtension(GetEmbedText))
+                //.UsePredefinedImageExtension()
+                //.UseEmbeddedImageExtension(GetEmbedImage)
+                //.UseEmbeddedLinkResolverExtension("HelloBrad")
+                //.UseEmbeddedLinkResolverExtension("HTTPS")
+                .UseEmbeddedFragmentExtension(GetEmbedText)
                 .Build();
 
             // https://weblogs.asp.net/gunnarpeipman/displaying-custom-html-in-webbrowser-control
@@ -140,33 +248,145 @@ namespace MarkDownHelper
             //    control.Document.Write(string.Empty);
             //}
 
-            if (!string.IsNullOrEmpty(RootPath))
-            {
-                ShowHtmlText(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
-                    .EnableNewerFeatures()
-                    .AddGitHubStyle()
-                    .TranslatePaths(RootPath)
-                    .GenerateToc(),
-                    pipeline));
-                //webView21.NavigateToString(Markdig.Markdown.ToHtml(readmeText
-                //    .EnableNewerFeatures()
-                //    .AddGitHubStyle()
-                //    .TranslatePaths(RootPath)
-                //    .GenerateToc(),
-                //    pipeline));
-            }
-            else
-            {
-                webView21.NavigateToString(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
+            // do final replacements after the ToHtml method
+            // extend the replacer to call out and get text blocks from the database (standard headers, footers, disclaimers etc)
+
+            ShowHtmlText(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
                 .EnableNewerFeatures()
                 .AddGitHubStyle()
+                .TranslatePaths(RootPath)
                 .GenerateToc(),
                 pipeline));
-            }
+
+            //if (!string.IsNullOrEmpty(RootPath))
+            //{
+            //    ShowHtmlText(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
+            //        .EnableNewerFeatures()
+            //        .AddGitHubStyle()
+            //        .TranslatePaths(RootPath)
+            //        .GenerateToc(),
+            //        pipeline));
+            //    //webView21.NavigateToString(Markdig.Markdown.ToHtml(readmeText
+            //    //    .EnableNewerFeatures()
+            //    //    .AddGitHubStyle()
+            //    //    .TranslatePaths(RootPath)
+            //    //    .GenerateToc(),
+            //    //    pipeline));
+            //}
+            //else
+            //{
+            //    ShowHtmlText(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
+            //    .EnableNewerFeatures()
+            //    .AddGitHubStyle()
+            //    .GenerateToc(),
+            //    pipeline));
+
+            //    //webView21.NavigateToString(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
+            //    //.EnableNewerFeatures()
+            //    //.AddGitHubStyle()
+            //    //.GenerateToc(),
+            //    //pipeline));
+            //}
         }
+
+        //private string GetEmbedImage(string key)
+        //{
+        //    return key;
+        //}
+
         private string GetEmbedText(string key)
         {
-            return key;
+            EmbeddedFragmentEventArgs args = new();
+            args.Key = key;
+            EmbeddedFragmentHandler?.Invoke(this, args);
+
+            return args.Value.Content;
         }
+
+        private List<string> GetTextFragmentList()
+        {
+            //EmbeddedFragmentEventArgs args = new();
+            //args.Key = key;
+            //EmbeddedFragmentHandler?.Invoke(this, args);
+
+            //return args.Value;
+
+            return new();
+        }
+
+        private List<string> GetImageFragmentList()
+        {
+            //EmbeddedFragmentEventArgs args = new();
+            //args.Key = key;
+            //EmbeddedFragmentHandler?.Invoke(this, args);
+
+            //return args.Value;
+
+            return new();
+        }
+
+        // Reading of response content stream happens asynchronously, and WebView2 does not 
+        // directly dispose the stream once it read.  Therefore, use the following stream
+        // class, which properly disposes when WebView2 has read all data.  For details, see
+        // [CoreWebView2 does not close stream content](https://github.com/MicrosoftEdge/WebView2Feedback/issues/2513).
+        class ManagedStream : Stream
+        {
+            public ManagedStream(Stream s)
+            {
+                s_ = s;
+            }
+
+            public override bool CanRead => s_.CanRead;
+
+            public override bool CanSeek => s_.CanSeek;
+
+            public override bool CanWrite => s_.CanWrite;
+
+            public override long Length => s_.Length;
+
+            public override long Position { get => s_.Position; set => s_.Position = value; }
+
+            public override void Flush()
+            {
+                throw new NotImplementedException();
+            }
+
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                return s_.Seek(offset, origin);
+            }
+
+            public override void SetLength(long value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                int read = 0;
+                try
+                {
+                    read = s_.Read(buffer, offset, count);
+                    if (read == 0)
+                    {
+                        s_.Dispose();
+                    }
+                }
+                catch
+                {
+                    s_.Dispose();
+                    throw;
+                }
+                return read;
+            }
+
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                throw new NotImplementedException();
+            }
+
+            private Stream s_;
+        }
+
     }
 }

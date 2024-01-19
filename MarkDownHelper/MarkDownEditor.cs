@@ -45,6 +45,21 @@ namespace MarkDownHelper
                 return sb.ToString();
             });
             operations.Add("Task", "- [ ]", string.Empty);
+
+
+            ContextMenuStrip contextMenu = new();
+            ToolStripMenuItem menuItem = new ToolStripMenuItem("Cut");
+            menuItem.Click += new EventHandler(CutAction);
+            contextMenu.Items.Add(menuItem);
+            menuItem = new ToolStripMenuItem("Copy");
+            menuItem.Click += new EventHandler(CopyAction);
+            contextMenu.Items.Add(menuItem);
+            menuItem = new ToolStripMenuItem("Paste");
+            menuItem.Click += new EventHandler(PasteAction);
+            contextMenu.Items.Add(menuItem);
+
+            richTextBox1.ContextMenuStrip = contextMenu;
+
         }
 
         public string FileName
@@ -65,6 +80,19 @@ namespace MarkDownHelper
                 }
             }
         }
+
+        public EventHandler<EmbeddedFragmentEventArgs>? EmbeddedFragmentHandler
+        {
+            get { return browserWrapper1.EmbeddedFragmentHandler; }
+            set { browserWrapper1.EmbeddedFragmentHandler = value; }
+        }
+
+        public List<CustomProtocolHandler> ProtocolHandlers
+        {
+            get { return browserWrapper1.ProtocolHandlers; }
+            set { browserWrapper1.ProtocolHandlers = value; }
+        }
+
 
         private bool handleFiles = true;
         public bool HandleFiles
@@ -92,29 +120,9 @@ namespace MarkDownHelper
             }
         }
 
-        public static void Edit(string fileName = "")
-        {
-            Editor ed = new Editor();
-            ed.FileName = fileName;
-            ed.ShowDialog();
-        }
-
-        public static void EditModeless(string fileName = "")
-        {
-            Editor ed = new Editor();
-            ed.FileName = fileName;
-            ed.Show();
-            //ed.Visible = true;
-            //ed.Focus();
-        }
-
-        //        bool created = false;
-
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
-            //webView21.EnsureCoreWebView2Async();
-            //created = true;
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -128,31 +136,12 @@ namespace MarkDownHelper
             }
         }
 
-        //protected override void OnShown(EventArgs e)
-        //{
-        //    base.OnShown(e);
-        //    if (!string.IsNullOrEmpty(fileName))
-        //    {
-        //        openToolStripMenuItem.Enabled = false;
-        //        saveAsToolStripMenuItem.Enabled = false;
-        //        LoadFileToEdit(fileName);
-        //    }
-        //}
-
         Operations operations = new Operations();
 
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
-            //            Show();
-            //ShowText(richTextBox1.Text, webBrowser1);
             ShowText(richTextBox1.Text);
         }
-
-        //private new void Show()
-        //{
-        //    base.Show();
-        //    ShowText(richTextBox1.Text, webBrowser1);
-        //}
 
         private void ShowText(string rawText)
         {
@@ -235,10 +224,10 @@ namespace MarkDownHelper
         //    }
         //}
 
-        private string GetEmbedText(string key)
-        {
-            return key;
-        }
+        //private string GetEmbedText(string key)
+        //{
+        //    return key;
+        //}
 
         private void Show(string fileName, WebBrowser control)
         {
@@ -644,26 +633,27 @@ Finally, include a section for the license of your project. For more information
 
         }
 
-        private void richTextBox1_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {   //click event
-                //MessageBox.Show("you got it!");
+        //private void richTextBox1_MouseUp(object sender, MouseEventArgs e)
+        //{
+        //    if (e.Button == System.Windows.Forms.MouseButtons.Right)
+        //    {   //click event
+        //        //MessageBox.Show("you got it!");
 
-                ContextMenuStrip contextMenu = new();
-                ToolStripMenuItem menuItem = new ToolStripMenuItem("Cut");
-                menuItem.Click += new EventHandler(CutAction);
-                contextMenu.Items.Add(menuItem);
-                menuItem = new ToolStripMenuItem("Copy");
-                menuItem.Click += new EventHandler(CopyAction);
-                contextMenu.Items.Add(menuItem);
-                menuItem = new ToolStripMenuItem("Paste");
-                menuItem.Click += new EventHandler(PasteAction);
-                contextMenu.Items.Add(menuItem);
+        //        ContextMenuStrip contextMenu = new();
+        //        ToolStripMenuItem menuItem = new ToolStripMenuItem("Cut");
+        //        menuItem.Click += new EventHandler(CutAction);
+        //        contextMenu.Items.Add(menuItem);
+        //        menuItem = new ToolStripMenuItem("Copy");
+        //        menuItem.Click += new EventHandler(CopyAction);
+        //        contextMenu.Items.Add(menuItem);
+        //        menuItem = new ToolStripMenuItem("Paste");
+        //        menuItem.Click += new EventHandler(PasteAction);
+        //        contextMenu.Items.Add(menuItem);
 
-                richTextBox1.ContextMenuStrip = contextMenu;
-            }
-        }
+        //        richTextBox1.ContextMenuStrip = contextMenu;
+        //    }
+        //}
+
         void CutAction(object sender, EventArgs e)
         {
             richTextBox1.Cut();
@@ -698,24 +688,61 @@ Finally, include a section for the license of your project. For more information
                 Image img = Clipboard.GetImage();
                 if (img != null)
                 {
-                    // https://www.techieclues.com/blogs/converting-image-to-base64-string-in-csharp
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        img.Save(stream, ImageFormat.Bmp);
-                        byte[] imageBytes = stream.ToArray();
-                        string base64String = Convert.ToBase64String(imageBytes);
-                        //Console.WriteLine(base64String);
-                        richTextBox1.Text += $"![Hello World](data:image/png;base64,{base64String})";
-                    }
+                    //// https://www.techieclues.com/blogs/converting-image-to-base64-string-in-csharp
+                    //using (MemoryStream stream = new MemoryStream())
+                    //{
+                    //    img.Save(stream, ImageFormat.Bmp);
+                    //    byte[] imageBytes = stream.ToArray();
+                    //    string base64String = Convert.ToBase64String(imageBytes);
+                    //    //Console.WriteLine(base64String);
+                    //    richTextBox1.Text += $"![Hello World](data:image/png;base64,{base64String})";
+                    //}
+
+
+                    EmbeddedFragmentEventArgs args = new();
+                    args.Operation = "SAVE";
+
+                    string name = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+                    PageFragment frag = new PageFragment { Id = Guid.NewGuid().ToString("D").ToUpper(), Name = name };
+
+                    frag.FragmentType = "image/jpeg";
+                    frag.Content = ImageToBase64(img);
+
+                    args.Value = frag;
+
+                    EmbeddedFragmentHandler?.Invoke(this, args);
+
+                    richTextBox1.SelectedText = $"![Alt text](notebook://{name})";
                 }
             }
 
             if (Clipboard.ContainsText())
             {
-                richTextBox1.Text
-                    += Clipboard.GetText(TextDataFormat.Text).ToString();
+                //richTextBox1.Text
+                //    += Clipboard.GetText(TextDataFormat.Text).ToString();
+
+                richTextBox1.SelectedText = Clipboard.GetText(TextDataFormat.Text).ToString();
             }
+
+            ShowText(richTextBox1.Text);
         }
+
+        private string ImageToBase64(Image image)
+        {
+            string rtnVal = string.Empty;
+
+            // https://www.techieclues.com/blogs/converting-image-to-base64-string-in-csharp
+            using (MemoryStream stream = new MemoryStream())
+            {
+                image.Save(stream, ImageFormat.Bmp);
+                byte[] imageBytes = stream.ToArray();
+                string base64String = Convert.ToBase64String(imageBytes);
+                rtnVal = base64String;
+            }
+
+            return rtnVal;
+        }
+
 
         private void toolStripButtonEditView_Click(object sender, EventArgs e)
         {
@@ -761,6 +788,80 @@ Finally, include a section for the license of your project. For more information
             Font newFont = new Font(f.FontFamily, newSize);
 
             richTextBox1.Font = newFont;
+        }
+
+        private void textBlockToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi != null)
+            {
+                tsmi.DropDownItems.Clear();
+
+                EmbeddedFragmentEventArgs args = new();
+                args.Operation = "LIST_TEXT_BLOCKS";
+                EmbeddedFragmentHandler?.Invoke(this, args);
+
+                foreach (string str in args.Names)
+                {
+                    ToolStripMenuItem newItem = new ToolStripMenuItem { Text = str, Tag = str };
+                    newItem.Click += InsertTextBlockClicked;
+                    tsmi.DropDownItems.Add(newItem);
+                }
+            }
+        }
+
+        private void imageToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi != null)
+            {
+                tsmi.DropDownItems.Clear();
+
+                EmbeddedFragmentEventArgs args = new();
+                args.Operation = "LIST_IMAGE_BLOCKS";
+                EmbeddedFragmentHandler?.Invoke(this, args);
+                foreach (string str in args.Names)
+                {
+                    ToolStripMenuItem newItem = new ToolStripMenuItem { Text = str, Tag = str };
+                    newItem.Click += InsertImageClicked;
+                    tsmi.DropDownItems.Add(newItem);
+                }
+            }
+        }
+
+        private void InsertImageClicked(object? sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi != null)
+            {
+                //ToolStripMenuItem newItem = new ToolStripMenuItem { Text = str, Tag = $"![Alt text](https://cloudfront-us-east-2.images.arcpublishing.com/reuters/AP7S7SPQ2NJTJLBWW7ROT6W3VQ.jpg)\r\n" };
+
+                string newText = $"![Alt text](notebook://{tsmi.Tag.ToString()})";
+
+                Modify(richTextBox1, newText, string.Empty, true);
+                ShowText(richTextBox1.Text);
+            }
+        }
+        private void InsertTextBlockClicked(object? sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
+            if (tsmi != null)
+            {
+                EmbeddedFragmentEventArgs args = new();
+                args.Operation = "GET";
+                args.Key = tsmi.Tag.ToString();
+                EmbeddedFragmentHandler?.Invoke(this, args);
+
+                Modify(richTextBox1, args.Value.Content, string.Empty, true);
+                ShowText(richTextBox1.Text);
+            }
+        }
+
+        private void toolStripButtonFragments_Click(object sender, EventArgs e)
+        {
+            FragmentManagerForm fmf = new();
+            fmf.EmbeddedFragmentHandler = EmbeddedFragmentHandler;
+            fmf.ShowDialog();
         }
     }
 

@@ -12,13 +12,13 @@ using System.Text.RegularExpressions;
 namespace MarkDownHelper
 {
     // sample came from here : https://github.com/JeringTech/Markdig.Extensions.FlexiBlocks/blob/master/src/FlexiBlocks/MarkdownPipelineBuilderExtensions.cs#L274
-    public static class EmbeddedImageExtensionExtension
+    public static class EmbeddedFragmentExtensionExtension
     {
-        public static MarkdownPipelineBuilder UseEmbeddedImageExtension(this MarkdownPipelineBuilder pipelineBuilder, Func<string, string> callback)
+        public static MarkdownPipelineBuilder UseEmbeddedFragmentExtension(this MarkdownPipelineBuilder pipelineBuilder, Func<string, string> callback)
         {
-            if (!pipelineBuilder.Extensions.Contains<EmbeddedImageExtension>())
+            if (!pipelineBuilder.Extensions.Contains<EmbeddedFragmentExtension>())
             {
-                pipelineBuilder.Extensions.Add(new EmbeddedImageExtension(callback));
+                pipelineBuilder.Extensions.Add(new EmbeddedFragmentExtension(callback));
             }
 
             return pipelineBuilder;
@@ -41,20 +41,20 @@ namespace MarkDownHelper
 
 
 
-    public class EmbeddedImageExtension : IMarkdownExtension
+    public class EmbeddedFragmentExtension : IMarkdownExtension
     {
         Func<string, string> callback;
 
-        public EmbeddedImageExtension(Func<string, string> callback)
+        public EmbeddedFragmentExtension(Func<string, string> callback)
         {
             this.callback = callback;
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
-            if (!pipeline.InlineParsers.Contains<EmbeddedImageParser>())
+            if (!pipeline.InlineParsers.Contains<EmbeddedFragmentParser>())
             {
-                pipeline.InlineParsers.Insert(0, new EmbeddedImageParser(callback));
+                pipeline.InlineParsers.Insert(0, new EmbeddedFragmentParser(callback));
             }
         }
 
@@ -63,10 +63,10 @@ namespace MarkDownHelper
         }
     }
 
-    public partial class EmbeddedImageParser : InlineParser
+    public partial class EmbeddedFragmentParser : InlineParser
     {
         Func<string, string> callback;
-        public EmbeddedImageParser(Func<string, string> callback)
+        public EmbeddedFragmentParser(Func<string, string> callback)
         {
             this.callback = callback;
             OpeningCharacters = new[] { '[' };
@@ -80,7 +80,7 @@ namespace MarkDownHelper
                 return false;
             }
 
-            var regex = EmbeddedImageTagRegex();
+            var regex = EmbeddedFragmentTagRegex();
             var match = regex.Match(slice.ToString());
 
             if (!match.Success)
@@ -88,11 +88,10 @@ namespace MarkDownHelper
                 return false;
             }
 
-            var username = match.Groups["username"].Value;
-            var literal = $"<a href=\"https://github.com/{username}\"/>{username}</a>";
+            var blockname = match.Groups["blockname"].Value;
+            //var literal = $"<a href=\"https://github.com/{blockname}\"/>{blockname}</a>";
 
-
-            var testVal = callback(username);
+            var literal = callback(blockname);
 
             processor.Inline = new HtmlInline(literal)
             {
@@ -109,8 +108,15 @@ namespace MarkDownHelper
             return true;
         }
 
-        //[GeneratedRegex(@"\[embeddedimage:(?<username>\w+)]")]
-        [GeneratedRegex(@"\[embeddedimage:(?<username>[a-zA-Z0-9_-]+)]")]
-        private static partial Regex EmbeddedImageTagRegex();
+        [GeneratedRegex(@"\[embeddedfragment:(?<blockname>[a-zA-Z0-9_-]+)]")]
+        private static partial Regex EmbeddedFragmentTagRegex();
+    }
+
+    public class EmbeddedFragmentEventArgs : EventArgs
+    {
+        public string Key { get; set; } = string.Empty;
+        public PageFragment Value { get; set; } = new();
+        public string Operation { get; set; } = "GET";
+        public List<string> Names { get; set; } = new();
     }
 }

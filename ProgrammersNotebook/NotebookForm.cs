@@ -1,5 +1,6 @@
 ﻿// split buttion, if necessary - https://wyday.com/splitbutton/
 
+using MarkDownHelper;
 using System.Text.Json;
 
 namespace ProgrammersNotebook
@@ -46,94 +47,98 @@ namespace ProgrammersNotebook
                 AddToTree(imageTree1.Nodes, pages);
             }
 
+            // work with this.  remembering the format may become an issue
+            markDownEditor1.ProtocolHandlers.Add(new CustomProtocolHandler { Prefix = "testprot://*", Handler = ResolveProtocolRequest });
+            markDownEditor1.ProtocolHandlers.Add(new CustomProtocolHandler { Prefix = "notebook://*", Handler = ResolveProtocolRequest });
 
-            //actionItemWidgetControl1.SetTreeFont(Font);
-            //notesWidgetControl1.SetTreeFont(Font);
-            //peopleWidgetControl1.SetTreeFont(Font);
+            markDownEditor1.EmbeddedFragmentHandler = ResolveEmbeddedFragmentRequest;
 
-            //bindingSource.DataSource = selectedProjectDocument;
-
-            //statuses.Add(new ComboBoxItem { Text = "Unknown", Value = "" });
-            //statuses.Add(new ComboBoxItem { Text = "Good", Value = "GOOD" });
-            //statuses.Add(new ComboBoxItem { Text = "Watch", Value = "WATCH" });
-            //statuses.Add(new ComboBoxItem { Text = "Problem", Value = "PROBLEM" });
-            //statuses.Add(new ComboBoxItem { Text = "Overdue", Value = "OVERDUE" });
-
-            //comboBox2.DataSource = statuses;
-            //comboBox2.DisplayMember = "Text";
-            //comboBox2.ValueMember = "Value";
-
-            //documentTypes.Add(new ComboBoxItem { Text = "Folder", Value = "Folder" });
-            //documentTypes.Add(new ComboBoxItem { Text = "Unknown", Value = "" });
-            //documentTypes.Add(new ComboBoxItem { Text = "File", Value = "File" });
-
-            //comboBox1.DataSource = documentTypes;
-            //comboBox1.DisplayMember = "Text";
-            //comboBox1.ValueMember = "Value";
-
-            //string fileName = Path.ChangeExtension(Folders.GetConfigFileName(FileName), "project");
-
-            //if (!File.Exists(fileName))
-            //{
-            //    MessageBox.Show("File does not exist for this project");
-            //    DialogResult = DialogResult.Cancel;
-            //    Close();
-            //    return;
-            //}
-
-            //string content = File.ReadAllText(fileName);
-
-            //project = JsonSerializer.Deserialize<Project>(content);
-
-            //AddToTree(imageTree1.Nodes, project.Documents);
-
-            //textBox1.DataBindings.Add("Text", project, nameof(Project.Name), false, DataSourceUpdateMode.OnPropertyChanged);
-            //textBox2.DataBindings.Add("Text", project, nameof(Project.Description), false, DataSourceUpdateMode.OnPropertyChanged);
-            //textBox5.DataBindings.Add("Text", project, nameof(Project.Orgranization), false, DataSourceUpdateMode.OnPropertyChanged);
-            //nullableDatePicker1.DataBindings.Add("Value", project, nameof(Project.InitiationDate), true, DataSourceUpdateMode.OnPropertyChanged);
-            //nullableDatePicker2.DataBindings.Add("Value", project, nameof(Project.TargetedDeliveryDate), true, DataSourceUpdateMode.OnPropertyChanged);
-            //comboBox2.DataBindings.Add("SelectedValue", project, nameof(Project.CurrentStatus), false, DataSourceUpdateMode.OnPropertyChanged);
-            //nullableDatePicker3.DataBindings.Add("Value", project, nameof(Project.StatusDate), true, DataSourceUpdateMode.OnPropertyChanged);
-            //textBox3.DataBindings.Add("Text", project, nameof(Project.StatusReason), false, DataSourceUpdateMode.OnPropertyChanged);
-            //textBox4.DataBindings.Add("Text", project, nameof(Project.DefaultLocation), false, DataSourceUpdateMode.OnPropertyChanged);
-            //textBox10.DataBindings.Add("Text", project, nameof(Project.LogoFile), false, DataSourceUpdateMode.OnPropertyChanged);
-
-
-            //textBox6.DataBindings.Add("Text", bindingSource, nameof(ProjectDocument.Name), false, DataSourceUpdateMode.OnPropertyChanged);
-            //comboBox1.DataBindings.Add("SelectedValue", bindingSource, nameof(ProjectDocument.DocumentType), false, DataSourceUpdateMode.OnPropertyChanged);
-            //textBox7.DataBindings.Add("Text", bindingSource, nameof(ProjectDocument.Location), false, DataSourceUpdateMode.OnPropertyChanged);
-            //textBox8.DataBindings.Add("Text", bindingSource, nameof(ProjectDocument.LastViewed), false, DataSourceUpdateMode.OnPropertyChanged);
-            //textBox9.DataBindings.Add("Text", bindingSource, nameof(ProjectDocument.Updated), false, DataSourceUpdateMode.OnPropertyChanged);
-
-            //Text = project.Name;
             binding = false;
+        }
 
-            //ActionItemList items = new();
-            //items.Add(new ActionItem { Title = "Title", PersonName = "Brad", Status = "New" });
-            ////BindingSource bx = new BindingSource();
-            ////bx.DataSource = items;
-            ////actionItemWidgetControl1.Data = bx;
-            ////actionItemWidgetControl1.Data = items;
-            //actionItemWidgetControl1.DataSource = items;
+        public void ResolveEmbeddedFragmentRequest(object sender, EmbeddedFragmentEventArgs e)
+        {
+            Fragments frMgr = new Fragments();
+            if (e.Operation == "GET")
+            {
+                PageFragment fragment = frMgr.GetFragment(e.Key);
 
-            //actionItemWidgetControl1.DataSource = project.ActionItems;
-            //notesWidgetControl1.DataSource = project.Notes;
+                // e.Value = fragment.Content;
+                e.Value = fragment;
+            }
+            if (e.Operation == "LIST_TEXT_BLOCKS")
+            {
+                e.Names = frMgr.GetFragmentList(false);
+            }
+            if (e.Operation == "LIST_IMAGE_BLOCKS")
+            {
+                e.Names = frMgr.GetFragmentList(true);
+            }
+            if (e.Operation == "SAVE")
+            {
+                frMgr.SaveFragment(e.Value);
+            }
 
-            //using var db = new PCDataContext();
-            ////db.People
+            //            e.Value = $"<H1>Hello {e.Key}</H1>";
+        }
 
-            //// Create
-            //Console.WriteLine("Inserting a new blog");
-            //db.Add(new PersonInfoModel { Name = "Brad Bruce", Role = "Developer", Email = "NJ_Brad@Verizon.net", TimeZone = "Eastern" });
-            //db.SaveChanges();
+        public void ResolveProtocolRequest(object sender, CustomProtocolEventArgs e)
+        {
+            /*
+                    public string Protocol { get; set; } = "*";
+                    public string Requested { get; set; } = string.Empty;
+                    public bool Found { get; set; } = false;
+                    public Stream? ReturnData { get; set; } = null;
+                    public List<string> Headers { get; set; } = new();
+             */
 
-            //// Read
-            //Console.WriteLine("Querying for a blog");
-            //var blog = db.People
-            //    //.OrderBy(b => b.BlogId)
-            //    .First();
 
-            //peopleWidgetControl1.DataSource = project.People;
+            PageFragment fragment = GetFragment(e.Requested);
+
+            //e.Value = fragment.Content;
+
+
+
+            // https://stackoverflow.com/questions/31524343/how-to-convert-base64-value-from-a-database-to-a-stream-with-c-sharp
+            //string base64encodedstring = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+            string base64encodedstring = fragment.Content;
+            var bytes = Convert.FromBase64String(base64encodedstring);
+
+            /***********************************************/
+            // custom protocol is not a viable way to include html.  Use a markdig extension to embed text / HTML
+            // this is fine.  Not looking to load text from external file, when exported
+            // * Added it as a step in building the HTML
+            /***********************************************/
+            //string output = $"<html><H1>{e.Requested}</h1></html>";
+            //var repo = new System.IO.MemoryStream();
+            //var stringBytes = System.Text.Encoding.UTF8.GetBytes(output);
+            //repo.Write(stringBytes, 0, stringBytes.Length);
+            //repo.Seek(0, SeekOrigin.Begin);
+            //e.ReturnData = repo;
+            //e.Headers.Add("Content-Type: text/html");
+
+            e.ReturnData = new MemoryStream(bytes);
+            e.Found = true;
+            //e.Headers.Add("Content-Type: image/jpeg");
+            e.Headers.Add($"Content-Type: {fragment.FragmentType}");
+        }
+
+        private PageFragment GetFragment(string key)
+        {
+            PageFragment rtnVal = null;
+
+            string fileName = Path.ChangeExtension(Folders.GetConfigFileName(key), "frag");
+
+            if (!File.Exists(fileName))
+            {
+                PageFragment pf = new PageFragment { Name = key, FragmentType = "Text", Content = fileName };
+                File.WriteAllText(fileName, JsonSerializer.Serialize(pf, new JsonSerializerOptions { WriteIndented = true }));
+            }
+
+            string text = File.ReadAllText(fileName);
+
+            rtnVal = JsonSerializer.Deserialize<PageFragment>(text);
+            return rtnVal;
         }
 
         private async void SaveChanges()

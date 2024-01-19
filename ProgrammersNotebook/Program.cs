@@ -24,8 +24,6 @@ namespace ProgrammersNotebook
                     var config = hostContext.Configuration;
 
                     services.AddLogging(configure => configure.AddDebug())
-                    .AddScoped<Form1>()     // this puts the form under DI
-                    .AddScoped<EditorForm>()     // this puts the form under DI
                     .AddScoped<NotebookForm>()     // this puts the form under DI
                     ;
                     // configure other services here
