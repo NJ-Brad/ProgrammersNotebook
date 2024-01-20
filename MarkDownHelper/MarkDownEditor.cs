@@ -847,12 +847,15 @@ Finally, include a section for the license of your project. For more information
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
             if (tsmi != null)
             {
-                EmbeddedFragmentEventArgs args = new();
-                args.Operation = "GET";
-                args.Key = tsmi.Tag.ToString();
-                EmbeddedFragmentHandler?.Invoke(this, args);
+                //EmbeddedFragmentEventArgs args = new();
+                //args.Operation = "GET";
+                //args.Key = tsmi.Tag.ToString();
+                //EmbeddedFragmentHandler?.Invoke(this, args);
+                //Modify(richTextBox1, args.Value.Content, string.Empty, true);
 
-                Modify(richTextBox1, args.Value.Content, string.Empty, true);
+                string newText = $"[embeddedfragment:{tsmi.Tag.ToString()}]";
+                Modify(richTextBox1, newText, string.Empty, true);
+
                 ShowText(richTextBox1.Text);
             }
         }
