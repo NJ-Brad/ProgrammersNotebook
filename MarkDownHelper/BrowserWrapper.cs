@@ -86,6 +86,16 @@ namespace MarkDownHelper
                 return;
 
             webView21.CoreWebView2.NavigateToString(textToShow);
+            // This looks promising : https://www.rgraph.net/blog/2023/how-to-add-a-copy-to-clipboard-button-to-your-code-examples.html
+
+            // use docfx instead? : https://dotnet.github.io/docfx/docs/markdown.html?tabs=linux%2Cdotnet
+
+            // http://www.tcbin.com/2017/12/copy-clipboard-button-code-prettify-google.html
+            // https://www.codewithfaraz.com/content/164/create-a-code-snippet-box-with-copy-functionality
+            // https://stackoverflow.com/questions/49110041/how-can-i-copy-pre-tag-code-into-clipboard-in-html
+            // https://www.dbaplus.ca/2021/11/javascriptcss-add-copy-to-clipboard.html
+            // mkdocs is written in python : https://www.mkdocs.org/getting-started/
+            // https://squidfunk.github.io/mkdocs-material/reference/code-blocks/
         }
 
 
@@ -251,12 +261,11 @@ namespace MarkDownHelper
             // do final replacements after the ToHtml method
             // extend the replacer to call out and get text blocks from the database (standard headers, footers, disclaimers etc)
 
-            ShowHtmlText(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
+            ShowHtmlText(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n"), pipeline)
                 .EnableNewerFeatures()
                 .AddGitHubStyle()
                 .TranslatePaths(RootPath)
-                .GenerateToc(),
-                pipeline));
+                .GenerateToc());
 
             //if (!string.IsNullOrEmpty(RootPath))
             //{

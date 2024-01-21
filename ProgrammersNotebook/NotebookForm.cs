@@ -750,7 +750,7 @@ namespace ProgrammersNotebook
                 return;
 
             Page pd = e.Node.Tag as Page;
-            if (pd != null)
+            if ((pd != null) && (!string.IsNullOrEmpty(e.Label)))
             {
                 pd.Name = e.Label;
                 e.Node.Text = pd.Name;
