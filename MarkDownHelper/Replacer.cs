@@ -49,12 +49,12 @@ namespace MarkDownHelper
                     }
                     //sb.Append("A variable was here");
 
-                    lastCopied = endOfVar + 2;
+                    lastCopied = endOfVar + 1;
                 }
                 startOfVar = input.IndexOf(VarStart, startOfVar + 1);
             }
 
-            // copy rest of string
+            // copy rest of string (if there is anything)
             {
                 sb.Append(input.Substring(lastCopied + 1));
             }

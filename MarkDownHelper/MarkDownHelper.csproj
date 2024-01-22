@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Experimental\**" />
+    <EmbeddedResource Remove="Experimental\**" />
+    <None Remove="Experimental\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Editor_.cs" />
     <Compile Remove="Editor_.Designer.cs" />
   </ItemGroup>

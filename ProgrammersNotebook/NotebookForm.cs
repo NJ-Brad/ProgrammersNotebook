@@ -15,6 +15,15 @@ namespace ProgrammersNotebook
         public NotebookForm()
         {
             InitializeComponent();
+
+            if (Replacements.ContainsKey("LOCATION"))
+            {
+                Replacements["LOCATION"] = "notebook://";
+            }
+            else
+            {
+                Replacements.Add("LOCATION", "notebook://");
+            }
         }
 
         bool binding = false;
@@ -52,6 +61,7 @@ namespace ProgrammersNotebook
             markDownEditor1.ProtocolHandlers.Add(new CustomProtocolHandler { Prefix = "notebook://*", Handler = ResolveProtocolRequest });
 
             markDownEditor1.EmbeddedFragmentHandler = ResolveEmbeddedFragmentRequest;
+            markDownEditor1.Replacements = Replacements;
 
             binding = false;
         }
@@ -479,6 +489,8 @@ namespace ProgrammersNotebook
         //    }
         //}
 
+        public Dictionary<string, string> Replacements = new();
+
         private void imageTree1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             Page pd = e.Node.Tag as Page;
@@ -517,6 +529,7 @@ namespace ProgrammersNotebook
             markDownEditor1.DocumentText = File.ReadAllText(fileName);
             markDownEditor1.ViewMode = true;
             markDownEditor1.Enabled = true;
+            markDownEditor1.Replacements = Replacements;
 
             //// https://stackoverflow.com/questions/14941537/better-way-to-update-bound-controls-when-changing-the-datasource
             //foreach (Control c in tabPageDocuments.Controls)

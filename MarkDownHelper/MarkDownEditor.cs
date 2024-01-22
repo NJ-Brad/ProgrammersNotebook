@@ -143,9 +143,15 @@ namespace MarkDownHelper
             ShowText(richTextBox1.Text);
         }
 
+        public Dictionary<string, string> Replacements = new();
+
         private void ShowText(string rawText)
         {
-            browserWrapper1.ShowMarkdownText(rawText);
+            Replacer rep = new Replacer();
+            rep.Replacements = Replacements;
+            string repText = rep.DoReplacements(rawText);
+
+            browserWrapper1.ShowMarkdownText(repText);
         }
 
         //private void ShowText(string rawText, WebBrowser control)
