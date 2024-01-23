@@ -1,6 +1,7 @@
 ﻿// split buttion, if necessary - https://wyday.com/splitbutton/
 
 using MarkDownHelper;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace ProgrammersNotebook
@@ -112,32 +113,63 @@ namespace ProgrammersNotebook
             // https://stackoverflow.com/questions/31524343/how-to-convert-base64-value-from-a-database-to-a-stream-with-c-sharp
             //string base64encodedstring = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
             string base64encodedstring = fragment.Content;
-            var bytes = Convert.FromBase64String(base64encodedstring);
+            try
+            {
+                var bytes = Convert.FromBase64String(base64encodedstring);
+                /***********************************************/
+                // custom protocol is not a viable way to include html.  Use a markdig extension to embed text / HTML
+                // this is fine.  Not looking to load text from external file, when exported
+                // * Added it as a step in building the HTML
+                /***********************************************/
+                //string output = $"<html><H1>{e.Requested}</h1></html>";
+                //var repo = new System.IO.MemoryStream();
+                //var stringBytes = System.Text.Encoding.UTF8.GetBytes(output);
+                //repo.Write(stringBytes, 0, stringBytes.Length);
+                //repo.Seek(0, SeekOrigin.Begin);
+                //e.ReturnData = repo;
+                //e.Headers.Add("Content-Type: text/html");
 
-            /***********************************************/
-            // custom protocol is not a viable way to include html.  Use a markdig extension to embed text / HTML
-            // this is fine.  Not looking to load text from external file, when exported
-            // * Added it as a step in building the HTML
-            /***********************************************/
-            //string output = $"<html><H1>{e.Requested}</h1></html>";
-            //var repo = new System.IO.MemoryStream();
-            //var stringBytes = System.Text.Encoding.UTF8.GetBytes(output);
-            //repo.Write(stringBytes, 0, stringBytes.Length);
-            //repo.Seek(0, SeekOrigin.Begin);
-            //e.ReturnData = repo;
-            //e.Headers.Add("Content-Type: text/html");
+                if (!string.IsNullOrEmpty(exportFolder))
+                {
+                    string fileName = Path.Combine(exportFolder, fragment.Name);
+                    if (fragment.FragmentType == "Text")
+                    {
+                        fileName = Path.ChangeExtension(fileName, "txt");
+                    }
+                    else
+                    {
+                        fileName = Path.ChangeExtension(fileName, "jpg");
+                    }
 
-            e.ReturnData = new MemoryStream(bytes);
-            e.Found = true;
-            //e.Headers.Add("Content-Type: image/jpeg");
-            e.Headers.Add($"Content-Type: {fragment.FragmentType}");
+                    if (!File.Exists(fileName))
+                    {
+                        // create new replacement here
+                        System.Diagnostics.Debug.WriteLine(fileName);
+                        File.WriteAllBytes(fileName, bytes);
+                    }
+                }
+
+                e.ReturnData = new MemoryStream(bytes);
+                e.Found = true;
+                //e.Headers.Add("Content-Type: image/jpeg");
+                e.Headers.Add($"Content-Type: {fragment.FragmentType}");
+            }
+            catch
+            {
+                e.Found = false;
+                return;
+            }
+
         }
 
         private PageFragment GetFragment(string key)
         {
             PageFragment rtnVal = null;
 
-            string fileName = Path.ChangeExtension(Folders.GetConfigFileName(key), "frag");
+            // this is a problem
+            string startName = Folders.GetConfigFileName(key);
+            string fileName = startName.TrimEnd('.') + ".frag";
+            //string fileName = Path.ChangeExtension(Folders.GetConfigFileName(key), "frag");
 
             if (!File.Exists(fileName))
             {
@@ -529,7 +561,7 @@ namespace ProgrammersNotebook
             markDownEditor1.DocumentText = File.ReadAllText(fileName);
             markDownEditor1.ViewMode = true;
             markDownEditor1.Enabled = true;
-            markDownEditor1.Replacements = Replacements;
+            //markDownEditor1.Replacements = Replacements;
 
             //// https://stackoverflow.com/questions/14941537/better-way-to-update-bound-controls-when-changing-the-datasource
             //foreach (Control c in tabPageDocuments.Controls)
@@ -726,11 +758,6 @@ namespace ProgrammersNotebook
 
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //OpenDocument();
-        }
-
         private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //if (imageTree1.SelectedNode != null)
@@ -843,6 +870,94 @@ namespace ProgrammersNotebook
             string fileName = Path.ChangeExtension(Folders.GetConfigFileName(selectedPage.Id), "md");
 
             File.WriteAllText(fileName, markDownEditor1.DocumentText);
+        }
+
+        private string exportFolder = string.Empty;
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (imageTree1.SelectedNode == null)
+                return;
+
+            Page pd = imageTree1.SelectedNode.Tag as Page;
+
+            markDownEditor1.Enabled = (pd != null);
+
+            if ((pd != null) && (pd.DocumentType != "Folder"))
+            {
+                selectedPage = pd;
+                try
+                {
+                    //FileInfo fi = new FileInfo(pd.Location);
+                    //pd.Updated = fi.LastWriteTime.ToString();
+                }
+                catch { }
+            }
+            else
+            {
+                selectedPage = new();
+            }
+
+            string fileName = Path.ChangeExtension(Folders.GetConfigFileName(pd.Id), "md");
+
+            if (!File.Exists(fileName))
+            {
+                File.WriteAllText(fileName, pd.Name);
+            }
+
+            //FolderBrowserDialog fbd = new FolderBrowserDialog();
+            ////fbd.AutoUpgradeEnabled = false;
+            //fbd.ShowHiddenFiles = false;
+            //fbd.ShowNewFolderButton = true;
+            //if (fbd.ShowDialog().Equals(DialogResult.OK))
+            //{
+
+            //}
+
+            string name = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+            exportFolder = Path.Combine(Folders.DownloadsFolder, $"PNEXP_{name}");
+            Directory.CreateDirectory(exportFolder);
+
+            markDownEditor1.ViewMode = true;
+            markDownEditor1.Enabled = true;
+            markDownEditor1.DocumentText = File.ReadAllText(fileName);
+
+            Replacer rep = new Replacer();
+            rep.Replacements = new();
+            //rep.Replacements.Add("LOCATION", "file://");
+            rep.Replacements.Add("LOCATION", "");
+
+            // if this doesn't work, reload from the file
+            string repText = rep.DoReplacements(markDownEditor1.DocumentText);
+
+            string indexFileName = Path.Combine(exportFolder, "Index.html");
+            File.WriteAllText(indexFileName, markDownEditor1.ToHtml(repText));
+
+            System.Timers.Timer t = new();
+            t.Interval = 500; // In milliseconds
+            //t.AutoReset = false; // Stops it from repeating
+            // t.Elapsed => { } += new ElapsedEventHandler(TimerElapsed);
+            t.Elapsed += (sender, e) =>
+            {
+                //System.Diagnostics.Debug.WriteLine(markDownEditor1.NavComplete);
+                if (markDownEditor1.NavComplete)
+                {
+                    Process.Start(new ProcessStartInfo(indexFileName) { UseShellExecute = true });
+                    t.Stop();
+                }
+            };
+            t.Start();
+        }
+
+        private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Point position = imageTree1.PointToClient(Control.MousePosition);
+
+            TreeViewHitTestInfo hti = imageTree1.HitTest(position);
+            if (hti.Node == null)
+                e.Cancel = true;
+            else
+                imageTree1.SelectedNode = hti.Node;
         }
 
         //private void imageTree1_InfoTipRequested(object sender, ProjectCrossroads.ImageTree.InfoTipEventArgs e)

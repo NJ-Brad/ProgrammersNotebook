@@ -36,12 +36,22 @@ namespace MarkDownHelper
                     webView21.CoreWebView2.AddWebResourceRequestedFilter(handler.Prefix, CoreWebView2WebResourceContext.All);
                 }
             }
+
+            webView21.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+
             //webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
             ////webView21.CoreWebView2.AddWebResourceRequestedFilter("https://www.microsoft.com/*", CoreWebView2WebResourceContext.All);
             //webView21.CoreWebView2.AddWebResourceRequestedFilter("notebook://*", CoreWebView2WebResourceContext.All);
             ////            webView21.CoreWebView2.Navigate("https://www.microsoft.com");
 
             ////webView21.CoreWebView2.NavigateToString("<html><body><img src=\"notebook://Image+One.jpg\"></body></html>");
+        }
+
+        public bool NavComplete { get; set; }
+
+        private void CoreWebView2_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            NavComplete = true;
         }
 
         public EventHandler<EmbeddedFragmentEventArgs>? EmbeddedFragmentHandler { get; set; } = null;
@@ -53,6 +63,8 @@ namespace MarkDownHelper
         {
             if (!initialized)
                 return;
+
+            NavComplete = false;
 
             webView21.CoreWebView2.Navigate(url);
         }
@@ -67,6 +79,7 @@ namespace MarkDownHelper
             else
                 return;
 
+            NavComplete = false;
             string fileText = File.ReadAllText(fileName);
 
             if (Path.GetExtension(fileName).Equals("md", StringComparison.OrdinalIgnoreCase))
@@ -84,6 +97,8 @@ namespace MarkDownHelper
         {
             if (!initialized)
                 return;
+
+            NavComplete = false;
 
             webView21.CoreWebView2.NavigateToString(textToShow);
             // This looks promising : https://www.rgraph.net/blog/2023/how-to-add-a-copy-to-clipboard-button-to-your-code-examples.html
@@ -223,14 +238,11 @@ namespace MarkDownHelper
             //};
         }
 
-        public void ShowMarkdownText(string rawText)
+        public string ToHtml(string rawText)
         {
-            if (!initialized)
-                return;
-
             // https://talk.commonmark.org/t/markdig-markdown-processor-for-net/2106
 
-            //https://github.com/lunet-io/markdig
+            // https://github.com/lunet-io/markdig
             // https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor
             // http://markdownpad.com/
             // https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf
@@ -251,51 +263,22 @@ namespace MarkDownHelper
                 .UseEmbeddedFragmentExtension(GetEmbedText)
                 .Build();
 
-            // https://weblogs.asp.net/gunnarpeipman/displaying-custom-html-in-webbrowser-control
-            //control.Navigate("about:blank");
-            //if (control.Document != null)
-            //{
-            //    control.Document.Write(string.Empty);
-            //}
-
-            // do final replacements after the ToHtml method
-            // extend the replacer to call out and get text blocks from the database (standard headers, footers, disclaimers etc)
-
-            ShowHtmlText(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n"), pipeline)
+            return Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n"), pipeline)
                 .EnableNewerFeatures()
                 .AddGitHubStyle()
                 .TranslatePaths(RootPath)
-                .GenerateToc());
+                .GenerateToc();
+        }
 
-            //if (!string.IsNullOrEmpty(RootPath))
-            //{
-            //    ShowHtmlText(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
-            //        .EnableNewerFeatures()
-            //        .AddGitHubStyle()
-            //        .TranslatePaths(RootPath)
-            //        .GenerateToc(),
-            //        pipeline));
-            //    //webView21.NavigateToString(Markdig.Markdown.ToHtml(readmeText
-            //    //    .EnableNewerFeatures()
-            //    //    .AddGitHubStyle()
-            //    //    .TranslatePaths(RootPath)
-            //    //    .GenerateToc(),
-            //    //    pipeline));
-            //}
-            //else
-            //{
-            //    ShowHtmlText(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
-            //    .EnableNewerFeatures()
-            //    .AddGitHubStyle()
-            //    .GenerateToc(),
-            //    pipeline));
 
-            //    //webView21.NavigateToString(Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n")
-            //    //.EnableNewerFeatures()
-            //    //.AddGitHubStyle()
-            //    //.GenerateToc(),
-            //    //pipeline));
-            //}
+        public void ShowMarkdownText(string rawText)
+        {
+            if (!initialized)
+                return;
+
+            NavComplete = false;
+
+            ShowHtmlText(ToHtml(rawText));
         }
 
         //private string GetEmbedImage(string key)

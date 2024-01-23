@@ -93,6 +93,7 @@ namespace MarkDownHelper
             set { browserWrapper1.ProtocolHandlers = value; }
         }
 
+        public bool NavComplete { get { return browserWrapper1.NavComplete; } }
 
         private bool handleFiles = true;
         public bool HandleFiles
@@ -152,6 +153,11 @@ namespace MarkDownHelper
             string repText = rep.DoReplacements(rawText);
 
             browserWrapper1.ShowMarkdownText(repText);
+        }
+
+        public string ToHtml(string rawText)
+        {
+            return browserWrapper1.ToHtml(rawText);
         }
 
         //private void ShowText(string rawText, WebBrowser control)
@@ -708,7 +714,7 @@ Finally, include a section for the license of your project. For more information
                     EmbeddedFragmentEventArgs args = new();
                     args.Operation = "SAVE";
 
-                    string name = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+                    string name = DateTime.Now.ToString("yyyyMMdd-HHmmss.jpg");
                     PageFragment frag = new PageFragment { Id = Guid.NewGuid().ToString("D").ToUpper(), Name = name };
 
                     frag.FragmentType = "image/jpeg";

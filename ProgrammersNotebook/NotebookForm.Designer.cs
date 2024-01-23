@@ -34,17 +34,17 @@
             button2 = new Button();
             panel1 = new Panel();
             imageTree1 = new ImageTree();
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            exportToolStripMenuItem = new ToolStripMenuItem();
+            propertiesToolStripMenuItem = new ToolStripMenuItem();
             toolStrip1 = new ToolStrip();
             toolStripButtonAdd = new ToolStripButton();
             toolStripButtonRemove = new ToolStripButton();
-            contextMenuStrip1 = new ContextMenuStrip(components);
-            openToolStripMenuItem = new ToolStripMenuItem();
-            propertiesToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
             markDownEditor1 = new MarkDownHelper.MarkDownEditor();
             panel1.SuspendLayout();
-            toolStrip1.SuspendLayout();
             contextMenuStrip1.SuspendLayout();
+            toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -84,6 +84,7 @@
             // 
             // imageTree1
             // 
+            imageTree1.ContextMenuStrip = contextMenuStrip1;
             imageTree1.Dock = DockStyle.Fill;
             imageTree1.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             imageTree1.ImageIndex = 0;
@@ -95,6 +96,27 @@
             imageTree1.TabIndex = 1;
             imageTree1.AfterLabelEdit += imageTree1_AfterLabelEdit;
             imageTree1.AfterSelect += imageTree1_AfterSelect;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { exportToolStripMenuItem, propertiesToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(181, 70);
+            contextMenuStrip1.Opening += contextMenuStrip1_Opening;
+            // 
+            // exportToolStripMenuItem
+            // 
+            exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            exportToolStripMenuItem.Size = new Size(180, 22);
+            exportToolStripMenuItem.Text = "Export";
+            exportToolStripMenuItem.Click += exportToolStripMenuItem_Click;
+            // 
+            // propertiesToolStripMenuItem
+            // 
+            propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
+            propertiesToolStripMenuItem.Size = new Size(180, 22);
+            propertiesToolStripMenuItem.Text = "Properties";
+            propertiesToolStripMenuItem.Click += propertiesToolStripMenuItem_Click;
             // 
             // toolStrip1
             // 
@@ -127,26 +149,6 @@
             toolStripButtonRemove.Text = "Remove";
             toolStripButtonRemove.Click += toolStripButtonRemove_Click;
             // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { openToolStripMenuItem, propertiesToolStripMenuItem });
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(137, 48);
-            // 
-            // openToolStripMenuItem
-            // 
-            openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(136, 22);
-            openToolStripMenuItem.Text = "Open";
-            openToolStripMenuItem.Click += openToolStripMenuItem_Click;
-            // 
-            // propertiesToolStripMenuItem
-            // 
-            propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            propertiesToolStripMenuItem.Size = new Size(136, 22);
-            propertiesToolStripMenuItem.Text = "Properties";
-            propertiesToolStripMenuItem.Click += propertiesToolStripMenuItem_Click;
-            // 
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
@@ -169,6 +171,7 @@
             markDownEditor1.Dirty = false;
             markDownEditor1.Dock = DockStyle.Fill;
             markDownEditor1.DocumentText = "";
+            markDownEditor1.EmbeddedFragmentHandler = null;
             markDownEditor1.FileName = "";
             markDownEditor1.HandleFiles = false;
             markDownEditor1.Location = new Point(0, 0);
@@ -193,9 +196,9 @@
             Text = "Project";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            contextMenuStrip1.ResumeLayout(false);
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
-            contextMenuStrip1.ResumeLayout(false);
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
@@ -213,7 +216,7 @@
         //private Tools.Notes.NotesWidgetControl notesWidgetControl1;
         //private Tools.People.PeopleWidgetControl peopleWidgetControl1;
         private ContextMenuStrip contextMenuStrip1;
-        private ToolStripMenuItem openToolStripMenuItem;
+        private ToolStripMenuItem exportToolStripMenuItem;
         private ToolStripMenuItem propertiesToolStripMenuItem;
         private SplitContainer splitContainer1;
         private ImageTree imageTree1;
