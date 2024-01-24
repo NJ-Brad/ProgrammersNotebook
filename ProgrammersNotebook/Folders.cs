@@ -54,6 +54,15 @@ namespace ProgrammersNotebook
         //    return Path.GetFullPath(Path.Combine(Folders.ProjectTemplateFolder, templateName));
         //}
 
+        internal static string DbFolder
+        {
+            get
+            {
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProgrammersNotebook");
+            }
+        }
+
+
         internal static string GetConfigFileName(string configFileId)
         {
             return Path.GetFullPath(Path.Combine(Folders.ConfigFolder, configFileId));

@@ -714,7 +714,7 @@ Finally, include a section for the license of your project. For more information
                     EmbeddedFragmentEventArgs args = new();
                     args.Operation = "SAVE";
 
-                    string name = DateTime.Now.ToString("yyyyMMdd-HHmmss.jpg");
+                    string name = DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".jpg";
                     PageFragment frag = new PageFragment { Id = Guid.NewGuid().ToString("D").ToUpper(), Name = name };
 
                     frag.FragmentType = "image/jpeg";

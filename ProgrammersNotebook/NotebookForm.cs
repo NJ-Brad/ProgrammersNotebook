@@ -28,6 +28,7 @@ namespace ProgrammersNotebook
         }
 
         bool binding = false;
+        PNContext context = new PNContext();
 
         protected override void OnShown(EventArgs e)
         {
@@ -44,18 +45,61 @@ namespace ProgrammersNotebook
             imageTree1.ShowRootLines = false;
             imageTree1.SelectImages(ShellIconSize.SmallIcon);
 
-            // load an index file instead - it will transition better to other storage methods
+            // use the database
+            pages = context.Pages.ToList();
+            imageTree1.Nodes.Clear();
+            AddToTree(imageTree1.Nodes, pages);
 
-            string fileName = Folders.GetConfigFileName("pages.index");
-            if (File.Exists(fileName))
-            {
-                string content = File.ReadAllText(fileName);
+            //// load an index file instead - it will transition better to other storage methods
+            //string fileName = Folders.GetConfigFileName("pages.index");
+            //if (File.Exists(fileName))
+            //{
+            //    string content = File.ReadAllText(fileName);
 
-                pages = JsonSerializer.Deserialize<List<Page>>(content);
+            //    pages = JsonSerializer.Deserialize<List<Page>>(content);
 
-                imageTree1.Nodes.Clear();
-                AddToTree(imageTree1.Nodes, pages);
-            }
+            //    // convert from files to records, here
+            //    using (PNContext context = new PNContext())
+            //    {
+            //        foreach (Page pg in pages)
+            //        {
+            //            string pageFileName = Path.ChangeExtension(Folders.GetConfigFileName(pg.Id), "md");
+
+            //            if (!File.Exists(pageFileName))
+            //            {
+            //                pg.PageContent = pg.Name;
+            //            }
+            //            else
+            //            {
+            //                pg.PageContent = File.ReadAllText(pageFileName);
+            //            }
+
+            //            context.Add(pg);
+            //            context.Update(pg);
+            //        }
+            //        context.SaveChanges();
+            //    }
+
+            //    imageTree1.Nodes.Clear();
+            //    AddToTree(imageTree1.Nodes, pages);
+            //}
+
+            // convert fragments
+            //Fragments frMgr = new();
+            //foreach (string key in frMgr.GetFragmentList(false))
+            //{
+            //    PageFragment frag = GetFragment(key);
+            //    context.Add(frag);
+            //}
+
+            //foreach (string key in frMgr.GetFragmentList(true))
+            //{
+            //    PageFragment frag = GetFragment(key);
+            //    context.Add(frag);
+            //}
+
+            //int numChanged = context.SaveChanges();
+
 
             // work with this.  remembering the format may become an issue
             markDownEditor1.ProtocolHandlers.Add(new CustomProtocolHandler { Prefix = "testprot://*", Handler = ResolveProtocolRequest });
@@ -69,7 +113,7 @@ namespace ProgrammersNotebook
 
         public void ResolveEmbeddedFragmentRequest(object sender, EmbeddedFragmentEventArgs e)
         {
-            Fragments frMgr = new Fragments();
+            Fragments frMgr = new Fragments(context);
             if (e.Operation == "GET")
             {
                 PageFragment fragment = frMgr.GetFragment(e.Key);
@@ -164,23 +208,26 @@ namespace ProgrammersNotebook
 
         private PageFragment GetFragment(string key)
         {
-            PageFragment rtnVal = null;
+            Fragments fragMgr = new Fragments(context);
+            return fragMgr.GetFragment(key);
 
-            // this is a problem
-            string startName = Folders.GetConfigFileName(key);
-            string fileName = startName.TrimEnd('.') + ".frag";
-            //string fileName = Path.ChangeExtension(Folders.GetConfigFileName(key), "frag");
+            //PageFragment rtnVal = null;
 
-            if (!File.Exists(fileName))
-            {
-                PageFragment pf = new PageFragment { Name = key, FragmentType = "Text", Content = fileName };
-                File.WriteAllText(fileName, JsonSerializer.Serialize(pf, new JsonSerializerOptions { WriteIndented = true }));
-            }
+            //// this is a problem
+            //string startName = Folders.GetConfigFileName(key);
+            //string fileName = startName.TrimEnd('.') + ".frag";
+            ////string fileName = Path.ChangeExtension(Folders.GetConfigFileName(key), "frag");
 
-            string text = File.ReadAllText(fileName);
+            //if (!File.Exists(fileName))
+            //{
+            //    PageFragment pf = new PageFragment { Name = key, FragmentType = "Text", Content = fileName };
+            //    File.WriteAllText(fileName, JsonSerializer.Serialize(pf, new JsonSerializerOptions { WriteIndented = true }));
+            //}
 
-            rtnVal = JsonSerializer.Deserialize<PageFragment>(text);
-            return rtnVal;
+            //string text = File.ReadAllText(fileName);
+
+            //rtnVal = JsonSerializer.Deserialize<PageFragment>(text);
+            //return rtnVal;
         }
 
         private async void SaveChanges()
@@ -532,7 +579,9 @@ namespace ProgrammersNotebook
 
             if ((pd != null) && (pd.DocumentType != "Folder"))
             {
-                selectedPage = pd;
+                selectedPage = context.Pages.Where(p => p.Id == pd.Id).First();
+
+                //selectedPage = pd;
                 try
                 {
                     //FileInfo fi = new FileInfo(pd.Location);
@@ -545,20 +594,17 @@ namespace ProgrammersNotebook
                 selectedPage = new();
             }
 
-            //bindingSource.DataSource = selectedProjectDocument;
+            //string fileName = Path.ChangeExtension(Folders.GetConfigFileName(pd.Id), "md");
 
-            string fileName = Path.ChangeExtension(Folders.GetConfigFileName(pd.Id), "md");
+            //if (!File.Exists(fileName))
+            //{
+            //    File.WriteAllText(fileName, pd.Name);
+            //}
 
-            if (!File.Exists(fileName))
-            {
-                File.WriteAllText(fileName, pd.Name);
-            }
+            //markDownEditor1.DocumentText = File.ReadAllText(fileName);
 
-            //markDownDisplay1.FileName = fileName;
-            //markDownDisplay1.ReadOnly = false;
+            markDownEditor1.DocumentText = selectedPage.PageContent;
 
-            //markDownEditor1.FileName = fileName;
-            markDownEditor1.DocumentText = File.ReadAllText(fileName);
             markDownEditor1.ViewMode = true;
             markDownEditor1.Enabled = true;
             //markDownEditor1.Replacements = Replacements;
@@ -867,9 +913,30 @@ namespace ProgrammersNotebook
 
         private void markDownEditor1_SaveClicked(object sender, EventArgs e)
         {
-            string fileName = Path.ChangeExtension(Folders.GetConfigFileName(selectedPage.Id), "md");
+            Page pg = context.Pages.Where(p => p.Id == selectedPage.Id).First();
+            pg.PageContent = markDownEditor1.DocumentText;
+            //selectedPage.PageContent = markDownEditor1.DocumentText;
 
-            File.WriteAllText(fileName, markDownEditor1.DocumentText);
+            //Page newPage = new Page
+            //{
+            //    Id = pg.Id,
+            //    Name = pg.Name,
+            //    DocumentType = pg.DocumentType,
+            //    PageContent = markDownEditor1.DocumentText
+            //};
+
+            ////newPage.Id = pg.Id; //This is important when we first create an object (NewObj), in which the default Id = 0. We can not change an existing key.
+
+            //context.Entry(pg).CurrentValues.SetValues(newPage);
+
+            int numUpdated = context.SaveChanges();
+
+            //pg.PageContent = markDownEditor1.DocumentText;
+            //context.SaveChanges();
+
+            //string fileName = Path.ChangeExtension(Folders.GetConfigFileName(selectedPage.Id), "md");
+
+            //File.WriteAllText(fileName, markDownEditor1.DocumentText);
         }
 
         private string exportFolder = string.Empty;
@@ -914,6 +981,9 @@ namespace ProgrammersNotebook
 
             //}
 
+            //Cursor.Current = Cursors.WaitCursor;
+            //Application.DoEvents();
+
             string name = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             exportFolder = Path.Combine(Folders.DownloadsFolder, $"PNEXP_{name}");
             Directory.CreateDirectory(exportFolder);
@@ -943,10 +1013,13 @@ namespace ProgrammersNotebook
                 if (markDownEditor1.NavComplete)
                 {
                     Process.Start(new ProcessStartInfo(indexFileName) { UseShellExecute = true });
+                    //Cursor.Current = Cursors.Default;
                     t.Stop();
                 }
             };
             t.Start();
+
+
         }
 
         private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
