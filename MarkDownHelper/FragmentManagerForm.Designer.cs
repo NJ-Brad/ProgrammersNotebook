@@ -230,7 +230,8 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "FragmentManagerForm";
-            Text = "FragmentManagerForm";
+            ShowInTaskbar = false;
+            Text = "Fragment Manager";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

@@ -33,9 +33,9 @@
             button1 = new Button();
             button2 = new Button();
             panel1 = new Panel();
+            imageTree1 = new ImageTree();
             contextMenuStrip1 = new ContextMenuStrip(components);
             exportToolStripMenuItem = new ToolStripMenuItem();
-            imageTree1 = new ImageTree();
             toolStrip1 = new ToolStrip();
             toolStripButtonAdd = new ToolStripButton();
             toolStripButtonRemove = new ToolStripButton();
@@ -81,20 +81,6 @@
             panel1.Size = new Size(361, 601);
             panel1.TabIndex = 19;
             // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { exportToolStripMenuItem });
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(115, 26);
-            contextMenuStrip1.Opening += contextMenuStrip1_Opening;
-            // 
-            // exportToolStripMenuItem
-            // 
-            exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            exportToolStripMenuItem.Size = new Size(114, 22);
-            exportToolStripMenuItem.Text = "Export";
-            exportToolStripMenuItem.Click += exportToolStripMenuItem_Click;
-            // 
             // imageTree1
             // 
             imageTree1.ContextMenuStrip = contextMenuStrip1;
@@ -110,6 +96,20 @@
             imageTree1.TabIndex = 1;
             imageTree1.AfterLabelEdit += imageTree1_AfterLabelEdit;
             imageTree1.AfterSelect += imageTree1_AfterSelect;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { exportToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(115, 26);
+            contextMenuStrip1.Opening += contextMenuStrip1_Opening;
+            // 
+            // exportToolStripMenuItem
+            // 
+            exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            exportToolStripMenuItem.Size = new Size(114, 22);
+            exportToolStripMenuItem.Text = "Export";
+            exportToolStripMenuItem.Click += exportToolStripMenuItem_Click;
             // 
             // toolStrip1
             // 
@@ -186,7 +186,7 @@
             Controls.Add(button2);
             Controls.Add(button1);
             Name = "NotebookForm";
-            Text = "Project";
+            Text = "Programmer's Notbook";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             contextMenuStrip1.ResumeLayout(false);
