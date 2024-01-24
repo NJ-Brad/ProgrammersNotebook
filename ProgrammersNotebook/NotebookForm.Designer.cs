@@ -33,10 +33,9 @@
             button1 = new Button();
             button2 = new Button();
             panel1 = new Panel();
-            imageTree1 = new ImageTree();
             contextMenuStrip1 = new ContextMenuStrip(components);
             exportToolStripMenuItem = new ToolStripMenuItem();
-            propertiesToolStripMenuItem = new ToolStripMenuItem();
+            imageTree1 = new ImageTree();
             toolStrip1 = new ToolStrip();
             toolStripButtonAdd = new ToolStripButton();
             toolStripButtonRemove = new ToolStripButton();
@@ -82,11 +81,26 @@
             panel1.Size = new Size(361, 601);
             panel1.TabIndex = 19;
             // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { exportToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(115, 26);
+            contextMenuStrip1.Opening += contextMenuStrip1_Opening;
+            // 
+            // exportToolStripMenuItem
+            // 
+            exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            exportToolStripMenuItem.Size = new Size(114, 22);
+            exportToolStripMenuItem.Text = "Export";
+            exportToolStripMenuItem.Click += exportToolStripMenuItem_Click;
+            // 
             // imageTree1
             // 
             imageTree1.ContextMenuStrip = contextMenuStrip1;
             imageTree1.Dock = DockStyle.Fill;
             imageTree1.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            imageTree1.HideSelection = false;
             imageTree1.ImageIndex = 0;
             imageTree1.LabelEdit = true;
             imageTree1.Location = new Point(0, 25);
@@ -96,27 +110,6 @@
             imageTree1.TabIndex = 1;
             imageTree1.AfterLabelEdit += imageTree1_AfterLabelEdit;
             imageTree1.AfterSelect += imageTree1_AfterSelect;
-            // 
-            // contextMenuStrip1
-            // 
-            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { exportToolStripMenuItem, propertiesToolStripMenuItem });
-            contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(181, 70);
-            contextMenuStrip1.Opening += contextMenuStrip1_Opening;
-            // 
-            // exportToolStripMenuItem
-            // 
-            exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            exportToolStripMenuItem.Size = new Size(180, 22);
-            exportToolStripMenuItem.Text = "Export";
-            exportToolStripMenuItem.Click += exportToolStripMenuItem_Click;
-            // 
-            // propertiesToolStripMenuItem
-            // 
-            propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            propertiesToolStripMenuItem.Size = new Size(180, 22);
-            propertiesToolStripMenuItem.Text = "Properties";
-            propertiesToolStripMenuItem.Click += propertiesToolStripMenuItem_Click;
             // 
             // toolStrip1
             // 
@@ -217,7 +210,6 @@
         //private Tools.People.PeopleWidgetControl peopleWidgetControl1;
         private ContextMenuStrip contextMenuStrip1;
         private ToolStripMenuItem exportToolStripMenuItem;
-        private ToolStripMenuItem propertiesToolStripMenuItem;
         private SplitContainer splitContainer1;
         private ImageTree imageTree1;
         private ToolStripButton toolStripButtonAdd;

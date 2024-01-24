@@ -117,6 +117,7 @@ namespace MarkDownHelper
                 toolStripButtonSave.Visible = !handleFiles && !viewMode;
                 splitContainer1.Panel1Collapsed = viewMode;
                 toolStrip1.Visible = !viewMode;
+                toolStrip3.Visible = !viewMode;
                 toolStrip2.Visible = viewMode;
             }
         }

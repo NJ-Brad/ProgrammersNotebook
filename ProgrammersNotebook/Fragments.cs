@@ -34,7 +34,11 @@ namespace ProgrammersNotebook
             PageFragment existing = context.Fragments.Where(p => p.Name == fragment.Name).FirstOrDefault();
             if (existing != null)
             {
-                context.Update(fragment);
+                existing.FragmentType = fragment.FragmentType;
+                existing.Content = fragment.Content;
+                existing.Name = fragment.Name;
+                //existing.Id = fragment.Id;
+                context.Update(existing);
             }
             else
             {

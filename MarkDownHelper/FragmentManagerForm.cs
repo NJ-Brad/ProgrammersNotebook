@@ -89,6 +89,10 @@ namespace MarkDownHelper
             textBox1.Text = frag.Name;
             comboBox1.SelectedIndex = 0;
             textBox2.Text = frag.Content;
+
+            textBox2.Visible = true;
+            panel1.Visible = false;
+            pictureBox1.Visible = false;
         }
 
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -106,6 +110,12 @@ namespace MarkDownHelper
             //richTextBox1.Text = frag.Content;
 
             pictureBox1.Image = Base64ToImage(frag.Content);
+
+            textBox2.Visible = false;
+            panel1.Visible = true;
+            pictureBox1.Visible = true;
+
+            pictureBox1.Size = pictureBox1.Image.Size;
         }
 
         // https://stackoverflow.com/questions/18827081/c-sharp-base64-string-to-jpeg-image

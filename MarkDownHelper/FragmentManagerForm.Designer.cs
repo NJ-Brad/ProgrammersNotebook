@@ -43,7 +43,9 @@
             buttonImport = new Button();
             label6 = new Label();
             textBox2 = new TextBox();
+            panel1 = new Panel();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -62,6 +64,7 @@
             listBox1.Location = new Point(21, 38);
             listBox1.Name = "listBox1";
             listBox1.Size = new Size(167, 174);
+            listBox1.Sorted = true;
             listBox1.TabIndex = 1;
             listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
             // 
@@ -72,6 +75,7 @@
             listBox2.Location = new Point(21, 235);
             listBox2.Name = "listBox2";
             listBox2.Size = new Size(167, 174);
+            listBox2.Sorted = true;
             listBox2.TabIndex = 3;
             listBox2.SelectedIndexChanged += listBox2_SelectedIndexChanged;
             // 
@@ -134,9 +138,10 @@
             // pictureBox1
             // 
             pictureBox1.BackColor = SystemColors.Window;
-            pictureBox1.Location = new Point(344, 255);
+            pictureBox1.Location = new Point(0, 0);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(249, 154);
+            pictureBox1.Size = new Size(138, 242);
+            pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
             pictureBox1.TabIndex = 11;
             pictureBox1.TabStop = false;
             // 
@@ -174,19 +179,33 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(229, 163);
+            label6.Location = new Point(225, 53);
             label6.Name = "label6";
             label6.Size = new Size(43, 17);
             label6.TabIndex = 15;
             label6.Text = "label6";
+            label6.Visible = false;
             // 
             // textBox2
             // 
-            textBox2.Location = new Point(344, 115);
+            textBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            textBox2.Location = new Point(194, 136);
             textBox2.Multiline = true;
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(249, 134);
+            textBox2.Size = new Size(396, 274);
             textBox2.TabIndex = 16;
+            // 
+            // panel1
+            // 
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.AutoScroll = true;
+            panel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            panel1.Controls.Add(pictureBox1);
+            panel1.Location = new Point(194, 139);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(399, 274);
+            panel1.TabIndex = 17;
+            panel1.Visible = false;
             // 
             // FragmentManagerForm
             // 
@@ -194,11 +213,11 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(609, 425);
             Controls.Add(textBox2);
+            Controls.Add(panel1);
             Controls.Add(label6);
             Controls.Add(buttonImport);
             Controls.Add(buttonSave);
             Controls.Add(buttonNew);
-            Controls.Add(pictureBox1);
             Controls.Add(label5);
             Controls.Add(comboBox1);
             Controls.Add(label4);
@@ -208,9 +227,13 @@
             Controls.Add(label2);
             Controls.Add(listBox1);
             Controls.Add(label1);
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "FragmentManagerForm";
             Text = "FragmentManagerForm";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -232,5 +255,6 @@
         private Button buttonImport;
         private Label label6;
         private TextBox textBox2;
+        private Panel panel1;
     }
 }
