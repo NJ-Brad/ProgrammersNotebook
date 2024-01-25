@@ -367,13 +367,13 @@ namespace ProgrammersNotebook
             if (imageTree1.SelectedNode == null)
                 return;
 
-            Page pd = imageTree1.SelectedNode.Tag as Page;
+            TreePage pd = imageTree1.SelectedNode.Tag as TreePage;
 
             markDownEditor1.Enabled = (pd != null);
 
             if ((pd != null) && (pd.DocumentType != "Folder"))
             {
-                selectedPage = pd;
+                selectedPage = context.Pages.Where(p => p.Id == pd.Id).FirstOrDefault();
             }
             else
             {
