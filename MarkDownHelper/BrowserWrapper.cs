@@ -22,7 +22,12 @@ namespace MarkDownHelper
             base.OnCreateControl();
             webView21.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             await webView21.EnsureCoreWebView2Async(null);
+            webView21.CoreWebView2.PermissionRequested += CoreWebView2_PermissionRequested;
+        }
 
+        private void CoreWebView2_PermissionRequested(object? sender, CoreWebView2PermissionRequestedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public void SetUp()
@@ -238,6 +243,9 @@ namespace MarkDownHelper
             //};
         }
 
+        public string CodeTheme { get; set; } = "default";
+        public int IndentSize { get; set; } = 4;
+
         public string ToHtml(string rawText)
         {
             // https://talk.commonmark.org/t/markdig-markdown-processor-for-net/2106
@@ -267,7 +275,10 @@ namespace MarkDownHelper
                 .EnableNewerFeatures()
                 .AddGitHubStyle()
                 .TranslatePaths(RootPath)
-                .GenerateToc();
+                .GenerateToc()
+                .AddCodeCopyButtons2(CodeTheme)
+                .SetTabSize(IndentSize)
+                ;
         }
 
 

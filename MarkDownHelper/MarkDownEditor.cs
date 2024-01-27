@@ -60,6 +60,10 @@ namespace MarkDownHelper
 
             richTextBox1.ContextMenuStrip = contextMenu;
 
+            toolStripComboBox1.SelectedItem = "default";
+            toolStripComboBox2.SelectedItem = "default";
+            toolStripComboBox3.SelectedItem = "2";
+            toolStripComboBox4.SelectedItem = "2";
         }
 
         public string FileName
@@ -878,6 +882,58 @@ Finally, include a section for the license of your project. For more information
             FragmentManagerForm fmf = new();
             fmf.EmbeddedFragmentHandler = EmbeddedFragmentHandler;
             fmf.ShowDialog();
+        }
+
+        private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (toolStripComboBox1.SelectedIndex != -1)
+            {
+                browserWrapper1.CodeTheme = toolStripComboBox1.Items[toolStripComboBox1.SelectedIndex].ToString();
+            }
+            else
+            {
+                browserWrapper1.CodeTheme = "default";
+            }
+            ShowText(richTextBox1.Text);
+        }
+
+        private void toolStripComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (toolStripComboBox2.SelectedIndex != -1)
+            {
+                browserWrapper1.CodeTheme = toolStripComboBox2.Items[toolStripComboBox2.SelectedIndex].ToString();
+            }
+            else
+            {
+                browserWrapper1.CodeTheme = "default";
+            }
+            ShowText(richTextBox1.Text);
+        }
+
+        private void toolStripComboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (toolStripComboBox3.SelectedIndex != -1)
+            {
+                browserWrapper1.IndentSize = int.Parse(toolStripComboBox3.Items[toolStripComboBox3.SelectedIndex].ToString());
+            }
+            else
+            {
+                browserWrapper1.IndentSize = 8;
+            }
+            ShowText(richTextBox1.Text);
+        }
+
+        private void toolStripComboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (toolStripComboBox4.SelectedIndex != -1)
+            {
+                browserWrapper1.IndentSize = int.Parse(toolStripComboBox4.Items[toolStripComboBox4.SelectedIndex].ToString());
+            }
+            else
+            {
+                browserWrapper1.IndentSize = 8;
+            }
+            ShowText(richTextBox1.Text);
         }
     }
 

@@ -5,6 +5,7 @@ namespace MarkDownHelper
     public static class Style
     {
         // from https://gist.github.com/tuzz/3331384
+        // copy button came from : https://www.roboleary.net/2022/01/13/copy-code-to-clipboard-blog.html
         static string cssGitHub = @"
 body {
   font-family: Helvetica, arial, sans-serif;
@@ -392,7 +393,28 @@ pre {
 pre code, pre tt {
   background-color: transparent;
   border: none;
-}";
+}
+
+.copybutton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+
+  font-size: 0.9rem;
+  padding: 0.15rem;
+  background-color: #828282;
+
+  border: ridge 1px #7b7b7c;
+  border-radius: 5px;
+  text-shadow: #c4c4c4 0 0 2px;
+}
+
+.copybutton:hover {
+  cursor: pointer;
+  background-color: #bcbabb;
+}
+
+";
 
         public static string AddGitHubStyle(this string html)
         {
@@ -522,6 +544,227 @@ pre code, pre tt {
 
             return newHtml;
         }
+
+
+        // "Inspired" by https://www.roboleary.net/2022/01/13/copy-code-to-clipboard-blog.html
+        public static string AddCodeCopyButtons(this string html)
+        {
+            string buttonScript = @"<script>
+const copyButtonLabel = ""Copy Code"";
+
+// use a class selector if available
+let blocks = document.querySelectorAll(""pre"");
+
+blocks.forEach((block) => {
+  // only add button if browser supports Clipboard API
+  if (navigator.clipboard) {
+    let button = document.createElement(""button"");
+
+    button.innerText = copyButtonLabel;
+    button.className = 'copybutton'
+    block.appendChild(button);
+
+    button.addEventListener(""click"", async () => {
+      await copyCode(block, button);
+    });
+  }
+});
+
+async function copyCode(block, button) {
+  let code = block.querySelector(""code"");
+  let text = code.innerText;
+
+  await navigator.clipboard.writeText(text);
+
+  // visual feedback that task is completed
+  button.innerText = ""Code Copied"";
+
+  setTimeout(() => {
+    button.innerText = copyButtonLabel;
+  }, 700);
+}
+</script>";
+
+            string newHtml = html + buttonScript;
+
+            return newHtml;
+        }
+
+
+        public static string AddCodeCopyButtons2(this string html, string codeTheme = "default")
+        {
+            string buttonScript = @"
+<script src=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js""></script>
+ 
+<!-- https://github.com/highlightjs/highlight.js/tree/main/src/styles -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/androidstudio.min.css"" /> -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/lightfair.min.css"" /> -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/stackoverflow-light.min.css"" /> -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/tomorrow-night-blue.min.css"" /> -->
+"
++
+$@"<link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/{codeTheme}.min.css"" />"
++
+@"
+ <script>
+     hljs.highlightAll(); // initialize highlighting
+ </script>
+ 
+ <!-- Code to append a click to copy button -->
+ <script>
+     var snippets = document.getElementsByTagName('pre');
+     var numberOfSnippets = snippets.length;
+     for (var i = 0; i < numberOfSnippets; i++) {
+
+  // only add button if browser supports Clipboard API
+<!-- if (navigator.clipboard) -->
+{ 
+
+         code = snippets[i].getElementsByTagName('code')[0].innerText;
+ 
+         snippets[i].classList.add('hljs'); // append copy button to pre tag
+ 
+         snippets[i].innerHTML = '<button class=""hljs-copy"">Copy</button>' + snippets[i].innerHTML; // append copy button
+ 
+         snippets[i].getElementsByClassName('hljs-copy')[0].addEventListener(""click"", function () {
+            this.innerText = 'Copying..';
+
+            copyToClipboard(code);
+<!--
+             if (!navigator.userAgent.toLowerCase().includes('safari')) {
+                 navigator.clipboard.writeText(code);
+             } else {
+                 prompt(""Clipboard (Select: ⌘+a > Copy:⌘+c)"", code); 
+             }
+-->
+
+             this.innerText = 'Copied!';
+             button = this;
+             setTimeout(function () {
+                 button.innerText = 'Copy';
+             }, 1000)
+         });
+}
+     }
+
+// https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
+async function copyToClipboard(textToCopy) {
+    // Navigator clipboard api needs a secure context (https)
+    if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(textToCopy);
+    } else {
+        // Use the 'out of viewport hidden text area' trick
+        const textArea = document.createElement(""textarea"");
+        textArea.value = textToCopy;
+            
+        // Move textarea out of the viewport so it's not visible
+        textArea.style.position = ""absolute"";
+        textArea.style.left = ""-999999px"";
+            
+        document.body.prepend(textArea);
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+        } catch (error) {
+            console.error(error);
+        } finally {
+            textArea.remove();
+        }
+    }
+}
+
+ </script>
+ <style>
+     .hljs-copy {
+         float: right;
+         cursor: pointer;
+     }
+ </style>
+";
+            string newHtml = html + buttonScript;
+
+            return newHtml;
+        }
+
+
+        public static string SetTabSize(this string html, int tabSize = 4)
+        {
+            string newHtml = html.Replace("<pre>", $"<pre style=\"tab-size: {tabSize};\">");
+
+            return newHtml;
+        }
+
+
+        public static string AddCodeCopyButtons3(this string html)
+        {
+            string buttonScript = @"
+<script src=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js""></script>
+ 
+<!-- https://github.com/highlightjs/highlight.js/tree/main/src/styles -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/androidstudio.min.css"" /> -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/lightfair.min.css"" /> -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/stackoverflow-light.min.css"" /> -->
+<link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/tomorrow-night-blue.min.css"" />
+
+
+
+ <script>
+    hljs.highlightAll(); // initialize highlighting
+ </script>
+ 
+<!-- Code to append a click to copy button -->
+ <script>
+const copyButtonLabel = ""Copy Code"";
+
+// use a class selector if available
+let blocks = document.querySelectorAll(""pre"");
+
+blocks.forEach((block) => {
+  // only add button if browser supports Clipboard API
+ if (navigator.clipboard) {
+    let button = document.createElement(""button"");
+
+    button.innerText = copyButtonLabel;
+    button.className = 'hljs-copy'
+    block.appendChild(button);
+
+    button.addEventListener(""click"", async () => {
+      await copyCode(block, button);
+    });
+
+ }
+});
+
+async function copyCode(block, button) {
+  let code = block.querySelector(""code"");
+  let text = code.innerText;
+
+  await navigator.clipboard.writeText(text);
+
+  // visual feedback that task is completed
+  button.innerText = ""Code Copied"";
+
+  setTimeout(() => {
+    button.innerText = copyButtonLabel;
+  }, 700);
+}
+ </script>
+ <style>
+     .hljs-copy {
+        float: right;
+        cursor: pointer;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+     }
+ </style>
+";
+            string newHtml = html + buttonScript;
+
+            return newHtml;
+        }
+
 
         private static HeadingItemCollection BuildHeadingCollection(string html)
         {
