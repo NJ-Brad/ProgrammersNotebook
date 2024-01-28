@@ -591,6 +591,15 @@ async function copyCode(block, button) {
         }
 
 
+        /*
+        <!--
+                     if (!navigator.userAgent.toLowerCase().includes('safari')) {
+                         navigator.clipboard.writeText(code);
+                     } else {
+                         prompt(""Clipboard (Select: ⌘+a > Copy:⌘+c)"", code); 
+                     }
+        -->
+         */
         public static string AddCodeCopyButtons2(this string html, string codeTheme = "default")
         {
             string buttonScript = @"
@@ -630,13 +639,6 @@ $@"<link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highli
             this.innerText = 'Copying..';
 
             copyToClipboard(code);
-<!--
-             if (!navigator.userAgent.toLowerCase().includes('safari')) {
-                 navigator.clipboard.writeText(code);
-             } else {
-                 prompt(""Clipboard (Select: ⌘+a > Copy:⌘+c)"", code); 
-             }
--->
 
              this.innerText = 'Copied!';
              button = this;
@@ -687,6 +689,39 @@ async function copyToClipboard(textToCopy) {
             return newHtml;
         }
 
+        public static string AddCodeCopyButtons3(this string html, string codeTheme = "default")
+        {
+            string buttonScript = @"
+<script src=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js""></script>
+ 
+<!-- https://github.com/highlightjs/highlight.js/tree/main/src/styles -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/androidstudio.min.css"" /> -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/lightfair.min.css"" /> -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/stackoverflow-light.min.css"" /> -->
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/tomorrow-night-blue.min.css"" /> -->
+"
++
+//$@"<link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/{codeTheme}.min.css"" />"
+//+
+@"
+
+<link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/tomorrow-night-blue.min.css"" />
+<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css"" /> -->
+
+
+<!-- https://github.com/arronhunt/highlightjs-copy -->
+<script src=""https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js""></script>
+<link rel=""stylesheet"" href=""https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css"" />
+
+ <script>
+     hljs.addPlugin(new CopyButtonPlugin());
+     hljs.highlightAll(); // initialize highlighting
+ </script>
+";
+            string newHtml = html + buttonScript;
+
+            return newHtml;
+        }
 
         public static string SetTabSize(this string html, int tabSize = 4)
         {

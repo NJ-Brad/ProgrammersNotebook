@@ -54,7 +54,7 @@
             // 
             button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             button1.Location = new Point(1164, 699);
-            button1.Margin = new Padding(4, 4, 4, 4);
+            button1.Margin = new Padding(4);
             button1.Name = "button1";
             button1.Size = new Size(96, 28);
             button1.TabIndex = 16;
@@ -65,7 +65,7 @@
             // 
             button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             button2.Location = new Point(1268, 699);
-            button2.Margin = new Padding(4, 4, 4, 4);
+            button2.Margin = new Padding(4);
             button2.Name = "button2";
             button2.Size = new Size(96, 28);
             button2.TabIndex = 17;
@@ -79,7 +79,7 @@
             panel1.Controls.Add(toolStrip1);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(4, 4, 4, 4);
+            panel1.Margin = new Padding(4);
             panel1.Name = "panel1";
             panel1.Size = new Size(464, 742);
             panel1.TabIndex = 19;
@@ -93,7 +93,7 @@
             imageTree1.ImageIndex = 0;
             imageTree1.LabelEdit = true;
             imageTree1.Location = new Point(0, 25);
-            imageTree1.Margin = new Padding(4, 4, 4, 4);
+            imageTree1.Margin = new Padding(4);
             imageTree1.Name = "imageTree1";
             imageTree1.SelectedImageIndex = 0;
             imageTree1.Size = new Size(464, 717);
@@ -150,7 +150,7 @@
             // 
             splitContainer1.Dock = DockStyle.Fill;
             splitContainer1.Location = new Point(0, 0);
-            splitContainer1.Margin = new Padding(4, 4, 4, 4);
+            splitContainer1.Margin = new Padding(4);
             splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -174,7 +174,7 @@
             markDownEditor1.FileName = "";
             markDownEditor1.HandleFiles = false;
             markDownEditor1.Location = new Point(0, 0);
-            markDownEditor1.Margin = new Padding(5, 5, 5, 5);
+            markDownEditor1.Margin = new Padding(5);
             markDownEditor1.Name = "markDownEditor1";
             markDownEditor1.Size = new Size(929, 742);
             markDownEditor1.TabIndex = 1;
@@ -192,7 +192,8 @@
             Controls.Add(button2);
             Controls.Add(button1);
             Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Margin = new Padding(4, 4, 4, 4);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(4);
             Name = "NotebookForm";
             Text = "Programmer's Notbook";
             panel1.ResumeLayout(false);

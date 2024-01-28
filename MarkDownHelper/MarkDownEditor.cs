@@ -60,10 +60,15 @@ namespace MarkDownHelper
 
             richTextBox1.ContextMenuStrip = contextMenu;
 
-            toolStripComboBox1.SelectedItem = "default";
-            toolStripComboBox2.SelectedItem = "default";
-            toolStripComboBox3.SelectedItem = "2";
-            toolStripComboBox4.SelectedItem = "2";
+            //toolStripComboBox1.SelectedItem = "default";
+            //toolStripComboBox2.SelectedItem = "default";
+            //toolStripComboBox3.SelectedItem = "2";
+            //toolStripComboBox4.SelectedItem = "2";
+        }
+
+        public void SetUpHandlers()
+        {
+            browserWrapper1.SetUpHandlers();
         }
 
         public string FileName

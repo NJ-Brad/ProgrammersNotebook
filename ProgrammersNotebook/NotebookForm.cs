@@ -1,19 +1,33 @@
 ﻿// split buttion, if necessary - https://wyday.com/splitbutton/
 
 using MarkDownHelper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace ProgrammersNotebook
 {
     public partial class NotebookForm : Form
     {
+        private readonly ILogger _logger;
+        private readonly IHost _host;
+        private readonly IConfiguration _config;
+
         private List<Page> pages = new();
         private List<TreePage> treePages = new();
         private Page? selectedPage = null;
 
-        public NotebookForm()
+
+        public NotebookForm(ILogger<NotebookForm> logger, IConfiguration config, IHost host)
         {
             InitializeComponent();
+
+            _logger = logger;
+            _config = config;
+            _host = host;
+
+            string val = _config["ServerURL"];
 
             if (Replacements.ContainsKey("LOCATION"))
             {
@@ -30,6 +44,7 @@ namespace ProgrammersNotebook
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+            //_logger.LogInformation("NotebookForm.OnShown at {dateTime}", "Started", DateTime.UtcNow);
 
             imageTree1.Font = Font;
             imageTree1.ShowRootLines = false;
@@ -57,8 +72,9 @@ namespace ProgrammersNotebook
 
             // work with this.  remembering the format may become an issue
             markDownEditor1.ProtocolHandlers.Add(new CustomProtocolHandler { Prefix = "notebook://*", Handler = ResolveProtocolRequest });
-
             markDownEditor1.EmbeddedFragmentHandler = ResolveEmbeddedFragmentRequest;
+            markDownEditor1.SetUpHandlers();
+
             markDownEditor1.Replacements = Replacements;
         }
 

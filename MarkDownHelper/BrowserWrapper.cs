@@ -30,7 +30,7 @@ namespace MarkDownHelper
             throw new NotImplementedException();
         }
 
-        public void SetUp()
+        public void SetUpHandlers()
         {
             if (ProtocolHandlers.Count > 0)
             {
@@ -141,7 +141,7 @@ namespace MarkDownHelper
         {
             Debug.WriteLine("WebView_CoreWebView2InitializationCompleted");
             initialized = true;
-            SetUp();
+            //SetUp();
         }
 
         // https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/working-with-local-content?tabs=dotnetcsharp#loading-local-content-by-handling-the-webresourcerequested-event
@@ -276,7 +276,8 @@ namespace MarkDownHelper
                 .AddGitHubStyle()
                 .TranslatePaths(RootPath)
                 .GenerateToc()
-                .AddCodeCopyButtons2(CodeTheme)
+                //.AddCodeCopyButtons2(CodeTheme)
+                .AddCodeCopyButtons3(CodeTheme)
                 .SetTabSize(IndentSize)
                 ;
         }
