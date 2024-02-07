@@ -23,23 +23,7 @@ namespace MarkDownHelper
 
             return pipelineBuilder;
         }
-        //public static MarkdownPipelineBuilder PredefinedImageExtension(this MarkdownPipelineBuilder pipelineBuilder, IFlexiPictureBlocksExtensionOptions options = null)
-        //{
-        //    if (!pipelineBuilder.Extensions.Contains<PredefinedImageExtension>())
-        //    {
-        //        pipelineBuilder.Extensions.Add(< PredefinedImageExtension > ());
-        //    }
-
-        //    if (options != null)
-        //    {
-        //        AddContextObjectWithTypeAsKey(pipelineBuilder, options);
-        //    }
-
-        //    return pipelineBuilder;
-        //}
     }
-
-
 
     public class EmbeddedFragmentExtension : IMarkdownExtension
     {

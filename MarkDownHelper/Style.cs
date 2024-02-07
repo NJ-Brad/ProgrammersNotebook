@@ -120,13 +120,24 @@ p, blockquote, ul, ol, dl, li, table, pre {
   margin: 15px 0;
 }
 
-hr {
-  background: transparent url(""http://tinyurl.com/bq5kskr"") repeat-x 0 0;
-  border: 0 none;
-  color: #cccccc;
-  height: 4px;
-  padding: 0;
-}
+// original (GitHub theme)  It isn't visible
+//hr {
+//  background: transparent url(""http://tinyurl.com/bq5kskr"") repeat-x 0 0;
+//  border: 0 none;
+//  color: #cccccc;
+//  height: 4px;
+//  padding: 0;
+//}
+
+// not sure where I go this one
+//hr {
+//  border: 0;
+//  clear:both;
+//  display:block;
+//  width: 96%;               
+//  background-color:#FFFF00;
+//  height: 1px;
+//}
 
 body > h2:first-child {
   margin-top: 0;
@@ -413,6 +424,226 @@ pre code, pre tt {
   cursor: pointer;
   background-color: #bcbabb;
 }
+/*
+:root {
+    --bs-breakpoint-xs: 0;
+    --bs-breakpoint-sm: 576px;
+    --bs-breakpoint-md: 768px;
+    --bs-breakpoint-lg: 992px;
+    --bs-breakpoint-xl: 1200px;
+    --bs-breakpoint-xxl: 1400px;
+}
+*/
+
+/* :root, [data-bs-theme=light]  */
+/*
+:root
+{
+    --bs-blue: #0d6efd;
+    --bs-indigo: #6610f2;
+    --bs-purple: #6f42c1;
+    --bs-pink: #d63384;
+    --bs-red: #dc3545;
+    --bs-orange: #fd7e14;
+    --bs-yellow: #ffc107;
+    --bs-green: #198754;
+    --bs-teal: #20c997;
+    --bs-cyan: #0dcaf0;
+    --bs-black: #000;
+    --bs-white: #fff;
+    --bs-gray: #6c757d;
+    --bs-gray-dark: #343a40;
+    --bs-gray-100: #f8f9fa;
+    --bs-gray-200: #e9ecef;
+    --bs-gray-300: #dee2e6;
+    --bs-gray-400: #ced4da;
+    --bs-gray-500: #adb5bd;
+    --bs-gray-600: #6c757d;
+    --bs-gray-700: #495057;
+    --bs-gray-800: #343a40;
+    --bs-gray-900: #212529;
+    --bs-primary: #0d6efd;
+    --bs-secondary: #6c757d;
+    --bs-success: #198754;
+    --bs-info: #0dcaf0;
+    --bs-warning: #ffc107;
+    --bs-danger: #dc3545;
+    --bs-light: #f8f9fa;
+    --bs-dark: #212529;
+    --bs-primary-rgb: 13, 110, 253;
+    --bs-secondary-rgb: 108, 117, 125;
+    --bs-success-rgb: 25, 135, 84;
+    --bs-info-rgb: 13, 202, 240;
+    --bs-warning-rgb: 255, 193, 7;
+    --bs-danger-rgb: 220, 53, 69;
+    --bs-light-rgb: 248, 249, 250;
+    --bs-dark-rgb: 33, 37, 41;
+    --bs-primary-text-emphasis: #052c65;
+    --bs-secondary-text-emphasis: #2b2f32;
+    --bs-success-text-emphasis: #0a3622;
+    --bs-info-text-emphasis: #055160;
+    --bs-warning-text-emphasis: #664d03;
+    --bs-danger-text-emphasis: #58151c;
+    --bs-light-text-emphasis: #495057;
+    --bs-dark-text-emphasis: #495057;
+    --bs-primary-bg-subtle: #cfe2ff;
+    --bs-secondary-bg-subtle: #e2e3e5;
+    --bs-success-bg-subtle: #d1e7dd;
+    --bs-info-bg-subtle: #cff4fc;
+    --bs-warning-bg-subtle: #fff3cd;
+    --bs-danger-bg-subtle: #f8d7da;
+    --bs-light-bg-subtle: #fcfcfd;
+    --bs-dark-bg-subtle: #ced4da;
+    --bs-primary-border-subtle: #9ec5fe;
+    --bs-secondary-border-subtle: #c4c8cb;
+    --bs-success-border-subtle: #a3cfbb;
+    --bs-info-border-subtle: #9eeaf9;
+    --bs-warning-border-subtle: #ffe69c;
+    --bs-danger-border-subtle: #f1aeb5;
+    --bs-light-border-subtle: #e9ecef;
+    --bs-dark-border-subtle: #adb5bd;
+    --bs-white-rgb: 255, 255, 255;
+    --bs-black-rgb: 0, 0, 0;
+    --bs-font-sans-serif: system-ui, -apple-system, ""Segoe UI"", Roboto, ""Helvetica Neue"", ""Noto Sans"", ""Liberation Sans"", Arial, sans-serif, ""Apple Color Emoji"", ""Segoe UI Emoji"", ""Segoe UI Symbol"", ""Noto Color Emoji"";
+    --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, ""Liberation Mono"", ""Courier New"", monospace;
+    --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, 0));
+    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-body-font-size: 1rem;
+    --bs-body-font-weight: 400;
+    --bs-body-line-height: 1.5;
+    --bs-body-color: #212529;
+    --bs-body-color-rgb: 33, 37, 41;
+    --bs-body-bg: #fff;
+    --bs-body-bg-rgb: 255, 255, 255;
+    --bs-emphasis-color: #000;
+    --bs-emphasis-color-rgb: 0, 0, 0;
+    --bs-secondary-color: rgba(33, 37, 41, .75);
+    --bs-secondary-color-rgb: 33, 37, 41;
+    --bs-secondary-bg: #e9ecef;
+    --bs-secondary-bg-rgb: 233, 236, 239;
+    --bs-tertiary-color: rgba(33, 37, 41, .5);
+    --bs-tertiary-color-rgb: 33, 37, 41;
+    --bs-tertiary-bg: #f8f9fa;
+    --bs-tertiary-bg-rgb: 248, 249, 250;
+    --bs-heading-color: inherit;
+    --bs-link-color: #0d6efd;
+    --bs-link-color-rgb: 13, 110, 253;
+    --bs-link-decoration: underline;
+    --bs-link-hover-color: #0a58ca;
+    --bs-link-hover-color-rgb: 10, 88, 202;
+    --bs-code-color: #d63384;
+    --bs-highlight-color: #212529;
+    --bs-highlight-bg: #fff3cd;
+    --bs-border-width: 1px;
+    --bs-border-style: solid;
+    --bs-border-color: #dee2e6;
+    --bs-border-color-translucent: rgba(0, 0, 0, .175);
+    --bs-border-radius: .375rem;
+    --bs-border-radius-sm: .25rem;
+    --bs-border-radius-lg: .5rem;
+    --bs-border-radius-xl: 1rem;
+    --bs-border-radius-xxl: 2rem;
+    --bs-border-radius-2xl: var(--bs-border-radius-xxl);
+    --bs-border-radius-pill: 50rem;
+    --bs-box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    --bs-box-shadow-sm: 0 .125rem .25rem rgba(0, 0, 0, .075);
+    --bs-box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, .175);
+    --bs-box-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, .075);
+    --bs-focus-ring-width: .25rem;
+    --bs-focus-ring-opacity: .25;
+    --bs-focus-ring-color: rgba(13, 110, 253, .25);
+    --bs-form-valid-color: #198754;
+    --bs-form-valid-border-color: #198754;
+    --bs-form-invalid-color: #dc3545;
+    --bs-form-invalid-border-color: #dc3545;
+}
+*/
+
+/* https://stackoverflow.com/questions/1065435/can-a-css-class-inherit-one-or-more-other-classes */
+[class*=""myalert-""] {
+  break-inside: avoid;
+    --bs-alert-bg: transparent;
+    --bs-alert-padding-x: 1rem;
+    --bs-alert-padding-y: 1rem;
+    --bs-alert-margin-bottom: 1rem;
+    --bs-alert-color: inherit;
+    --bs-alert-border-color: transparent;
+    --bs-alert-border: var(--bs-border-width) solid var(--bs-alert-border-color);
+    --bs-alert-border-radius: var(--bs-border-radius);
+    --bs-alert-link-color: inherit;
+    position: relative;
+    padding: var(--bs-alert-padding-y) var(--bs-alert-padding-x);
+    margin-bottom: var(--bs-alert-margin-bottom);
+    color: var(--bs-alert-color);
+    background-color: var(--bs-alert-bg);
+    border: var(--bs-alert-border);
+    border-radius: var(--bs-alert-border-radius);
+}
+.myalert-warning {
+    --bs-alert-color: var(--bs-info-text-emphasis);
+    --bs-alert-bg: var(--bs-info-bg-subtle);
+    --bs-alert-bg: #cff4fc;
+    --bs-alert-border-color: #9eeaf9;
+    --bs-alert-link-color: var(--bs-info-text-emphasis);
+}
+
+[class*=""myalert-""] h5, [class*=""myalert-""] .h5 {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+[class*=""myalert-""] h5:before, [class*=""myalert-""] .h5:before {
+    font-family: bootstrap-icons;
+    position: relative;
+    margin-right: 0.5em;
+    top: 0.2em;
+    font-size: 1.25em;
+    font-weight: 400;
+}
+
+.myalert-warning h5:before, myalert-warning .h5:before {
+    content: ""\f431"";
+}
+
+[class*=""alertheading-""] {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+[class*=""alertheading-""]:before {
+    font-family: bootstrap-icons;
+    position: relative;
+    margin-right: 0.5em;
+    top: 0.2em;
+    font-size: 1.25em;
+    font-weight: 400;
+}
+
+.alertheading-warning:before {
+    content: ""\f431"";
+}
+
+.alertheading-note:before {
+    content: ""\f431"";
+}
+
+.alertheading-tip:before {
+    content: ""\f431"";
+}
+
+.alertheading-important:before {
+    content: ""\f623"";
+}
+
+.alertheading-caution:before {
+    content: ""\f623"";
+}
+
+.alertheading-warning:before {
+    content: ""\f333"";
+}
 
 ";
 
@@ -437,27 +668,27 @@ pre code, pre tt {
         }
 
         // http://stackoverflow.com/questions/8852722/webbrowser-control-wpf-or-windows-forms-cant-display-svg-files-contained-in
+        // also adds Bootstrap
         public static string EnableNewerFeatures(this string html)
         {
             StringBuilder sb = new StringBuilder(html);
 
-            // find end of head
-            int endOfHead = html.IndexOf("</head>");
+            sb.Insert(0, @"            <!doctype html>
+            <html lang=""en"">
+              <head>
+            <meta http-equiv=""X-UA-Compatible"" content=""IE=Edge; ""/>
+            <!-- <link href=""https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"" rel=""stylesheet"" integrity=""sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"" crossorigin=""anonymous""> -->
+            <!-- Bootstrap CSS -->
+            <link rel=""stylesheet"" href=""https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"">
+            <!-- Bootstrap Font Icon CSS -->
+            <link rel=""stylesheet"" href=""https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"">
+            <!-- Font Awesome -->
+            <link rel=""stylesheet"" href=""https://use.fontawesome.com/releases/v5.0.7/css/all.css"">
+</head>
+");
 
-            if (endOfHead == -1)
-            {
-                sb.Insert(0, @"<head>
-</head>");
-            }
-
-            // ""IE=9""
-            // ""IE=Edge; ""
-            string style = @"
-<meta http-equiv=""X-UA-Compatible"" content=""IE=Edge; ""/>
-</head>";
-
-            sb.Replace("</head>", style);
             return sb.ToString();
+
         }
 
         public static string Add(string html, string styleToAdd)
@@ -600,94 +831,95 @@ async function copyCode(block, button) {
                      }
         -->
          */
-        public static string AddCodeCopyButtons2(this string html, string codeTheme = "default")
-        {
-            string buttonScript = @"
-<script src=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js""></script>
- 
-<!-- https://github.com/highlightjs/highlight.js/tree/main/src/styles -->
-<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/androidstudio.min.css"" /> -->
-<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/lightfair.min.css"" /> -->
-<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/stackoverflow-light.min.css"" /> -->
-<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/tomorrow-night-blue.min.css"" /> -->
-"
-+
-$@"<link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/{codeTheme}.min.css"" />"
-+
-@"
- <script>
-     hljs.highlightAll(); // initialize highlighting
- </script>
- 
- <!-- Code to append a click to copy button -->
- <script>
-     var snippets = document.getElementsByTagName('pre');
-     var numberOfSnippets = snippets.length;
-     for (var i = 0; i < numberOfSnippets; i++) {
 
-  // only add button if browser supports Clipboard API
-<!-- if (navigator.clipboard) -->
-{ 
+        //        public static string AddCodeCopyButtons2(this string html, string codeTheme = "default")
+        //        {
+        //            string buttonScript = @"
+        //<script src=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js""></script>
 
-         code = snippets[i].getElementsByTagName('code')[0].innerText;
- 
-         snippets[i].classList.add('hljs'); // append copy button to pre tag
- 
-         snippets[i].innerHTML = '<button class=""hljs-copy"">Copy</button>' + snippets[i].innerHTML; // append copy button
- 
-         snippets[i].getElementsByClassName('hljs-copy')[0].addEventListener(""click"", function () {
-            this.innerText = 'Copying..';
+        //<!-- https://github.com/highlightjs/highlight.js/tree/main/src/styles -->
+        //<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/androidstudio.min.css"" /> -->
+        //<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/lightfair.min.css"" /> -->
+        //<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/stackoverflow-light.min.css"" /> -->
+        //<!-- <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/tomorrow-night-blue.min.css"" /> -->
+        //"
+        //+
+        //$@"<link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/{codeTheme}.min.css"" />"
+        //+
+        //@"
+        // <script>
+        //     hljs.highlightAll(); // initialize highlighting
+        // </script>
 
-            copyToClipboard(code);
+        // <!-- Code to append a click to copy button -->
+        // <script>
+        //     var snippets = document.getElementsByTagName('pre');
+        //     var numberOfSnippets = snippets.length;
+        //     for (var i = 0; i < numberOfSnippets; i++) {
 
-             this.innerText = 'Copied!';
-             button = this;
-             setTimeout(function () {
-                 button.innerText = 'Copy';
-             }, 1000)
-         });
-}
-     }
+        //  // only add button if browser supports Clipboard API
+        //<!-- if (navigator.clipboard) -->
+        //{ 
 
-// https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
-async function copyToClipboard(textToCopy) {
-    // Navigator clipboard api needs a secure context (https)
-    if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(textToCopy);
-    } else {
-        // Use the 'out of viewport hidden text area' trick
-        const textArea = document.createElement(""textarea"");
-        textArea.value = textToCopy;
-            
-        // Move textarea out of the viewport so it's not visible
-        textArea.style.position = ""absolute"";
-        textArea.style.left = ""-999999px"";
-            
-        document.body.prepend(textArea);
-        textArea.select();
+        //         code = snippets[i].getElementsByTagName('code')[0].innerText;
 
-        try {
-            document.execCommand('copy');
-        } catch (error) {
-            console.error(error);
-        } finally {
-            textArea.remove();
-        }
-    }
-}
+        //         snippets[i].classList.add('hljs'); // append copy button to pre tag
 
- </script>
- <style>
-     .hljs-copy {
-         float: right;
-         cursor: pointer;
-     }
- </style>
-";
-            string newHtml = html + buttonScript;
+        //         snippets[i].innerHTML = '<button class=""hljs-copy"">Copy</button>' + snippets[i].innerHTML; // append copy button
 
-            return newHtml;
-        }
+        //         snippets[i].getElementsByClassName('hljs-copy')[0].addEventListener(""click"", function () {
+        //            this.innerText = 'Copying..';
+
+        //            copyToClipboard(code);
+
+        //             this.innerText = 'Copied!';
+        //             button = this;
+        //             setTimeout(function () {
+        //                 button.innerText = 'Copy';
+        //             }, 1000)
+        //         });
+        //}
+        //     }
+
+        //// https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
+        //async function copyToClipboard(textToCopy) {
+        //    // Navigator clipboard api needs a secure context (https)
+        //    if (navigator.clipboard && window.isSecureContext) {
+        //        await navigator.clipboard.writeText(textToCopy);
+        //    } else {
+        //        // Use the 'out of viewport hidden text area' trick
+        //        const textArea = document.createElement(""textarea"");
+        //        textArea.value = textToCopy;
+
+        //        // Move textarea out of the viewport so it's not visible
+        //        textArea.style.position = ""absolute"";
+        //        textArea.style.left = ""-999999px"";
+
+        //        document.body.prepend(textArea);
+        //        textArea.select();
+
+        //        try {
+        //            document.execCommand('copy');
+        //        } catch (error) {
+        //            console.error(error);
+        //        } finally {
+        //            textArea.remove();
+        //        }
+        //    }
+        //}
+
+        // </script>
+        // <style>
+        //     .hljs-copy {
+        //         float: right;
+        //         cursor: pointer;
+        //     }
+        // </style>
+        //";
+        //            string newHtml = html + buttonScript;
+
+        //            return newHtml;
+        //        }
 
         public static string AddCodeCopyButtons3(this string html, string codeTheme = "default")
         {
@@ -717,6 +949,11 @@ async function copyToClipboard(textToCopy) {
      hljs.addPlugin(new CopyButtonPlugin());
      hljs.highlightAll(); // initialize highlighting
  </script>
+
+</body>
+<script src=""https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"" integrity=""sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"" crossorigin=""anonymous""></script>
+</html>
+
 ";
             string newHtml = html + buttonScript;
 

@@ -1,4 +1,5 @@
 ﻿using Markdig;
+using MarkDownHelper.AlertExtension;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
 using System.Text;
@@ -22,7 +23,6 @@ namespace MarkDownHelper
             base.OnCreateControl();
             webView21.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
             await webView21.EnsureCoreWebView2Async(null);
-            webView21.CoreWebView2.PermissionRequested += CoreWebView2_PermissionRequested;
         }
 
         private void CoreWebView2_PermissionRequested(object? sender, CoreWebView2PermissionRequestedEventArgs e)
@@ -30,26 +30,35 @@ namespace MarkDownHelper
             throw new NotImplementedException();
         }
 
+        private bool setUpHandlersPending = true;
+
         public void SetUpHandlers()
         {
-            if (ProtocolHandlers.Count > 0)
+            if (initialized)
             {
-                webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
-
-                foreach (CustomProtocolHandler handler in ProtocolHandlers)
+                if (ProtocolHandlers.Count > 0)
                 {
-                    webView21.CoreWebView2.AddWebResourceRequestedFilter(handler.Prefix, CoreWebView2WebResourceContext.All);
+                    webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+
+                    foreach (CustomProtocolHandler handler in ProtocolHandlers)
+                    {
+                        webView21.CoreWebView2.AddWebResourceRequestedFilter(handler.Prefix, CoreWebView2WebResourceContext.All);
+                    }
                 }
+
+                webView21.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+
+                //webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+                ////webView21.CoreWebView2.AddWebResourceRequestedFilter("https://www.microsoft.com/*", CoreWebView2WebResourceContext.All);
+                //webView21.CoreWebView2.AddWebResourceRequestedFilter("notebook://*", CoreWebView2WebResourceContext.All);
+                ////            webView21.CoreWebView2.Navigate("https://www.microsoft.com");
+
+                ////webView21.CoreWebView2.NavigateToString("<html><body><img src=\"notebook://Image+One.jpg\"></body></html>");
             }
-
-            webView21.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
-
-            //webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
-            ////webView21.CoreWebView2.AddWebResourceRequestedFilter("https://www.microsoft.com/*", CoreWebView2WebResourceContext.All);
-            //webView21.CoreWebView2.AddWebResourceRequestedFilter("notebook://*", CoreWebView2WebResourceContext.All);
-            ////            webView21.CoreWebView2.Navigate("https://www.microsoft.com");
-
-            ////webView21.CoreWebView2.NavigateToString("<html><body><img src=\"notebook://Image+One.jpg\"></body></html>");
+            else
+            {
+                setUpHandlersPending = true;
+            }
         }
 
         public bool NavComplete { get; set; }
@@ -142,6 +151,17 @@ namespace MarkDownHelper
             Debug.WriteLine("WebView_CoreWebView2InitializationCompleted");
             initialized = true;
             //SetUp();
+
+            webView21.CoreWebView2.PermissionRequested += CoreWebView2_PermissionRequested;
+
+            if (setUpHandlersPending)
+                SetUpHandlers();
+
+            if (!string.IsNullOrEmpty(showThisOnceInitialized))
+            {
+                ShowMarkdownText(showThisOnceInitialized);
+                showThisOnceInitialized = string.Empty;
+            }
         }
 
         // https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/working-with-local-content?tabs=dotnetcsharp#loading-local-content-by-handling-the-webresourcerequested-event
@@ -262,6 +282,7 @@ namespace MarkDownHelper
             // Configure the pipeline with all advanced extensions active
             //var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Use<EmbeddedImageExtension>().Build();
             var pipeline = new MarkdownPipelineBuilder()
+                .UseAlertContainerExtension(true)
                 .UseAdvancedExtensions()
                 .UseSoftlineBreakAsHardlineBreak()
                 //.UsePredefinedImageExtension()
@@ -280,23 +301,30 @@ namespace MarkDownHelper
                 .AddCodeCopyButtons3(CodeTheme)
                 .SetTabSize(IndentSize)
                 ;
+
+            // https://github.com/xoofx/markdig/issues/344
+            // use of custom containers
+            // https://github.com/xoofx/markdig/blob/master/src/Markdig.Tests/Specs/CustomContainerSpecs.md
+            // bootstrap alert
+            // https://github.com/xoofx/markdig/issues/162
+
+            // markdown cheatsheet
+            // https://digitaltapestry.net/posts/markdig-cheat-sheet
         }
 
-
+        string showThisOnceInitialized = string.Empty;
         public void ShowMarkdownText(string rawText)
         {
             if (!initialized)
+            {
+                showThisOnceInitialized = rawText;
                 return;
+            }
 
             NavComplete = false;
 
             ShowHtmlText(ToHtml(rawText));
         }
-
-        //private string GetEmbedImage(string key)
-        //{
-        //    return key;
-        //}
 
         private string GetEmbedText(string key)
         {

@@ -1,4 +1,7 @@
-﻿using System.Drawing.Imaging;
+﻿using MarkDownHelper.Wizard;
+using MarkDownHelper.WizardPages;
+using System.Drawing.Imaging;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace MarkDownHelper
@@ -59,6 +62,8 @@ namespace MarkDownHelper
             contextMenu.Items.Add(menuItem);
 
             richTextBox1.ContextMenuStrip = contextMenu;
+
+            toolStripButtonEdit.Enabled = false;
 
             //toolStripComboBox1.SelectedItem = "default";
             //toolStripComboBox2.SelectedItem = "default";
@@ -125,25 +130,11 @@ namespace MarkDownHelper
                 viewMode = value;
                 toolStripButtonSave.Visible = !handleFiles && !viewMode;
                 splitContainer1.Panel1Collapsed = viewMode;
-                toolStrip1.Visible = !viewMode;
+                //toolStrip1.Visible = !viewMode;
+                toolStrip1.Visible = false;
+                toolStrip4.Visible = !viewMode;
                 toolStrip3.Visible = !viewMode;
                 toolStrip2.Visible = viewMode;
-            }
-        }
-
-        protected override void OnCreateControl()
-        {
-            base.OnCreateControl();
-        }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            if (!string.IsNullOrEmpty(fileName))
-            {
-                openToolStripMenuItem.Enabled = false;
-                saveAsToolStripMenuItem.Enabled = false;
-                LoadFileToEdit(fileName);
             }
         }
 
@@ -702,7 +693,7 @@ Finally, include a section for the license of your project. For more information
             Clipboard.SetText(richTextBox1.SelectedText);
         }
 
-        void PasteAction(object sender, EventArgs e)
+        async void PasteAction(object sender, EventArgs e)
         {
             if (Clipboard.ContainsImage())
             {
@@ -743,7 +734,29 @@ Finally, include a section for the license of your project. For more information
                 //richTextBox1.Text
                 //    += Clipboard.GetText(TextDataFormat.Text).ToString();
 
-                richTextBox1.SelectedText = Clipboard.GetText(TextDataFormat.Text).ToString();
+                string text = Clipboard.GetText();
+
+                if (IsUrl(text))
+                {
+                    //if (dataString.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                    //{
+
+                    //}
+                    //else
+                    //{
+                    //    // because Chrome removes this part, by default
+                    //    // If you drag the lock icon, instead of the text it will include the full https://
+                    //    dataString = "https://" + dataString;
+                    //}
+                    string descr = await GetDescription(text);
+
+                }
+                else
+                {
+                    //richTextBox1.SelectedText = Clipboard.GetText(TextDataFormat.Text).ToString();
+                    richTextBox1.SelectedText = text;
+                }
+
             }
 
             ShowText(richTextBox1.Text);
@@ -889,57 +902,209 @@ Finally, include a section for the license of your project. For more information
             fmf.ShowDialog();
         }
 
-        private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        //private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (toolStripComboBox1.SelectedIndex != -1)
+        //    {
+        //        browserWrapper1.CodeTheme = toolStripComboBox1.Items[toolStripComboBox1.SelectedIndex].ToString();
+        //    }
+        //    else
+        //    {
+        //        browserWrapper1.CodeTheme = "default";
+        //    }
+        //    ShowText(richTextBox1.Text);
+        //}
+
+        //private void toolStripComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (toolStripComboBox2.SelectedIndex != -1)
+        //    {
+        //        browserWrapper1.CodeTheme = toolStripComboBox2.Items[toolStripComboBox2.SelectedIndex].ToString();
+        //    }
+        //    else
+        //    {
+        //        browserWrapper1.CodeTheme = "default";
+        //    }
+        //    ShowText(richTextBox1.Text);
+        //}
+
+        //private void toolStripComboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (toolStripComboBox3.SelectedIndex != -1)
+        //    {
+        //        browserWrapper1.IndentSize = int.Parse(toolStripComboBox3.Items[toolStripComboBox3.SelectedIndex].ToString());
+        //    }
+        //    else
+        //    {
+        //        browserWrapper1.IndentSize = 8;
+        //    }
+        //    ShowText(richTextBox1.Text);
+        //}
+
+        //private void toolStripComboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (toolStripComboBox4.SelectedIndex != -1)
+        //    {
+        //        browserWrapper1.IndentSize = int.Parse(toolStripComboBox4.Items[toolStripComboBox4.SelectedIndex].ToString());
+        //    }
+        //    else
+        //    {
+        //        browserWrapper1.IndentSize = 8;
+        //    }
+        //    ShowText(richTextBox1.Text);
+        //}
+
+        private async Task<string> GetDescription(string url)
         {
-            if (toolStripComboBox1.SelectedIndex != -1)
+            string rtnVal = "";
+
+            using HttpClient client = new()
             {
-                browserWrapper1.CodeTheme = toolStripComboBox1.Items[toolStripComboBox1.SelectedIndex].ToString();
-            }
-            else
+                BaseAddress = new Uri(url),
+            };
+
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "web api client");
+
+            using HttpResponseMessage response = await client.GetAsync("");
+
+            var stringResponse = await response.Content.ReadAsStringAsync();
+
+            int titleStart = stringResponse.IndexOf("<title>", StringComparison.OrdinalIgnoreCase);
+            if (titleStart != -1)
             {
-                browserWrapper1.CodeTheme = "default";
+                titleStart += 7;
+                int titleEnd = stringResponse.IndexOf("</title>", titleStart, StringComparison.OrdinalIgnoreCase);
+
+                rtnVal = stringResponse.Substring(titleStart, (titleEnd - titleStart));
+                //                textBox6.DataBindings[0].ReadValue();
             }
-            ShowText(richTextBox1.Text);
+
+            return rtnVal;
         }
 
-        private void toolStripComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        //public static bool IsUrl(string urlAsString)
+        public bool IsUrl(string urlAsString)
         {
-            if (toolStripComboBox2.SelectedIndex != -1)
+            if (urlAsString != null && urlAsString.Trim().Length > 0)
             {
-                browserWrapper1.CodeTheme = toolStripComboBox2.Items[toolStripComboBox2.SelectedIndex].ToString();
+                Uri uri;
+                return Uri.TryCreate(urlAsString, UriKind.Absolute, out uri);
             }
-            else
-            {
-                browserWrapper1.CodeTheme = "default";
-            }
-            ShowText(richTextBox1.Text);
+
+            return false;
         }
 
-        private void toolStripComboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        private void MarkDownEditor_EnabledChanged(object sender, EventArgs e)
         {
-            if (toolStripComboBox3.SelectedIndex != -1)
-            {
-                browserWrapper1.IndentSize = int.Parse(toolStripComboBox3.Items[toolStripComboBox3.SelectedIndex].ToString());
-            }
-            else
-            {
-                browserWrapper1.IndentSize = 8;
-            }
-            ShowText(richTextBox1.Text);
+            toolStripButtonEdit.Enabled = Enabled;
         }
 
-        private void toolStripComboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        private void toolStripButton14_Click(object sender, EventArgs e)
         {
-            if (toolStripComboBox4.SelectedIndex != -1)
+            WizardForm wf = new WizardForm();
+
+            wf.Pages.Add(new PageOne());
+            wf.Pages.Add(new PageTwo());
+            wf.Pages.Add(new PageThree());
+            wf.Pages.Add(new PageFour());
+            //wf.StartWizard();
+
+            wf.Pages.Add(new SelectFormatPage());
+            wf.Pages.Add(new ConfirmationPage());
+            wf.Pages.Add(new SelectLanguagePage());
+
+
+            wf.Data["TestText"] = richTextBox1.SelectedText;
+
+            if (wf.StartWizard("SelectFormatPage") == WizardResult.OK)
             {
-                browserWrapper1.IndentSize = int.Parse(toolStripComboBox4.Items[toolStripComboBox4.SelectedIndex].ToString());
+                richTextBox1.SelectedText = wf.Data["ResultText"].ToString();
+                ShowText(richTextBox1.Text);
             }
-            else
-            {
-                browserWrapper1.IndentSize = 8;
-            }
-            ShowText(richTextBox1.Text);
         }
+
+        private void toolStripButton16_Click(object sender, EventArgs e)
+        {
+            WizardForm wf = new WizardForm();
+
+            wf.Pages.Add(new SelectInsertionPage());
+            wf.Pages.Add(new ConfirmationPage());
+            wf.Pages.Add(new TableHeaderPage());
+            wf.Pages.Add(new DefinitionPage());
+            wf.Pages.Add(new LinkPage());
+            //            wf.Pages.Add(new SelectLanguagePage());
+
+            // I need the line before, when inserting a table row.  Do I need the whole control, or just the line before?
+            wf.Data["SourceControl"] = richTextBox1;
+            wf.Data["LineBefore"] = GetLineBefore(richTextBox1);
+            wf.Data["TestText"] = richTextBox1.SelectedText;
+
+            if (wf.StartWizard("SelectInsertionPage") == WizardResult.OK)
+            {
+                richTextBox1.SelectedText = wf.Data["ResultText"].ToString();
+                ShowText(richTextBox1.Text);
+            }
+        }
+
+        //private string GetLineBefore(TextBox tb)
+        private string GetLineBefore(RichTextBox tb)
+        {
+            // from https://stackoverflow.com/questions/2693984/how-to-get-the-current-line-in-a-richtextbox-control
+            tb.WordWrap = false;
+            int cursorPosition = tb.SelectionStart;
+            int lineIndex = tb.GetLineFromCharIndex(cursorPosition);
+            string lineText = lineIndex < 1 ? "" : tb.Lines[lineIndex - 1];
+            tb.WordWrap = true;
+
+            return lineText;
+        }
+
+        //private async void dataGridView1_DragDrop(object sender, DragEventArgs e)
+        //{
+        //    if (e.Data.GetDataPresent(DataFormats.StringFormat))
+        //    {
+        //        string dataString = (string)e.Data.GetData(DataFormats.StringFormat);
+
+        //        if (dataString.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+        //        {
+
+        //        }
+        //        else
+        //        {
+        //            // because Chrome removes this part, by default
+        //            // If you drag the lock icon, instead of the text it will include the full https://
+        //            dataString = "https://" + dataString;
+        //        }
+
+        //        await SaveEdits();
+
+        //        ChainLink newLink = new ChainLink();
+        //        newLink.Chain = string.Empty;
+        //        newLink.Url = dataString;
+        //        newLink.DisplayText = await GetDescription(dataString);
+
+        //        links.Add(newLink);
+        //        await dataService.CreateChainLink(newLink);
+
+        //        //Item = newJob;
+        //        //bs.DataSource = Item;
+
+        //        dataGridView1.CurrentCell = dataGridView1.Rows[idxNewRow].Cells[0];
+        //        dataGridView1.CurrentRow.Selected = true;
+
+        //        dataGridView1_SelectionChanged(sender, EventArgs.Empty);
+        //    }
+        //}
+
+        //private void dataGridView1_DragEnter(object sender, DragEventArgs e)
+        //{
+        //    if (e.Data.GetDataPresent(DataFormats.Text))
+        //        e.Effect = DragDropEffects.Copy;
+        //    else
+        //        e.Effect = DragDropEffects.None;
+        //}
     }
 
     public class Operations : Dictionary<string, Operation>

@@ -33,6 +33,10 @@ namespace MarkDownHelper
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MarkDownEditor));
             splitContainer1 = new SplitContainer();
             richTextBox1 = new RichTextBox();
+            toolStrip4 = new ToolStrip();
+            toolStripButton14 = new ToolStripButton();
+            toolStripButton16 = new ToolStripButton();
+            toolStripButton15 = new ToolStripButton();
             browserWrapper1 = new BrowserWrapper();
             toolStrip1 = new ToolStrip();
             toolStripSeparator8 = new ToolStripSeparator();
@@ -69,8 +73,6 @@ namespace MarkDownHelper
             toolStripButton13 = new ToolStripButton();
             toolStripSeparator7 = new ToolStripSeparator();
             toolStripButton4 = new ToolStripButton();
-            toolStripLabel1 = new ToolStripLabel();
-            toolStripComboBox2 = new ToolStripComboBox();
             toolStripDropDownButton5 = new ToolStripDropDownButton();
             openToolStripMenuItem = new ToolStripMenuItem();
             saveToolStripMenuItem = new ToolStripMenuItem();
@@ -90,18 +92,13 @@ namespace MarkDownHelper
             toolStripButtonFragments = new ToolStripButton();
             toolStrip2 = new ToolStrip();
             toolStripButtonEdit = new ToolStripButton();
-            toolStripLabel2 = new ToolStripLabel();
-            toolStripComboBox1 = new ToolStripComboBox();
-            toolStripLabel3 = new ToolStripLabel();
-            toolStripComboBox3 = new ToolStripComboBox();
             toolStrip3 = new ToolStrip();
             toolStripButtonEditView = new ToolStripButton();
-            toolStripLabel4 = new ToolStripLabel();
-            toolStripComboBox4 = new ToolStripComboBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            toolStrip4.SuspendLayout();
             toolStrip1.SuspendLayout();
             toolStrip2.SuspendLayout();
             toolStrip3.SuspendLayout();
@@ -110,7 +107,7 @@ namespace MarkDownHelper
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 88);
+            splitContainer1.Location = new Point(0, 87);
             splitContainer1.Margin = new Padding(4);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = Orientation.Horizontal;
@@ -118,12 +115,13 @@ namespace MarkDownHelper
             // splitContainer1.Panel1
             // 
             splitContainer1.Panel1.Controls.Add(richTextBox1);
+            splitContainer1.Panel1.Controls.Add(toolStrip4);
             // 
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(browserWrapper1);
-            splitContainer1.Size = new Size(1200, 531);
-            splitContainer1.SplitterDistance = 275;
+            splitContainer1.Size = new Size(1200, 532);
+            splitContainer1.SplitterDistance = 274;
             splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 0;
             // 
@@ -133,13 +131,53 @@ namespace MarkDownHelper
             richTextBox1.DetectUrls = false;
             richTextBox1.Dock = DockStyle.Fill;
             richTextBox1.Font = new Font("Consolas", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            richTextBox1.Location = new Point(0, 0);
+            richTextBox1.Location = new Point(0, 31);
             richTextBox1.Margin = new Padding(4);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(1200, 275);
+            richTextBox1.Size = new Size(1200, 243);
             richTextBox1.TabIndex = 1;
             richTextBox1.Text = "";
             richTextBox1.TextChanged += richTextBox1_TextChanged;
+            // 
+            // toolStrip4
+            // 
+            toolStrip4.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            toolStrip4.GripStyle = ToolStripGripStyle.Hidden;
+            toolStrip4.ImageScalingSize = new Size(24, 24);
+            toolStrip4.Items.AddRange(new ToolStripItem[] { toolStripButton14, toolStripButton16, toolStripButton15 });
+            toolStrip4.Location = new Point(0, 0);
+            toolStrip4.Name = "toolStrip4";
+            toolStrip4.Size = new Size(1200, 31);
+            toolStrip4.TabIndex = 2;
+            toolStrip4.Text = "toolStrip4";
+            // 
+            // toolStripButton14
+            // 
+            toolStripButton14.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButton14.Image = (Image)resources.GetObject("toolStripButton14.Image");
+            toolStripButton14.ImageTransparentColor = Color.Magenta;
+            toolStripButton14.Name = "toolStripButton14";
+            toolStripButton14.Size = new Size(64, 28);
+            toolStripButton14.Text = "Format";
+            toolStripButton14.Click += toolStripButton14_Click;
+            // 
+            // toolStripButton16
+            // 
+            toolStripButton16.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButton16.Image = (Image)resources.GetObject("toolStripButton16.Image");
+            toolStripButton16.ImageTransparentColor = Color.Magenta;
+            toolStripButton16.Name = "toolStripButton16";
+            toolStripButton16.Size = new Size(53, 28);
+            toolStripButton16.Text = "Insert";
+            toolStripButton16.Click += toolStripButton16_Click;
+            // 
+            // toolStripButton15
+            // 
+            toolStripButton15.Image = (Image)resources.GetObject("toolStripButton15.Image");
+            toolStripButton15.ImageTransparentColor = Color.Magenta;
+            toolStripButton15.Name = "toolStripButton15";
+            toolStripButton15.Size = new Size(91, 28);
+            toolStripButton15.Text = "Refresh";
             // 
             // browserWrapper1
             // 
@@ -151,7 +189,7 @@ namespace MarkDownHelper
             browserWrapper1.Name = "browserWrapper1";
             browserWrapper1.NavComplete = false;
             browserWrapper1.RootPath = "";
-            browserWrapper1.Size = new Size(1200, 251);
+            browserWrapper1.Size = new Size(1200, 253);
             browserWrapper1.TabIndex = 2;
             // 
             // toolStrip1
@@ -159,7 +197,7 @@ namespace MarkDownHelper
             toolStrip1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
             toolStrip1.ImageScalingSize = new Size(24, 24);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripSeparator8, toolStripButton1, toolStripButton2, toolStripButton3, toolStripSeparator2, toolStripDropDownButtonInsert, toolStripSeparator3, toolStripButton11, toolStripButton29, toolStripButton28, toolStripButton27, toolStripButton26, toolStripButton25, toolStripSeparator5, toolStripButton24, toolStripButton23, toolStripSeparator4, toolStripButton22, toolStripButton21, toolStripSeparator6, toolStripButton12, toolStripButton13, toolStripSeparator7, toolStripButton4, toolStripLabel1, toolStripComboBox2, toolStripLabel4, toolStripComboBox4 });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripSeparator8, toolStripButton1, toolStripButton2, toolStripButton3, toolStripSeparator2, toolStripDropDownButtonInsert, toolStripSeparator3, toolStripButton11, toolStripButton29, toolStripButton28, toolStripButton27, toolStripButton26, toolStripButton25, toolStripSeparator5, toolStripButton24, toolStripButton23, toolStripSeparator4, toolStripButton22, toolStripButton21, toolStripSeparator6, toolStripButton12, toolStripButton13, toolStripSeparator7, toolStripButton4 });
             toolStrip1.Location = new Point(0, 28);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1200, 31);
@@ -453,21 +491,6 @@ namespace MarkDownHelper
             toolStripButton4.Text = "Refresh";
             toolStripButton4.Click += toolStripButton4_Click;
             // 
-            // toolStripLabel1
-            // 
-            toolStripLabel1.Name = "toolStripLabel1";
-            toolStripLabel1.Size = new Size(141, 28);
-            toolStripLabel1.Text = "Code Block Theme:";
-            // 
-            // toolStripComboBox2
-            // 
-            toolStripComboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
-            toolStripComboBox2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            toolStripComboBox2.Items.AddRange(new object[] { "1c-light", "a11y-dark", "a11y-light", "agate", "an-old-hope", "androidstudio", "arduino-light", "arta", "ascetic", "atom-one-dark-reasonable", "atom-one-dark", "atom-one-light", "brown-paper", "brown-papersq.png", "codepen-embed", "color-brewer", "dark", "default", "devibeans", "docco", "far", "felipec", "foundation", "github-dark-dimmed", "github-dark", "github", "gml", "googlecode", "gradient-dark", "gradient-light", "grayscale", "hybrid", "idea", "intellij-light", "ir-black", "isbl-editor-dark", "isbl-editor-light", "kimbie-dark", "kimbie-light", "lightfair", "lioshi", "magula", "mono-blue", "monokai-sublime", "monokai", "night-owl", "nnfx-dark", "nnfx-light", "nord", "obsidian", "panda-syntax-dark", "panda-syntax-light", "paraiso-dark", "paraiso-light", "pojoaque", "pojoaque.jpg", "purebasic", "qtcreator-dark", "qtcreator-light", "rainbow", "routeros", "school-book", "shades-of-purple", "srcery", "stackoverflow-dark", "stackoverflow-light", "sunburst", "tokyo-night-dark", "tokyo-night-light", "tomorrow-night-blue", "tomorrow-night-bright", "vs", "vs2015", "xcode", "xt256" });
-            toolStripComboBox2.Name = "toolStripComboBox2";
-            toolStripComboBox2.Size = new Size(175, 31);
-            toolStripComboBox2.SelectedIndexChanged += toolStripComboBox2_SelectedIndexChanged;
-            // 
             // toolStripDropDownButton5
             // 
             toolStripDropDownButton5.DisplayStyle = ToolStripItemDisplayStyle.Text;
@@ -606,10 +629,10 @@ namespace MarkDownHelper
             // 
             toolStrip2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             toolStrip2.GripStyle = ToolStripGripStyle.Hidden;
-            toolStrip2.Items.AddRange(new ToolStripItem[] { toolStripButtonEdit, toolStripLabel2, toolStripComboBox1, toolStripLabel3, toolStripComboBox3 });
+            toolStrip2.Items.AddRange(new ToolStripItem[] { toolStripButtonEdit });
             toolStrip2.Location = new Point(0, 59);
             toolStrip2.Name = "toolStrip2";
-            toolStrip2.Size = new Size(1200, 29);
+            toolStrip2.Size = new Size(1200, 28);
             toolStrip2.TabIndex = 1;
             toolStrip2.Text = "toolStrip2";
             // 
@@ -619,41 +642,13 @@ namespace MarkDownHelper
             toolStripButtonEdit.Image = (Image)resources.GetObject("toolStripButtonEdit.Image");
             toolStripButtonEdit.ImageTransparentColor = Color.Magenta;
             toolStripButtonEdit.Name = "toolStripButtonEdit";
-            toolStripButtonEdit.Size = new Size(40, 26);
+            toolStripButtonEdit.Size = new Size(40, 25);
             toolStripButtonEdit.Text = "Edit";
             toolStripButtonEdit.Click += toolStripButtonEdit_Click;
             // 
-            // toolStripLabel2
-            // 
-            toolStripLabel2.Name = "toolStripLabel2";
-            toolStripLabel2.Size = new Size(141, 26);
-            toolStripLabel2.Text = "Code Block Theme:";
-            // 
-            // toolStripComboBox1
-            // 
-            toolStripComboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
-            toolStripComboBox1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            toolStripComboBox1.Items.AddRange(new object[] { "1c-light", "a11y-dark", "a11y-light", "agate", "an-old-hope", "androidstudio", "arduino-light", "arta", "ascetic", "atom-one-dark-reasonable", "atom-one-dark", "atom-one-light", "brown-paper", "brown-papersq.png", "codepen-embed", "color-brewer", "dark", "default", "devibeans", "docco", "far", "felipec", "foundation", "github-dark-dimmed", "github-dark", "github", "gml", "googlecode", "gradient-dark", "gradient-light", "grayscale", "hybrid", "idea", "intellij-light", "ir-black", "isbl-editor-dark", "isbl-editor-light", "kimbie-dark", "kimbie-light", "lightfair", "lioshi", "magula", "mono-blue", "monokai-sublime", "monokai", "night-owl", "nnfx-dark", "nnfx-light", "nord", "obsidian", "panda-syntax-dark", "panda-syntax-light", "paraiso-dark", "paraiso-light", "pojoaque", "pojoaque.jpg", "purebasic", "qtcreator-dark", "qtcreator-light", "rainbow", "routeros", "school-book", "shades-of-purple", "srcery", "stackoverflow-dark", "stackoverflow-light", "sunburst", "tokyo-night-dark", "tokyo-night-light", "tomorrow-night-blue", "tomorrow-night-bright", "vs", "vs2015", "xcode", "xt256" });
-            toolStripComboBox1.Name = "toolStripComboBox1";
-            toolStripComboBox1.Size = new Size(175, 29);
-            toolStripComboBox1.SelectedIndexChanged += toolStripComboBox1_SelectedIndexChanged;
-            // 
-            // toolStripLabel3
-            // 
-            toolStripLabel3.Name = "toolStripLabel3";
-            toolStripLabel3.Size = new Size(89, 26);
-            toolStripLabel3.Text = "Indent Size:";
-            // 
-            // toolStripComboBox3
-            // 
-            toolStripComboBox3.DropDownStyle = ComboBoxStyle.DropDownList;
-            toolStripComboBox3.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" });
-            toolStripComboBox3.Name = "toolStripComboBox3";
-            toolStripComboBox3.Size = new Size(121, 29);
-            toolStripComboBox3.SelectedIndexChanged += toolStripComboBox3_SelectedIndexChanged;
-            // 
             // toolStrip3
             // 
+            toolStrip3.GripStyle = ToolStripGripStyle.Hidden;
             toolStrip3.Items.AddRange(new ToolStripItem[] { toolStripButtonEditView, toolStripDropDownButton5, toolStripButtonSave, toolStripDropDownButton1, toolStripButtonFragments });
             toolStrip3.Location = new Point(0, 0);
             toolStrip3.Name = "toolStrip3";
@@ -672,20 +667,6 @@ namespace MarkDownHelper
             toolStripButtonEditView.Text = "View";
             toolStripButtonEditView.Click += toolStripButtonEditView_Click;
             // 
-            // toolStripLabel4
-            // 
-            toolStripLabel4.Name = "toolStripLabel4";
-            toolStripLabel4.Size = new Size(89, 28);
-            toolStripLabel4.Text = "Indent Size:";
-            // 
-            // toolStripComboBox4
-            // 
-            toolStripComboBox4.DropDownStyle = ComboBoxStyle.DropDownList;
-            toolStripComboBox4.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" });
-            toolStripComboBox4.Name = "toolStripComboBox4";
-            toolStripComboBox4.Size = new Size(121, 31);
-            toolStripComboBox4.SelectedIndexChanged += toolStripComboBox4_SelectedIndexChanged;
-            // 
             // MarkDownEditor
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -694,13 +675,18 @@ namespace MarkDownHelper
             Controls.Add(toolStrip2);
             Controls.Add(toolStrip1);
             Controls.Add(toolStrip3);
+            Enabled = false;
             Margin = new Padding(4);
             Name = "MarkDownEditor";
             Size = new Size(1200, 619);
+            EnabledChanged += MarkDownEditor_EnabledChanged;
             splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            toolStrip4.ResumeLayout(false);
+            toolStrip4.PerformLayout();
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             toolStrip2.ResumeLayout(false);
@@ -772,13 +758,9 @@ namespace MarkDownHelper
         private ToolStripButton toolStripButtonFragments;
         private ToolStrip toolStrip3;
         private ToolStripButton toolStripButtonEditView;
-        private ToolStripComboBox toolStripComboBox1;
-        private ToolStripComboBox toolStripComboBox2;
-        private ToolStripLabel toolStripLabel1;
-        private ToolStripLabel toolStripLabel2;
-        private ToolStripLabel toolStripLabel3;
-        private ToolStripComboBox toolStripComboBox3;
-        private ToolStripLabel toolStripLabel4;
-        private ToolStripComboBox toolStripComboBox4;
+        private ToolStrip toolStrip4;
+        private ToolStripButton toolStripButton14;
+        private ToolStripButton toolStripButton15;
+        private ToolStripButton toolStripButton16;
     }
 }

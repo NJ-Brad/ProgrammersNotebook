@@ -31,6 +31,7 @@ namespace ProgrammersNotebook
             //var form1 = host.Services.GetRequiredService<Form1>();
             var form1 = host.Services.GetRequiredService<NotebookForm>();
             Application.Run(form1);
+
         }
     }
 }

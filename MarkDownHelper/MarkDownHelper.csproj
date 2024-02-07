@@ -16,6 +16,7 @@
   <ItemGroup>
     <Compile Remove="Editor_.cs" />
     <Compile Remove="Editor_.Designer.cs" />
+    <Compile Remove="TablessTabControl.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,22 +29,64 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="CodeForm.cs">
+    <Compile Update="LegacyForms\CodeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="DefinitionForm.cs">
+    <Compile Update="LegacyForms\DefinitionForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="MarkDownEditor.cs" />
     <Compile Update="ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="LinkForm.cs">
+    <Compile Update="LegacyForms\LinkForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="TableForm.cs">
+    <Compile Update="LegacyForms\TableForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="WizardPages\DefinitionPage.cs" />
+    <Compile Update="WizardPages\LinkPage.cs" />
+    <Compile Update="Wizard\TestPages\PageFour.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="WizardPages\ConfirmationPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="WizardPages\SelectLanguagePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="WizardPages\SelectInsertionPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="WizardPages\SelectFormatPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Wizard\TestPages\PageThree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Wizard\TestPages\PageTwo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="WizardPages\TableHeaderPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\FormatImages\" />
   </ItemGroup>
 
 </Project>
