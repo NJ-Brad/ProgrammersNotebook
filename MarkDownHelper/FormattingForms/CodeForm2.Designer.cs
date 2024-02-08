@@ -174,6 +174,8 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "CodeForm2";
+            ShowInTaskbar = false;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Code";
             ResumeLayout(false);
             PerformLayout();

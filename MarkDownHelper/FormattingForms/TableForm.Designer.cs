@@ -1,6 +1,6 @@
-﻿namespace MarkDownHelper.WizardPages
+﻿namespace MarkDownHelper
 {
-    partial class TableHeaderPage
+    partial class TableForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,32 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            panel1 = new Panel();
+            button1 = new Button();
+            button2 = new Button();
             dataGridView1 = new DataGridView();
             Column1 = new DataGridViewTextBoxColumn();
             Column2 = new DataGridViewComboBoxColumn();
-            panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
-            // panel1
+            // button1
             // 
-            panel1.Anchor = AnchorStyles.None;
-            panel1.Controls.Add(dataGridView1);
-            panel1.Location = new Point(3, 3);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(312, 209);
-            panel1.TabIndex = 9;
+            button1.Location = new Point(135, 226);
+            button1.Margin = new Padding(4, 4, 4, 4);
+            button1.Name = "button1";
+            button1.Size = new Size(88, 30);
+            button1.TabIndex = 6;
+            button1.Text = "OK";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // button2
+            // 
+            button2.DialogResult = DialogResult.Cancel;
+            button2.Location = new Point(230, 226);
+            button2.Margin = new Padding(4, 4, 4, 4);
+            button2.Name = "button2";
+            button2.Size = new Size(88, 30);
+            button2.TabIndex = 7;
+            button2.Text = "Cancel";
+            button2.UseVisualStyleBackColor = true;
             // 
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2 });
-            dataGridView1.Location = new Point(4, 4);
-            dataGridView1.Margin = new Padding(4);
+            dataGridView1.Location = new Point(15, 17);
+            dataGridView1.Margin = new Padding(4, 4, 4, 4);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.Size = new Size(302, 196);
-            dataGridView1.TabIndex = 9;
+            dataGridView1.TabIndex = 8;
             // 
             // Column1
             // 
@@ -66,24 +79,34 @@
             Column2.Items.AddRange(new object[] { "Left", "Center", "Right" });
             Column2.Name = "Column2";
             // 
-            // TableHeaderPage
+            // TableForm
             // 
+            AcceptButton = button1;
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(panel1);
+            CancelButton = button2;
+            ClientSize = new Size(331, 272);
+            Controls.Add(dataGridView1);
+            Controls.Add(button2);
+            Controls.Add(button1);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
             Margin = new Padding(4, 4, 4, 4);
-            Name = "TableHeaderPage";
-            Size = new Size(321, 221);
-            panel1.ResumeLayout(false);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "TableForm";
+            ShowInTaskbar = false;
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Table";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private Panel panel1;
-        private DataGridView dataGridView1;
-        private DataGridViewTextBoxColumn Column1;
-        private DataGridViewComboBoxColumn Column2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewComboBoxColumn Column2;
     }
 }

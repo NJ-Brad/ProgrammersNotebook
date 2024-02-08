@@ -3,11 +3,11 @@ using System.Net;
 
 namespace MarkDownHelper
 {
-    public partial class ImageForm2 : Form
+    public partial class ImageForm : Form
     {
         string baseDir = string.Empty;
 
-        public ImageForm2()
+        public ImageForm()
         {
             InitializeComponent();
             //this.baseDir = baseDir;
@@ -43,7 +43,10 @@ namespace MarkDownHelper
 
                 if (foundAt == -1)
                 {
-                    pictureBox1.Image = GetImage(Link);
+                    //pictureBox1.Image = GetImage(Link);
+                    pictureBox1.ImageLocation = Link;
+                    pictureBox1.Load();
+
                     panel1.Visible = true;
                     pictureBox1.Visible = true;
 

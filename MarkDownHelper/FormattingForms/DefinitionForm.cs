@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace MarkDownHelper
+﻿namespace MarkDownHelper
 {
     public partial class DefinitionForm : Form
     {
@@ -11,20 +7,26 @@ namespace MarkDownHelper
             InitializeComponent();
         }
 
-        public string Term {
-            get {
+        public string Term
+        {
+            get
+            {
                 return this.term;
             }
-            set {
+            set
+            {
                 this.term = value;
             }
         }
 
-        public string Meaning {
-            get {
+        public string Meaning
+        {
+            get
+            {
                 return this.meaning;
             }
-            set {
+            set
+            {
                 this.meaning = value;
             }
         }

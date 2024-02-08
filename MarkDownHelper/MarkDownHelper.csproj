@@ -29,58 +29,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ImageForm2.cs">
+    <Compile Update="FormattingForms\ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="LegacyForms\CodeForm2.cs">
+    <Compile Update="FormattingForms\CodeForm2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="LegacyForms\CodeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="LegacyForms\DefinitionForm.cs">
+    <Compile Update="FormattingForms\DefinitionForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="MarkDownEditor.cs" />
-    <Compile Update="ImageForm.cs">
+    <Compile Update="FormattingForms\LinkForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="LegacyForms\LinkForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="LegacyForms\TableForm.cs">
+    <Compile Update="FormattingForms\TableForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="WizardPages\DefinitionPage.cs" />
-    <Compile Update="WizardPages\LinkPage.cs" />
-    <Compile Update="Wizard\TestPages\PageFour.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="WizardPages\ConfirmationPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="WizardPages\SelectLanguagePage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="WizardPages\SelectInsertionPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="WizardPages\SelectFormatPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Wizard\TestPages\PageThree.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Wizard\TestPages\PageTwo.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="WizardPages\TableHeaderPage.cs">
-      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
 

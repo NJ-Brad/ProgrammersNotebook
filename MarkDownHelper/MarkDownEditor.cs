@@ -1,6 +1,4 @@
-﻿using MarkDownHelper.Wizard;
-using MarkDownHelper.WizardPages;
-using System.Drawing.Imaging;
+﻿using System.Drawing.Imaging;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
@@ -19,39 +17,6 @@ namespace MarkDownHelper
             // http://stackoverflow.com/questions/4823468/comments-in-markdown
             // (empty line)
             // [comment]: # (This actually is the most platform independent comment)
-
-            // https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
-            // I didn't implement the Youtube video option
-            operations.Add("H1", "# ");
-            operations.Add("H2", "## ");
-            operations.Add("H3", "### ");
-            operations.Add("H4", "#### ");
-            operations.Add("H5", "##### ");
-            operations.Add("H6", "###### ");
-            operations.Add("Alt-H1", string.Empty, t => { return "\r\n" + new string('=', t.Length); });
-            operations.Add("Alt-H2", string.Empty, t => { return "\r\n" + new string('-', t.Length); });
-            operations.Add("Italic", "_", "_");
-            operations.Add("Bold", "**", "**");
-            operations.Add("Strike", "~~", "~~");
-            operations.Add("HR", "\r\n----");
-            //operations.Add("Link", t => { return LinkForm.CreateLinkText(); }, string.Empty);
-            operations.Add("Ordered List", "1. ");
-            operations.Add("Unordered List", "+ ");
-            operations.Add("Image", t => { return ImageForm.CreateImageText(Path.GetDirectoryName(fileName)); }, string.Empty);
-            operations.Add("Code", t => { return CodeForm.CreateLanguageText(); }, "\n```");
-            operations.Add("Quote", t => { StringBuilder sb = new StringBuilder("\n" + t); sb.Replace("\n", "\n> "); return sb.ToString().TrimStart().TrimEnd(new char[] { '\n', '>', ' ' }); }, string.Empty);
-            operations["Quote"].KeepOriginal = false;
-            operations.Add("Dictionary", "<dl>\n", "</dl>");
-            operations.Add("Definition", t => { return DefinitionForm.CreateDefinitionText(); }, string.Empty);
-            operations.Add("Header", t => { return TableForm.CreateTableText(); }, string.Empty);
-            operations.Add("Row", string.Empty, t =>
-            {
-                int cols = t.Occurrences('|') + 1; if (t.StartsWith("|")) cols--; if (t.TrimEnd().EndsWith("|")) cols--;
-                StringBuilder sb = new StringBuilder("\n|"); for (int i = 0; i < cols; i++) { sb.Append("value|"); }
-                return sb.ToString();
-            });
-            operations.Add("Task", "- [ ]", string.Empty);
-
 
             ContextMenuStrip contextMenu = new();
             contextMenu.Font = new Font(Font.FontFamily, 14);
@@ -172,7 +137,7 @@ namespace MarkDownHelper
             //CreateMenuItem(contextMenu.Items, "Image", "Image.png", t => { return ImageForm.CreateImageText(Path.GetDirectoryName(fileName)); });
             CreateMenuItem(contextMenu.Items, "Image", "Image.png", t =>
             {
-                ImageForm2 if2 = new()
+                ImageForm if2 = new()
                 {
                     EmbeddedFragmentHandler = EmbeddedFragmentHandler
                 };
@@ -311,7 +276,6 @@ namespace MarkDownHelper
                 toolStripButtonSave.Visible = !handleFiles && !viewMode;
                 splitContainer1.Panel1Collapsed = viewMode;
                 //toolStrip1.Visible = !viewMode;
-                toolStrip1.Visible = false;
                 toolStrip4.Visible = !viewMode;
                 toolStrip3.Visible = !viewMode;
                 toolStrip2.Visible = viewMode;
@@ -984,7 +948,7 @@ Finally, include a section for the license of your project. For more information
                 EmbeddedFragmentHandler?.Invoke(this, args);
 
                 // take a trip through the image form to set additional fields
-                ImageForm2 if2 = new()
+                ImageForm if2 = new()
                 {
                     EmbeddedFragmentHandler = EmbeddedFragmentHandler,
                     Link = $"notebook://{name}"
@@ -1001,7 +965,7 @@ Finally, include a section for the license of your project. For more information
         private void InsertRemoteImage(string url)
         {
             // take a trip through the image form to set additional fields
-            ImageForm2 if2 = new()
+            ImageForm if2 = new()
             {
                 EmbeddedFragmentHandler = EmbeddedFragmentHandler,
                 Link = url
@@ -1300,53 +1264,6 @@ Finally, include a section for the license of your project. For more information
         private void MarkDownEditor_EnabledChanged(object sender, EventArgs e)
         {
             toolStripButtonEdit.Enabled = Enabled;
-        }
-
-        private void toolStripButton14_Click(object sender, EventArgs e)
-        {
-            WizardForm wf = new WizardForm();
-
-            wf.Pages.Add(new PageOne());
-            wf.Pages.Add(new PageTwo());
-            wf.Pages.Add(new PageThree());
-            wf.Pages.Add(new PageFour());
-            //wf.StartWizard();
-
-            wf.Pages.Add(new SelectFormatPage());
-            wf.Pages.Add(new ConfirmationPage());
-            wf.Pages.Add(new SelectLanguagePage());
-
-
-            wf.Data["TestText"] = richTextBox1.SelectedText;
-
-            if (wf.StartWizard("SelectFormatPage") == WizardResult.OK)
-            {
-                richTextBox1.SelectedText = wf.Data["ResultText"].ToString();
-                ShowText(richTextBox1.Text);
-            }
-        }
-
-        private void toolStripButton16_Click(object sender, EventArgs e)
-        {
-            WizardForm wf = new WizardForm();
-
-            wf.Pages.Add(new SelectInsertionPage());
-            wf.Pages.Add(new ConfirmationPage());
-            wf.Pages.Add(new TableHeaderPage());
-            wf.Pages.Add(new DefinitionPage());
-            wf.Pages.Add(new LinkPage());
-            //            wf.Pages.Add(new SelectLanguagePage());
-
-            // I need the line before, when inserting a table row.  Do I need the whole control, or just the line before?
-            wf.Data["SourceControl"] = richTextBox1;
-            wf.Data["LineBefore"] = GetLineBefore(richTextBox1);
-            wf.Data["TestText"] = richTextBox1.SelectedText;
-
-            if (wf.StartWizard("SelectInsertionPage") == WizardResult.OK)
-            {
-                richTextBox1.SelectedText = wf.Data["ResultText"].ToString();
-                ShowText(richTextBox1.Text);
-            }
         }
 
         //private string GetLineBefore(TextBox tb)

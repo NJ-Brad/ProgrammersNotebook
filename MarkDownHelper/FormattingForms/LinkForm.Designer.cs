@@ -51,7 +51,7 @@
             // textBox1
             // 
             textBox1.Location = new Point(103, 50);
-            textBox1.Margin = new Padding(4, 4, 4, 4);
+            textBox1.Margin = new Padding(4);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(214, 25);
             textBox1.TabIndex = 3;
@@ -59,7 +59,7 @@
             // textBox2
             // 
             textBox2.Location = new Point(103, 16);
-            textBox2.Margin = new Padding(4, 4, 4, 4);
+            textBox2.Margin = new Padding(4);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(214, 25);
             textBox2.TabIndex = 1;
@@ -77,7 +77,7 @@
             // textBox3
             // 
             textBox3.Location = new Point(103, 84);
-            textBox3.Margin = new Padding(4, 4, 4, 4);
+            textBox3.Margin = new Padding(4);
             textBox3.Name = "textBox3";
             textBox3.Size = new Size(214, 25);
             textBox3.TabIndex = 5;
@@ -95,7 +95,7 @@
             // button1
             // 
             button1.Location = new Point(135, 119);
-            button1.Margin = new Padding(4, 4, 4, 4);
+            button1.Margin = new Padding(4);
             button1.Name = "button1";
             button1.Size = new Size(88, 30);
             button1.TabIndex = 6;
@@ -107,7 +107,7 @@
             // 
             button2.DialogResult = DialogResult.Cancel;
             button2.Location = new Point(230, 119);
-            button2.Margin = new Padding(4, 4, 4, 4);
+            button2.Margin = new Padding(4);
             button2.Name = "button2";
             button2.Size = new Size(88, 30);
             button2.TabIndex = 7;
@@ -130,10 +130,11 @@
             Controls.Add(textBox1);
             Controls.Add(label1);
             FormBorderStyle = FormBorderStyle.FixedDialog;
-            Margin = new Padding(4, 4, 4, 4);
+            Margin = new Padding(4);
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "LinkForm";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "Link";
             ResumeLayout(false);

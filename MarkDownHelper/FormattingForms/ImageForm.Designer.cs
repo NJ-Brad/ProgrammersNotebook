@@ -1,6 +1,6 @@
 ﻿namespace MarkDownHelper
 {
-    partial class ImageForm2
+    partial class ImageForm
     {
         /// <summary>
         /// Required designer variable.
