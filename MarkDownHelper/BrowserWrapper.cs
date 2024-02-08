@@ -279,6 +279,7 @@ namespace MarkDownHelper
 
             // https://github.github.com/github-flavored-markdown/sample_content.html
 
+            // https://digitaltapestry.net/posts/markdig-cheat-sheet
             // Configure the pipeline with all advanced extensions active
             //var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Use<EmbeddedImageExtension>().Build();
             var pipeline = new MarkdownPipelineBuilder()

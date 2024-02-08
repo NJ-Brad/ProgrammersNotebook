@@ -54,46 +54,46 @@ namespace MarkDownHelper.WizardPages
             }
         }
 
-        public static string CreateLinkText()
-        {
-            string rtnVal = string.Empty;
+        //public static string CreateLinkText()
+        //{
+        //    string rtnVal = string.Empty;
 
-            LinkForm form = new LinkForm();
-            if (form.ShowDialog() == DialogResult.OK)
-            {
-                string display = string.Empty;
-                string linkText = string.Empty;
-                string tooltip = string.Empty;
+        //    LinkForm form = new LinkForm();
+        //    if (form.ShowDialog() == DialogResult.OK)
+        //    {
+        //        string display = string.Empty;
+        //        string linkText = string.Empty;
+        //        string tooltip = string.Empty;
 
-                if (!string.IsNullOrEmpty(form.Display))
-                {
-                    display = form.Display;
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(form.LinkText))
-                    {
-                        display = form.LinkText;
-                    }
-                }
+        //        if (!string.IsNullOrEmpty(form.Display))
+        //        {
+        //            display = form.Display;
+        //        }
+        //        else
+        //        {
+        //            if (!string.IsNullOrEmpty(form.LinkText))
+        //            {
+        //                display = form.LinkText;
+        //            }
+        //        }
 
-                linkText = form.LinkText;
-                tooltip = form.Tooltip;
+        //        linkText = form.LinkText;
+        //        tooltip = form.Tooltip;
 
-                if (string.IsNullOrEmpty(linkText))
-                {
-                    return string.Empty;
-                }
+        //        if (string.IsNullOrEmpty(linkText))
+        //        {
+        //            return string.Empty;
+        //        }
 
-                if (!string.IsNullOrEmpty(tooltip))
-                {
-                    linkText = string.Format("{0} \"{1}\"", linkText, tooltip);
-                }
+        //        if (!string.IsNullOrEmpty(tooltip))
+        //        {
+        //            linkText = string.Format("{0} \"{1}\"", linkText, tooltip);
+        //        }
 
-                rtnVal = string.Format("[{0}]({1})", display, linkText);
-            }
-            return rtnVal;
-        }
+        //        rtnVal = string.Format("[{0}]({1})", display, linkText);
+        //    }
+        //    return rtnVal;
+        //}
 
         string display = string.Empty;
         string link = string.Empty;

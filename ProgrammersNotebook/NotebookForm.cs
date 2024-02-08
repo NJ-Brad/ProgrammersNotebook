@@ -65,6 +65,7 @@ namespace ProgrammersNotebook
                     DocumentType = p.DocumentType,
                     Pages = p.Pages
                 })
+                .OrderBy(p => p.Name)
                 .ToList();
 
             imageTree1.Nodes.Clear();

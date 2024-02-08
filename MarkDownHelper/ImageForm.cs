@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace MarkDownHelper
+﻿namespace MarkDownHelper
 {
     public partial class ImageForm : Form
     {
@@ -17,18 +12,18 @@ namespace MarkDownHelper
             // http://stackoverflow.com/questions/2069048/setting-the-filter-to-an-openfiledialog-to-allow-the-typical-image-formats
             //var imageExtensions = string.Join(";", ImageCodecInfo.GetImageDecoders().Select(ici => ici.FilenameExtension)); dialog.Filter = string.Format("Images|{0}|All Files|*.*", imageExtensions);
 
-            string[] allowedExtensions = new string[]{"BMP","DIB","RLE","JPG","JPEG","JPE","JFIF","GIF","TIF","TIFF","PNG"};
+            string[] allowedExtensions = new string[] { "BMP", "DIB", "RLE", "JPG", "JPEG", "JPE", "JFIF", "GIF", "TIF", "TIFF", "PNG" };
 
-            foreach (string fileName in Directory.GetFiles(baseDir))
-            {
-                string check = fileName.ToUpper();
-                string[] parts = check.Split('.');
-                string lastPart = parts[parts.Length - 1];
-                if (allowedExtensions.Contains<string>(lastPart))
-                {
-                    listBox1.Items.Add(Path.GetFileName(fileName));
-                }
-            }
+            //foreach (string fileName in Directory.GetFiles(baseDir))
+            //{
+            //    string check = fileName.ToUpper();
+            //    string[] parts = check.Split('.');
+            //    string lastPart = parts[parts.Length - 1];
+            //    if (allowedExtensions.Contains<string>(lastPart))
+            //    {
+            //        listBox1.Items.Add(Path.GetFileName(fileName));
+            //    }
+            //}
         }
 
         public string Display
@@ -134,30 +129,30 @@ namespace MarkDownHelper
             ofd.CheckFileExists = true;
             ofd.Multiselect = false;
 
-            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                foreach (string str in ofd.FileNames)
-                {
-                    if (Path.GetDirectoryName(str) != baseDir)
-                    {
-                        string newPath = Path.Combine(baseDir, Path.GetFileName(str));
-                        if (File.Exists(newPath))
-                        {
-                            if (MessageBox.Show("Overwrite file?", "Warning", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
-                            {
-                                File.Copy(str, newPath, true);
-                                textBox2.Text = string.Format("./{0}", listBox1.SelectedItem);
-                            }
-                        }
-                        else
-                        {
-                            File.Copy(str, newPath, true);
-                            listBox1.Items.Add(Path.GetFileName(newPath));
-                            textBox2.Text = string.Format("./{0}", Path.GetFileName(newPath));
-                        }
-                    }
-                }
-            }
+            //if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //{
+            //    foreach (string str in ofd.FileNames)
+            //    {
+            //        if (Path.GetDirectoryName(str) != baseDir)
+            //        {
+            //            string newPath = Path.Combine(baseDir, Path.GetFileName(str));
+            //            if (File.Exists(newPath))
+            //            {
+            //                if (MessageBox.Show("Overwrite file?", "Warning", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            //                {
+            //                    File.Copy(str, newPath, true);
+            //                    textBox2.Text = string.Format("./{0}", listBox1.SelectedItem);
+            //                }
+            //            }
+            //            else
+            //            {
+            //                File.Copy(str, newPath, true);
+            //                listBox1.Items.Add(Path.GetFileName(newPath));
+            //                textBox2.Text = string.Format("./{0}", Path.GetFileName(newPath));
+            //            }
+            //        }
+            //    }
+            //}
 
         }
     }

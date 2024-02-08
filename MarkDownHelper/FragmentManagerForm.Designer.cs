@@ -189,10 +189,10 @@
             // textBox2
             // 
             textBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox2.Location = new Point(194, 136);
+            textBox2.Location = new Point(261, 136);
             textBox2.Multiline = true;
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(396, 274);
+            textBox2.Size = new Size(329, 274);
             textBox2.TabIndex = 16;
             // 
             // panel1

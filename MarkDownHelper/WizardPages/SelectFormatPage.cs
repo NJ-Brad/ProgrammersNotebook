@@ -35,8 +35,14 @@ namespace MarkDownHelper.WizardPages
 
             EnableNextPage(false);  // user needs to select a formatting
 
+            // https://www.markdownguide.org/hacks/#indent-tab
             ConnectButton(buttonItalic, t => { return $"*{t}*"; });
             ConnectButton(buttonBold, t => { return $"**{t}**"; });
+            //ConnectButton(buttonUnderline, t => { return $"<ins>{t}</ins>"; });
+            //ConnectButton(buttonUnderline, t => { return $"<u>{t}</u>"; });
+            ConnectButton(buttonUnderline, t => { return $"__{t}__"; });
+
+            //< span style = "text-decoration:underline" > text </ span >
             ConnectButton(buttonStrike, t => { return $"~~{t}~~"; });
             ConnectButton(buttonHd1, t => { return $"#{t}#"; });
             ConnectButton(buttonHd2, t => { return $"##{t}##"; });

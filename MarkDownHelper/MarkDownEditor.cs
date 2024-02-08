@@ -1,6 +1,7 @@
 ﻿using MarkDownHelper.Wizard;
 using MarkDownHelper.WizardPages;
 using System.Drawing.Imaging;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 
@@ -10,6 +11,8 @@ namespace MarkDownHelper
 
     public partial class MarkDownEditor : UserControl //Form
     {
+        // https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor2
+
         public MarkDownEditor()
         {
             InitializeComponent();
@@ -31,7 +34,7 @@ namespace MarkDownHelper
             operations.Add("Bold", "**", "**");
             operations.Add("Strike", "~~", "~~");
             operations.Add("HR", "\r\n----");
-            operations.Add("Link", t => { return LinkForm.CreateLinkText(); }, string.Empty);
+            //operations.Add("Link", t => { return LinkForm.CreateLinkText(); }, string.Empty);
             operations.Add("Ordered List", "1. ");
             operations.Add("Unordered List", "+ ");
             operations.Add("Image", t => { return ImageForm.CreateImageText(Path.GetDirectoryName(fileName)); }, string.Empty);
@@ -51,13 +54,151 @@ namespace MarkDownHelper
 
 
             ContextMenuStrip contextMenu = new();
+            contextMenu.Font = new Font(Font.FontFamily, 14);
+
+            contextMenu.ImageList = imageList1;
+            contextMenu.ImageScalingSize = new Size(24, 24);
+
+            // https://www.markdownguide.org/hacks/#indent-tab
+            CreateMenuItem(contextMenu.Items, "Italic", "Italic.png", t => { return $"*{t}*"; });
+
+            CreateMenuItem(contextMenu.Items, "Bold", "Bold.png", t => { return $"**{t}**"; });
+            CreateMenuItem(contextMenu.Items, "Underline", "underline.png", t => { return $"__{t}__"; });
+            CreateMenuItem(contextMenu.Items, "Strike", "Strike.png", t => { return $"~~{t}~~"; });
+
+            ToolStripMenuItem headingMenuItem = new ToolStripMenuItem("Heading");
+            headingMenuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+            contextMenu.Items.Add(headingMenuItem);
+
+            //headingMenuItem.DropDownItems
+
+            //CreateMenuItem(contextMenu.Items, "Heading 1", "Header_1.png", t => { return $"# {t}"; });
+
+            CreateMenuItem(headingMenuItem.DropDownItems, "Heading 1", "Header_1.png", t => { return $"# {t}"; });
+            CreateMenuItem(headingMenuItem.DropDownItems, "Heading 2", "Header_2.png", t => { return $"## {t}"; });
+            CreateMenuItem(headingMenuItem.DropDownItems, "Heading 3", "Header_3.png", t => { return $"### {t}"; });
+            CreateMenuItem(headingMenuItem.DropDownItems, "Heading 4", "Header_4.png", t => { return $"#### {t}"; });
+            CreateMenuItem(headingMenuItem.DropDownItems, "Heading 5", "Header_5.png", t => { return $"##### {t}"; });
+            CreateMenuItem(headingMenuItem.DropDownItems, "Heading 6", "Header_6.png", t => { return $"###### {t}"; });
+
+            CreateMenuItem(contextMenu.Items, "Ordered List", "OrderedList.png", t =>
+            {
+                string[] lines = t.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                StringBuilder sb = new StringBuilder();
+                foreach (string line in lines)
+                {
+                    sb.AppendLine($"1. {line}");
+                }
+                return sb.ToString().TrimEnd();
+            });
+
+            CreateMenuItem(contextMenu.Items, "Unordered List", "UnorderedList.png", t =>
+            {
+                string[] lines = t.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                StringBuilder sb = new StringBuilder();
+                foreach (string line in lines)
+                {
+                    sb.AppendLine($"+ {line}");
+                }
+                return sb.ToString().TrimEnd();
+            });
+
+            CreateMenuItem(contextMenu.Items, "Code", "Code.png", t =>
+            {
+                string codeString = CodeForm2.CreateLanguageText();
+                //return string.IsNullOrEmpty(codeString) ? $"```\n{t}\n```\n" : $"\n{codeString}{t}\n```\n";
+                return string.IsNullOrEmpty(codeString) ? t : $"{codeString}{t}\n```";
+            });
+
+            CreateMenuItem(contextMenu.Items, "Quote", "Quote.png", t =>
+            {
+                string[] lines = t.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                StringBuilder sb = new StringBuilder();
+                foreach (string line in lines)
+                {
+                    sb.AppendLine($"> {line}");
+                }
+                return sb.ToString().TrimEnd();
+            });
+
+            CreateMenuItem(contextMenu.Items, "Task", "Check.png", t =>
+            {
+                string[] lines = t.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                StringBuilder sb = new StringBuilder();
+                foreach (string line in lines)
+                {
+                    sb.AppendLine($"- [ ] {line}");
+                }
+                return sb.ToString().TrimEnd();
+            });
+
+            // https://www.markdownguide.org/cheat-sheet/
+            CreateMenuItem(contextMenu.Items, "Highlight", "highlight.png", t => { return $"=={t}=="; });
+            CreateMenuItem(contextMenu.Items, "Superscript", "superscript.png", t => { return $"^{t}^"; });
+            CreateMenuItem(contextMenu.Items, "Subscript", "subscript.png", t => { return $"~{t}~"; });
+
+            CreateMenuItem(contextMenu.Items, "Table", "Table.png", t => { return TableForm.CreateTableText(); });
+            CreateMenuItem(contextMenu.Items, "Table Row", "TableRow.png", t =>
+            {
+                string lineBefore = GetLineBefore(richTextBox1);
+                int cols = lineBefore.Occurrences('|') + 1; if (lineBefore.StartsWith("|")) cols--; if (lineBefore.TrimEnd().EndsWith("|")) cols--;
+                StringBuilder sb = new StringBuilder("|"); for (int i = 0; i < cols; i++) { sb.Append("value|"); }
+                sb.AppendLine();
+                sb.Append(t);
+                return sb.ToString();
+            }
+            );
+
+            CreateMenuItem(contextMenu.Items, "Dictionary", "Dictionary.png", t => { return $"<dl>\n</dl>"; });
+            CreateMenuItem(contextMenu.Items, "Definition", "Definition.png", t => { return DefinitionForm.CreateDefinitionText(); });
+
+            CreateMenuItem(contextMenu.Items, "Divider", "Break.png", t => { return "\r\n----\r\n"; });
+            CreateMenuItem(contextMenu.Items, "Link", "Link.png", t =>
+            {
+                LinkForm lf = new()
+                {
+                    Link = t
+                };
+                if (lf.ShowDialog() == DialogResult.OK)
+                {
+                    return lf.ResultText;
+                }
+
+                return string.Empty;
+            });
+
+            //ConnectButton(buttonTxtBlock, t => { return $"####{t}####"; });
+
+            //CreateMenuItem(contextMenu.Items, "Image", "Image.png", t => { return ImageForm.CreateImageText(Path.GetDirectoryName(fileName)); });
+            CreateMenuItem(contextMenu.Items, "Image", "Image.png", t =>
+            {
+                ImageForm2 if2 = new()
+                {
+                    EmbeddedFragmentHandler = EmbeddedFragmentHandler
+                };
+                if (if2.ShowDialog() == DialogResult.OK)
+                {
+                    return if2.ResultText;
+                }
+
+                return string.Empty;
+                //return ImageForm2.CreateImageText(EmbeddedFragmentHandler, "");
+            });
+
+            contextMenu.Items.Add(new ToolStripSeparator());
+
             ToolStripMenuItem menuItem = new ToolStripMenuItem("Cut");
+            menuItem.ImageKey = "cut.png";
             menuItem.Click += new EventHandler(CutAction);
             contextMenu.Items.Add(menuItem);
+
             menuItem = new ToolStripMenuItem("Copy");
+            menuItem.ImageKey = "copy.png";
             menuItem.Click += new EventHandler(CopyAction);
             contextMenu.Items.Add(menuItem);
+
             menuItem = new ToolStripMenuItem("Paste");
+            menuItem.ImageKey = "paste.png";
             menuItem.Click += new EventHandler(PasteAction);
             contextMenu.Items.Add(menuItem);
 
@@ -70,6 +211,43 @@ namespace MarkDownHelper
             //toolStripComboBox3.SelectedItem = "2";
             //toolStripComboBox4.SelectedItem = "2";
         }
+
+        private ToolStripMenuItem CreateMenuItem(ToolStripItemCollection items, string label, string imageKey, OperationDelegate del)
+        {
+            ToolStripMenuItem menuItem = new ToolStripMenuItem(label);
+
+            menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+            menuItem.Image = imageList1.Images[imageKey];
+
+            //menuItem.ImageKey = imageKey;
+            //            menuItem.Click += new EventHandler(CutAction);
+            menuItem.Click += (sender, args) =>
+            {
+                DoOperation
+                (
+                    del
+                );
+            };
+
+            items.Add(menuItem);
+
+            return menuItem;
+        }
+
+        private void DoOperation(OperationDelegate del)
+        {
+            string beforeText = richTextBox1.SelectedText;
+            string trimmedText = beforeText.TrimEnd();
+            bool replaceEOL = !beforeText.Equals(trimmedText);
+            string endText = beforeText.Equals(trimmedText) ? string.Empty : "\r\n";
+
+            string afterText = $"{del(trimmedText)}{endText}";
+
+            richTextBox1.SelectedText = afterText;
+
+            ShowText(richTextBox1.Text);
+        }
+
 
         public void SetUpHandlers()
         {
@@ -127,6 +305,8 @@ namespace MarkDownHelper
             get { return viewMode; }
             set
             {
+                SuspendLayout();
+
                 viewMode = value;
                 toolStripButtonSave.Visible = !handleFiles && !viewMode;
                 splitContainer1.Panel1Collapsed = viewMode;
@@ -135,6 +315,9 @@ namespace MarkDownHelper
                 toolStrip4.Visible = !viewMode;
                 toolStrip3.Visible = !viewMode;
                 toolStrip2.Visible = viewMode;
+
+                ResumeLayout(false);
+                PerformLayout();
             }
         }
 
@@ -343,10 +526,10 @@ namespace MarkDownHelper
             return rtnval;
         }
 
-        private void toolStripButton6_Click(object sender, EventArgs e)
-        {
-            string text = LinkForm.CreateLinkText();
-        }
+        //private void toolStripButton6_Click(object sender, EventArgs e)
+        //{
+        //    string text = LinkForm.CreateLinkText();
+        //}
 
         string fileName = string.Empty;
 
@@ -699,34 +882,7 @@ Finally, include a section for the license of your project. For more information
             {
                 // https://superuser.com/questions/1199393/is-it-possible-to-directly-embed-an-image-into-a-markdown-document
                 Image img = Clipboard.GetImage();
-                if (img != null)
-                {
-                    //// https://www.techieclues.com/blogs/converting-image-to-base64-string-in-csharp
-                    //using (MemoryStream stream = new MemoryStream())
-                    //{
-                    //    img.Save(stream, ImageFormat.Bmp);
-                    //    byte[] imageBytes = stream.ToArray();
-                    //    string base64String = Convert.ToBase64String(imageBytes);
-                    //    //Console.WriteLine(base64String);
-                    //    richTextBox1.Text += $"![Hello World](data:image/png;base64,{base64String})";
-                    //}
-
-
-                    EmbeddedFragmentEventArgs args = new();
-                    args.Operation = "SAVE";
-
-                    string name = DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".jpg";
-                    PageFragment frag = new PageFragment { Id = Guid.NewGuid().ToString("D").ToUpper(), Name = name };
-
-                    frag.FragmentType = "image/jpeg";
-                    frag.Content = ImageToBase64(img);
-
-                    args.Value = frag;
-
-                    EmbeddedFragmentHandler?.Invoke(this, args);
-
-                    richTextBox1.SelectedText = $"![Alt text](notebook://{name})";
-                }
+                InsertImage(img);
             }
 
             if (Clipboard.ContainsText())
@@ -748,8 +904,45 @@ Finally, include a section for the license of your project. For more information
                     //    // If you drag the lock icon, instead of the text it will include the full https://
                     //    dataString = "https://" + dataString;
                     //}
-                    string descr = await GetDescription(text);
 
+                    //string descr = await GetDescription(text);
+
+                    Dictionary<string, object> val = await GetInformation(text);
+
+                    string descr = val.ContainsKey("Title") ? val["Title"].ToString() : text;
+
+                    if ((val.ContainsKey("Content-Type")) && val["Content-Type"].ToString().StartsWith("image"))
+                    {
+                        if (MessageBox.Show("Would you like to insert an image?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            if (MessageBox.Show("Would you like to use a local copy of the image?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            {
+                                InsertImage(GetImage(text));
+                            }
+                            else // use the remote link
+                            {
+                                InsertRemoteImage(text);
+                            }
+                        }
+                        else // paste as link
+                        {
+                            richTextBox1.SelectedText = $"[{descr}]({text})";
+                        }
+                    }
+                    else
+                    {
+                        LinkForm lf = new()
+                        {
+                            Link = text,
+                            Description = descr
+                        };
+                        if (lf.ShowDialog() == DialogResult.OK)
+                        {
+                            richTextBox1.SelectedText = lf.ResultText;
+                        }
+
+                        richTextBox1.SelectedText = string.Empty;
+                    }
                 }
                 else
                 {
@@ -761,6 +954,64 @@ Finally, include a section for the license of your project. For more information
 
             ShowText(richTextBox1.Text);
         }
+
+        private void InsertImage(Image img)
+        {
+            if (img != null)
+            {
+                //// https://www.techieclues.com/blogs/converting-image-to-base64-string-in-csharp
+                //using (MemoryStream stream = new MemoryStream())
+                //{
+                //    img.Save(stream, ImageFormat.Bmp);
+                //    byte[] imageBytes = stream.ToArray();
+                //    string base64String = Convert.ToBase64String(imageBytes);
+                //    //Console.WriteLine(base64String);
+                //    richTextBox1.Text += $"![Hello World](data:image/png;base64,{base64String})";
+                //}
+
+
+                EmbeddedFragmentEventArgs args = new();
+                args.Operation = "SAVE";
+
+                string name = DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".jpg";
+                PageFragment frag = new PageFragment { Id = Guid.NewGuid().ToString("D").ToUpper(), Name = name };
+
+                frag.FragmentType = "image/jpeg";
+                frag.Content = ImageToBase64(img);
+
+                args.Value = frag;
+
+                EmbeddedFragmentHandler?.Invoke(this, args);
+
+                // take a trip through the image form to set additional fields
+                ImageForm2 if2 = new()
+                {
+                    EmbeddedFragmentHandler = EmbeddedFragmentHandler,
+                    Link = $"notebook://{name}"
+                };
+                if (if2.ShowDialog() == DialogResult.OK)
+                {
+                    richTextBox1.SelectedText = if2.ResultText;
+                }
+
+                //richTextBox1.SelectedText = $"![Alt text](notebook://{name})";
+            }
+        }
+
+        private void InsertRemoteImage(string url)
+        {
+            // take a trip through the image form to set additional fields
+            ImageForm2 if2 = new()
+            {
+                EmbeddedFragmentHandler = EmbeddedFragmentHandler,
+                Link = url
+            };
+            if (if2.ShowDialog() == DialogResult.OK)
+            {
+                richTextBox1.SelectedText = if2.ResultText;
+            }
+        }
+
 
         private string ImageToBase64(Image image)
         {
@@ -984,6 +1235,56 @@ Finally, include a section for the license of your project. For more information
             return rtnVal;
         }
 
+        private async Task<Dictionary<string, object>> GetInformation(string url)
+        {
+            Dictionary<string, object> rtnVal = new();
+
+            using HttpClient client = new()
+            {
+                BaseAddress = new Uri(url),
+            };
+
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "web api client");
+
+            using HttpResponseMessage response = await client.GetAsync("");
+
+            var stringResponse = await response.Content.ReadAsStringAsync();
+
+            rtnVal.Add("Content-Type", response.Content.Headers.ContentType);
+
+            int titleStart = stringResponse.IndexOf("<title>", StringComparison.OrdinalIgnoreCase);
+            if (titleStart != -1)
+            {
+                titleStart += 7;
+                int titleEnd = stringResponse.IndexOf("</title>", titleStart, StringComparison.OrdinalIgnoreCase);
+
+                //rtnVal = stringResponse.Substring(titleStart, (titleEnd - titleStart));
+                rtnVal.Add("Title", stringResponse.Substring(titleStart, (titleEnd - titleStart)));
+            }
+
+            return rtnVal;
+        }
+
+        private Image GetImage(string link)
+        {
+            WebClient client = new WebClient();
+            Stream stream = client.OpenRead(link);
+            Bitmap bitmap; bitmap = new Bitmap(stream);
+
+            //if (bitmap != null)
+            //{
+            //    bitmap.Save(filename, format);
+            //}
+
+            stream.Flush();
+            stream.Close();
+            client.Dispose();
+
+            return bitmap;
+        }
+
         //public static bool IsUrl(string urlAsString)
         public bool IsUrl(string urlAsString)
         {
@@ -1059,6 +1360,45 @@ Finally, include a section for the license of your project. For more information
             tb.WordWrap = true;
 
             return lineText;
+        }
+
+        // https://stackoverflow.com/questions/44815528/handle-ctrlv-in-a-multiline-textbox-c-sharp
+        private void richTextBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            // https://stackoverflow.com/questions/11806166/how-do-i-tell-when-the-enter-key-is-pressed-in-a-textbox
+            // keycode allows checking modifiers
+            // keydata does not
+            if ((e.KeyCode == Keys.V) && (e.Control))
+            {
+                //richTextBox1.SelectedText = "PASTED";
+                PasteAction(sender, EventArgs.Empty);
+                e.Handled = true;
+            }
+            if ((e.KeyCode == Keys.C) && (e.Control))
+            {
+                //richTextBox1.SelectedText = "PASTED";
+                CopyAction(sender, EventArgs.Empty);
+                e.Handled = true;
+            }
+            if ((e.KeyCode == Keys.X) && (e.Control))
+            {
+                //richTextBox1.SelectedText = "PASTED";
+                CutAction(sender, EventArgs.Empty);
+                e.Handled = true;
+            }
+
+            // https://stackoverflow.com/questions/1876663/how-do-i-allow-ctrl-v-paste-on-a-winforms-textbox
+            // other goodies in that link, as well
+            //private void textBox1_KeyUp(object sender, KeyEventArgs e)
+            //{
+            //    if (e.KeyData == Keys.V && e.Modifiers == Keys.Control)
+            //        (sender as Textbox).Paste();
+            //}
+        }
+
+        private void richTextBox1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            //            if (e.KeyCode == Keys.V) { }
         }
 
         //private async void dataGridView1_DragDrop(object sender, DragEventArgs e)
