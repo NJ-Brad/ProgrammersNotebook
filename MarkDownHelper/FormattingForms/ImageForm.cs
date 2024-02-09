@@ -37,7 +37,7 @@ namespace MarkDownHelper
 
             if (!string.IsNullOrEmpty(Link))
             {
-                string searchFor = Link.Replace("notebook://", "");
+                string searchFor = Link.Replace("<$LOCATION$>", "");
                 int foundAt = listBox1.FindStringExact(searchFor);
                 listBox1.SelectedIndex = foundAt;
 
@@ -215,7 +215,7 @@ namespace MarkDownHelper
 
             textBox1.Text = args.Key;
 
-            textBox2.Text = $"notebook://{args.Key}";
+            textBox2.Text = $"<$LOCATION$>{args.Key}";
             textBox2.ReadOnly = true;
 
             pictureBox1.Image = Base64ToImage(frag.Content);

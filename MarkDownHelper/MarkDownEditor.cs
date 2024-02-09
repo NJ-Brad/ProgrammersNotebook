@@ -150,6 +150,21 @@ namespace MarkDownHelper
                 //return ImageForm2.CreateImageText(EmbeddedFragmentHandler, "");
             });
 
+            CreateMenuItem(contextMenu.Items, "Fragment", "outdent.png", t =>
+            {
+                FragmentForm ff2 = new()
+                {
+                    EmbeddedFragmentHandler = EmbeddedFragmentHandler
+                };
+                if (ff2.ShowDialog() == DialogResult.OK)
+                {
+                    return ff2.ResultText;
+                }
+
+                return string.Empty;
+                //return ImageForm2.CreateImageText(EmbeddedFragmentHandler, "");
+            });
+
             contextMenu.Items.Add(new ToolStripSeparator());
 
             ToolStripMenuItem menuItem = new ToolStripMenuItem("Cut");
@@ -276,7 +291,6 @@ namespace MarkDownHelper
                 toolStripButtonSave.Visible = !handleFiles && !viewMode;
                 splitContainer1.Panel1Collapsed = viewMode;
                 //toolStrip1.Visible = !viewMode;
-                toolStrip4.Visible = !viewMode;
                 toolStrip3.Visible = !viewMode;
                 toolStrip2.Visible = viewMode;
 
@@ -296,11 +310,9 @@ namespace MarkDownHelper
 
         private void ShowText(string rawText)
         {
-            Replacer rep = new Replacer();
-            rep.Replacements = Replacements;
-            string repText = rep.DoReplacements(rawText);
+            browserWrapper1.Replacements = Replacements;
 
-            browserWrapper1.ShowMarkdownText(repText);
+            browserWrapper1.ShowMarkdownText(rawText);
         }
 
         public string ToHtml(string rawText)
@@ -951,7 +963,7 @@ Finally, include a section for the license of your project. For more information
                 ImageForm if2 = new()
                 {
                     EmbeddedFragmentHandler = EmbeddedFragmentHandler,
-                    Link = $"notebook://{name}"
+                    Link = $"<$LOCATION$>{name}"
                 };
                 if (if2.ShowDialog() == DialogResult.OK)
                 {
@@ -1023,6 +1035,7 @@ Finally, include a section for the license of your project. For more information
         private void toolStripButtonSave_Click(object sender, EventArgs e)
         {
             OnSaveClicked();
+            ShowText(richTextBox1.Text);
             Dirty = false;
         }
 
@@ -1109,65 +1122,6 @@ Finally, include a section for the license of your project. For more information
                 ShowText(richTextBox1.Text);
             }
         }
-
-        private void toolStripButtonFragments_Click(object sender, EventArgs e)
-        {
-            FragmentManagerForm fmf = new();
-            fmf.EmbeddedFragmentHandler = EmbeddedFragmentHandler;
-            fmf.ShowDialog();
-        }
-
-        //private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    if (toolStripComboBox1.SelectedIndex != -1)
-        //    {
-        //        browserWrapper1.CodeTheme = toolStripComboBox1.Items[toolStripComboBox1.SelectedIndex].ToString();
-        //    }
-        //    else
-        //    {
-        //        browserWrapper1.CodeTheme = "default";
-        //    }
-        //    ShowText(richTextBox1.Text);
-        //}
-
-        //private void toolStripComboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    if (toolStripComboBox2.SelectedIndex != -1)
-        //    {
-        //        browserWrapper1.CodeTheme = toolStripComboBox2.Items[toolStripComboBox2.SelectedIndex].ToString();
-        //    }
-        //    else
-        //    {
-        //        browserWrapper1.CodeTheme = "default";
-        //    }
-        //    ShowText(richTextBox1.Text);
-        //}
-
-        //private void toolStripComboBox3_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    if (toolStripComboBox3.SelectedIndex != -1)
-        //    {
-        //        browserWrapper1.IndentSize = int.Parse(toolStripComboBox3.Items[toolStripComboBox3.SelectedIndex].ToString());
-        //    }
-        //    else
-        //    {
-        //        browserWrapper1.IndentSize = 8;
-        //    }
-        //    ShowText(richTextBox1.Text);
-        //}
-
-        //private void toolStripComboBox4_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    if (toolStripComboBox4.SelectedIndex != -1)
-        //    {
-        //        browserWrapper1.IndentSize = int.Parse(toolStripComboBox4.Items[toolStripComboBox4.SelectedIndex].ToString());
-        //    }
-        //    else
-        //    {
-        //        browserWrapper1.IndentSize = 8;
-        //    }
-        //    ShowText(richTextBox1.Text);
-        //}
 
         private async Task<string> GetDescription(string url)
         {

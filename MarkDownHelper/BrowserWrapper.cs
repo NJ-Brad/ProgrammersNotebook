@@ -17,6 +17,7 @@ namespace MarkDownHelper
         }
 
         bool initialized = false;
+        public Dictionary<string, string> Replacements = new();
 
         protected override async void OnCreateControl()
         {
@@ -279,29 +280,35 @@ namespace MarkDownHelper
 
             // https://github.github.com/github-flavored-markdown/sample_content.html
 
-            // https://digitaltapestry.net/posts/markdig-cheat-sheet
-            // Configure the pipeline with all advanced extensions active
-            //var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Use<EmbeddedImageExtension>().Build();
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseAlertContainerExtension(true)
-                .UseAdvancedExtensions()
-                .UseSoftlineBreakAsHardlineBreak()
-                //.UsePredefinedImageExtension()
-                //.UseEmbeddedImageExtension(GetEmbedImage)
-                //.UseEmbeddedLinkResolverExtension("HelloBrad")
-                //.UseEmbeddedLinkResolverExtension("HTTPS")
-                .UseEmbeddedFragmentExtension(GetEmbedText)
-                .Build();
+            return InternalConverter(rawText);
 
-            return Markdig.Markdown.ToHtml(rawText + (rawText.EndsWith('\n') ? "" : "\n"), pipeline)
-                .EnableNewerFeatures()
-                .AddGitHubStyle()
-                .TranslatePaths(RootPath)
-                .GenerateToc()
-                //.AddCodeCopyButtons2(CodeTheme)
-                .AddCodeCopyButtons3(CodeTheme)
-                .SetTabSize(IndentSize)
-                ;
+            //Replacer rep = new Replacer();
+            //rep.Replacements = Replacements;
+            //string repText = rep.DoReplacements(rawText);
+
+            //// https://digitaltapestry.net/posts/markdig-cheat-sheet
+            //// Configure the pipeline with all advanced extensions active
+            ////var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().UseSoftlineBreakAsHardlineBreak().Use<EmbeddedImageExtension>().Build();
+            //var pipeline = new MarkdownPipelineBuilder()
+            //    .UseAlertContainerExtension(true)
+            //    .UseAdvancedExtensions()
+            //    .UseSoftlineBreakAsHardlineBreak()
+            //    //.UsePredefinedImageExtension()
+            //    //.UseEmbeddedImageExtension(GetEmbedImage)
+            //    //.UseEmbeddedLinkResolverExtension("HelloBrad")
+            //    //.UseEmbeddedLinkResolverExtension("HTTPS")
+            //    .UseEmbeddedFragmentExtension(GetEmbedText)
+            //    .Build();
+
+            //return Markdig.Markdown.ToHtml(repText + (repText.EndsWith('\n') ? "" : "\n"), pipeline)
+            //    .EnableNewerFeatures()
+            //    .AddGitHubStyle()
+            //    .TranslatePaths(RootPath)
+            //    .GenerateToc()
+            //    //.AddCodeCopyButtons2(CodeTheme)
+            //    .AddCodeCopyButtons3(CodeTheme)
+            //    .SetTabSize(IndentSize)
+            //    ;
 
             // https://github.com/xoofx/markdig/issues/344
             // use of custom containers
@@ -333,7 +340,39 @@ namespace MarkDownHelper
             args.Key = key;
             EmbeddedFragmentHandler?.Invoke(this, args);
 
-            return args.Value.Content;
+            // This version will NOT convert the embedded text
+            //return args.Value.Content;
+
+            // This version will convert the embedded text.  I wonder how deep it can go.
+            return InternalConverter(args.Value.Content);
+        }
+
+        private string InternalConverter(string rawText)
+        {
+            Replacer rep = new Replacer();
+            rep.Replacements = Replacements;
+            string repText = rep.DoReplacements(rawText);
+
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseAlertContainerExtension(true)
+                .UseAdvancedExtensions()
+                .UseSoftlineBreakAsHardlineBreak()
+                //.UsePredefinedImageExtension()
+                //.UseEmbeddedImageExtension(GetEmbedImage)
+                //.UseEmbeddedLinkResolverExtension("HelloBrad")
+                //.UseEmbeddedLinkResolverExtension("HTTPS")
+                .UseEmbeddedFragmentExtension(GetEmbedText)
+                .Build();
+
+            return Markdig.Markdown.ToHtml(repText + (repText.EndsWith('\n') ? "" : "\n"), pipeline)
+                .EnableNewerFeatures()
+                .AddGitHubStyle()
+                .TranslatePaths(RootPath)
+                .GenerateToc()
+                //.AddCodeCopyButtons2(CodeTheme)
+                .AddCodeCopyButtons3(CodeTheme)
+                .SetTabSize(IndentSize)
+                ;
         }
 
         private List<string> GetTextFragmentList()

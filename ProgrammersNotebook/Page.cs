@@ -7,5 +7,9 @@
         public string DocumentType { get; set; }
         public List<Page> Pages { get; set; } = new();
         public string PageContent { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
+        public DateTime Created { get; set; } = DateTime.Now;
+        public string ModifiedBy { get; set; } = string.Empty;
+        public DateTime Modified { get; set; } = DateTime.Now;
     }
 }

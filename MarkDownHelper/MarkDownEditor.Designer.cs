@@ -35,7 +35,6 @@ namespace MarkDownHelper
             splitContainer1 = new SplitContainer();
             richTextBox1 = new RichTextBox();
             browserWrapper1 = new BrowserWrapper();
-            toolStrip4 = new ToolStrip();
             toolStripButton15 = new ToolStripButton();
             toolStripDropDownButton5 = new ToolStripDropDownButton();
             openToolStripMenuItem = new ToolStripMenuItem();
@@ -53,11 +52,11 @@ namespace MarkDownHelper
             toolStripMenuItem6 = new ToolStripMenuItem();
             toolStripMenuItem7 = new ToolStripMenuItem();
             toolStripMenuItem8 = new ToolStripMenuItem();
-            toolStripButtonFragments = new ToolStripButton();
             toolStrip2 = new ToolStrip();
             toolStripButtonEdit = new ToolStripButton();
             toolStrip3 = new ToolStrip();
             toolStripButtonEditView = new ToolStripButton();
+            toolStripSeparator1 = new ToolStripSeparator();
             imageList1 = new ImageList(components);
             contextMenuStrip1 = new ContextMenuStrip(components);
             testToolStripMenuItem = new ToolStripMenuItem();
@@ -66,7 +65,6 @@ namespace MarkDownHelper
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            toolStrip4.SuspendLayout();
             toolStrip2.SuspendLayout();
             toolStrip3.SuspendLayout();
             contextMenuStrip1.SuspendLayout();
@@ -75,7 +73,7 @@ namespace MarkDownHelper
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 87);
+            splitContainer1.Location = new Point(0, 56);
             splitContainer1.Margin = new Padding(4);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = Orientation.Horizontal;
@@ -87,8 +85,8 @@ namespace MarkDownHelper
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(browserWrapper1);
-            splitContainer1.Size = new Size(1200, 532);
-            splitContainer1.SplitterDistance = 273;
+            splitContainer1.Size = new Size(1200, 563);
+            splitContainer1.SplitterDistance = 288;
             splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 0;
             // 
@@ -101,7 +99,7 @@ namespace MarkDownHelper
             richTextBox1.Location = new Point(0, 0);
             richTextBox1.Margin = new Padding(4);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(1200, 273);
+            richTextBox1.Size = new Size(1200, 288);
             richTextBox1.TabIndex = 1;
             richTextBox1.Text = "";
             richTextBox1.TextChanged += richTextBox1_TextChanged;
@@ -118,27 +116,16 @@ namespace MarkDownHelper
             browserWrapper1.Name = "browserWrapper1";
             browserWrapper1.NavComplete = false;
             browserWrapper1.RootPath = "";
-            browserWrapper1.Size = new Size(1200, 254);
+            browserWrapper1.Size = new Size(1200, 270);
             browserWrapper1.TabIndex = 2;
-            // 
-            // toolStrip4
-            // 
-            toolStrip4.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            toolStrip4.GripStyle = ToolStripGripStyle.Hidden;
-            toolStrip4.ImageScalingSize = new Size(24, 24);
-            toolStrip4.Items.AddRange(new ToolStripItem[] { toolStripButton15 });
-            toolStrip4.Location = new Point(0, 56);
-            toolStrip4.Name = "toolStrip4";
-            toolStrip4.Size = new Size(1200, 31);
-            toolStrip4.TabIndex = 2;
-            toolStrip4.Text = "toolStrip4";
             // 
             // toolStripButton15
             // 
+            toolStripButton15.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             toolStripButton15.Image = (Image)resources.GetObject("toolStripButton15.Image");
             toolStripButton15.ImageTransparentColor = Color.Magenta;
             toolStripButton15.Name = "toolStripButton15";
-            toolStripButton15.Size = new Size(91, 28);
+            toolStripButton15.Size = new Size(83, 25);
             toolStripButton15.Text = "Refresh";
             toolStripButton15.Click += toolStripButton4_Click;
             // 
@@ -264,18 +251,6 @@ namespace MarkDownHelper
             toolStripMenuItem8.Text = "16";
             toolStripMenuItem8.Click += SetEditorFontSize;
             // 
-            // toolStripButtonFragments
-            // 
-            toolStripButtonFragments.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripButtonFragments.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            toolStripButtonFragments.Image = (Image)resources.GetObject("toolStripButtonFragments.Image");
-            toolStripButtonFragments.ImageTransparentColor = Color.Magenta;
-            toolStripButtonFragments.Name = "toolStripButtonFragments";
-            toolStripButtonFragments.Size = new Size(88, 25);
-            toolStripButtonFragments.Text = "Fragments";
-            toolStripButtonFragments.ToolTipText = "Fragment Manager";
-            toolStripButtonFragments.Click += toolStripButtonFragments_Click;
-            // 
             // toolStrip2
             // 
             toolStrip2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -300,7 +275,7 @@ namespace MarkDownHelper
             // toolStrip3
             // 
             toolStrip3.GripStyle = ToolStripGripStyle.Hidden;
-            toolStrip3.Items.AddRange(new ToolStripItem[] { toolStripButtonEditView, toolStripDropDownButton5, toolStripButtonSave, toolStripDropDownButton1, toolStripButtonFragments });
+            toolStrip3.Items.AddRange(new ToolStripItem[] { toolStripButtonEditView, toolStripSeparator1, toolStripDropDownButton5, toolStripButtonSave, toolStripDropDownButton1, toolStripButton15 });
             toolStrip3.Location = new Point(0, 28);
             toolStrip3.Name = "toolStrip3";
             toolStrip3.Size = new Size(1200, 28);
@@ -317,6 +292,11 @@ namespace MarkDownHelper
             toolStripButtonEditView.Size = new Size(48, 25);
             toolStripButtonEditView.Text = "View";
             toolStripButtonEditView.Click += toolStripButtonEditView_Click;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(6, 28);
             // 
             // imageList1
             // 
@@ -353,6 +333,7 @@ namespace MarkDownHelper
             imageList1.Images.SetKeyName(27, "underline.png");
             imageList1.Images.SetKeyName(28, "UnorderedList.png");
             imageList1.Images.SetKeyName(29, "OrderedList.png");
+            imageList1.Images.SetKeyName(30, "outdent.png");
             // 
             // contextMenuStrip1
             // 
@@ -378,7 +359,6 @@ namespace MarkDownHelper
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(splitContainer1);
-            Controls.Add(toolStrip4);
             Controls.Add(toolStrip3);
             Controls.Add(toolStrip2);
             Enabled = false;
@@ -390,8 +370,6 @@ namespace MarkDownHelper
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            toolStrip4.ResumeLayout(false);
-            toolStrip4.PerformLayout();
             toolStrip2.ResumeLayout(false);
             toolStrip2.PerformLayout();
             toolStrip3.ResumeLayout(false);
@@ -424,14 +402,13 @@ namespace MarkDownHelper
         private ToolStripMenuItem toolStripMenuItem6;
         private ToolStripMenuItem toolStripMenuItem7;
         private ToolStripMenuItem toolStripMenuItem8;
-        private ToolStripButton toolStripButtonFragments;
         private ToolStrip toolStrip3;
         private ToolStripButton toolStripButtonEditView;
-        private ToolStrip toolStrip4;
         private ToolStripButton toolStripButton15;
         private ImageList imageList1;
         private ContextMenuStrip contextMenuStrip1;
         private ToolStripMenuItem testToolStripMenuItem;
         private ToolStripMenuItem test2ToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator1;
     }
 }
