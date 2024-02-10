@@ -190,7 +190,76 @@ namespace MarkDownHelper
             //toolStripComboBox2.SelectedItem = "default";
             //toolStripComboBox3.SelectedItem = "2";
             //toolStripComboBox4.SelectedItem = "2";
+
+            //richTextBox1.AllowDrop = true;
+            //richTextBox1.DragDrop += RichTextBox1_DragDrop;
+            //richTextBox1.DragEnter += RichTextBox1_DragEnter;
         }
+
+        //private void RichTextBox1_DragEnter(object? sender, DragEventArgs e)
+        //{
+        //    if ((e.Data.GetDataPresent(DataFormats.StringFormat)) ||
+        //            (e.Data.GetDataPresent(DataFormats.Bitmap)))
+        //    {
+        //        e.Effect = DragDropEffects.Copy;
+        //    }
+        //    else
+        //    {
+        //        e.Effect = DragDropEffects.None;
+        //    }
+        //    //    switch (GetDragType(e.Data))
+        //    //{
+        //    //    case DragType.Unknown:
+        //    //        e.Effect = DragDropEffects.None;
+        //    //        break;
+        //    //    case DragType.Link:
+        //    //        e.Effect = DragDropEffects.Link;
+        //    //        break;
+        //    //    case DragType.Node:
+        //    //        e.Effect = DragDropEffects.Move;
+        //    //        break;
+        //    //}
+        //}
+
+        ////private DragType GetDragType(IDataObject drag)
+        ////{
+        ////    DragType rtnVal = DragType.Unknown;
+
+        ////    if (drag.GetDataPresent(DataFormats.StringFormat))
+        ////        rtnVal = DragType.Link;
+
+        ////    if (drag.GetDataPresent(typeof(TreeNode)))
+        ////        rtnVal = DragType.Node;
+
+        ////    return rtnVal;
+        ////}
+
+
+        //private void RichTextBox1_DragDrop(object? sender, DragEventArgs e)
+        //{
+        //    if (e.Data.GetDataPresent(DataFormats.StringFormat))
+        //    {
+        //        string text = new string((string)e.Data.GetData(DataFormats.StringFormat));
+        //        Clipboard.SetText(text);
+        //        PasteAction(sender, EventArgs.Empty);
+        //    }
+
+        //    //||
+        //    //(e.Data.GetDataPresent(DataFormats.Bitmap)))
+
+
+
+        //    //e.Data.GetData()
+        //    //if (Clipboard.ContainsImage())
+        //    //{
+        //    //    Clipboard.SetText(richTextBox1.SelectedText);
+        //    //}
+
+
+        //    //        || (Clipboard.ContainsText()))
+        //    //{
+
+        //}
 
         private ToolStripMenuItem CreateMenuItem(ToolStripItemCollection items, string label, string imageKey, OperationDelegate del)
         {
@@ -912,7 +981,7 @@ Finally, include a section for the license of your project. For more information
                             Link = text,
                             Description = descr
                         };
-                        if (lf.ShowDialog() == DialogResult.OK)
+                        if (lf.ShowDialog(this) == DialogResult.OK)
                         {
                             richTextBox1.SelectedText = lf.ResultText;
                         }
@@ -1245,6 +1314,12 @@ Finally, include a section for the license of your project. For more information
                 PasteAction(sender, EventArgs.Empty);
                 e.Handled = true;
             }
+            if ((e.KeyCode == Keys.Insert) && (e.Shift))
+            {
+                //richTextBox1.SelectedText = "PASTED";
+                PasteAction(sender, EventArgs.Empty);
+                e.Handled = true;
+            }
             if ((e.KeyCode == Keys.C) && (e.Control))
             {
                 //richTextBox1.SelectedText = "PASTED";
@@ -1265,11 +1340,6 @@ Finally, include a section for the license of your project. For more information
             //    if (e.KeyData == Keys.V && e.Modifiers == Keys.Control)
             //        (sender as Textbox).Paste();
             //}
-        }
-
-        private void richTextBox1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            //            if (e.KeyCode == Keys.V) { }
         }
 
         //private async void dataGridView1_DragDrop(object sender, DragEventArgs e)

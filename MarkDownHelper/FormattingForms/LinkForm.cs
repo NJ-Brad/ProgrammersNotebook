@@ -156,7 +156,7 @@
                     linkText = $"{linkText} \"{tooltip}\"";
                 }
 
-                ResultText = $"[{display}]({linkText})";
+                ResultText = $"[{display}]({linkText})\n";
             }
 
             DialogResult = DialogResult.OK;

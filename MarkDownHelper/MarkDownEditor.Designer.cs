@@ -104,7 +104,6 @@ namespace MarkDownHelper
             richTextBox1.Text = "";
             richTextBox1.TextChanged += richTextBox1_TextChanged;
             richTextBox1.KeyDown += richTextBox1_KeyDown;
-            richTextBox1.PreviewKeyDown += richTextBox1_PreviewKeyDown;
             // 
             // browserWrapper1
             // 

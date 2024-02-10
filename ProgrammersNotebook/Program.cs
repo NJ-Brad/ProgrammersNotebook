@@ -9,7 +9,7 @@ namespace ProgrammersNotebook
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
@@ -30,6 +30,7 @@ namespace ProgrammersNotebook
 
             //var form1 = host.Services.GetRequiredService<Form1>();
             var form1 = host.Services.GetRequiredService<NotebookForm>();
+            form1.args = args;
             Application.Run(form1);
 
         }

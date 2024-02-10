@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using WinForms.JumpLists;
 
 namespace ProgrammersNotebook
 {
@@ -22,6 +23,10 @@ namespace ProgrammersNotebook
 
         string userName = "Unkown";
         string longUserName = "Unkown";
+
+        static int JumpListMessage = JumpListHandler.MessageId;
+
+        public string[] args { get; set; } = new string[] { };
 
         public NotebookForm(ILogger<NotebookForm> logger, IConfiguration config, IHost host)
         {
@@ -58,11 +63,56 @@ namespace ProgrammersNotebook
             //}
         }
 
+
+        protected override void WndProc(ref Message m)
+        {
+            //if the coming message has the same number as our registered message
+            if (m.Msg == JumpListMessage)
+            {
+                string atomValue = JumpListHandler.GetAtomValue((uint)m.WParam);
+
+                ProcessArg(atomValue);
+            }
+            else
+            {
+                base.WndProc(ref m);
+            }
+        }
+
+        private void ProcessArg(string arg)
+        {
+            // is it a Jump List argument?
+            if (arg.StartsWith("JL"))
+            {
+                //MessageBox.Show(arg, "Arg Received");
+                if (arg.StartsWith("JL:Create:"))
+                {
+                    tabControl1.SelectedIndex = 0;
+                    Page pg = StampPage(new Page { DocumentType = "Page", Name = "New Page", PageContent = "New Page" });
+                    AddDocument(pg);
+                }
+
+                if (arg.StartsWith("JL:Open:"))
+                {
+                    //                    OpenProject(arg.Substring(8));
+                }
+            }
+            else // straight from the command line (not through the Jump List)
+            {
+                //                OpenProject(arg);
+            }
+        }
+
+
         PNContext context = new PNContext();
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+            JumpLists.Init();
+
+            JumpLists.AddAppkicationTask("Actions", "Create New Note", "Create New Note", "JL:Create:ASDF");
+
             //_logger.LogInformation("NotebookForm.OnShown at {dateTime}", "Started", DateTime.UtcNow);
 
             imageTree1.Font = Font;
@@ -125,6 +175,11 @@ namespace ProgrammersNotebook
             markDownEditor1.SetUpHandlers();
 
             markDownEditor1.Replacements = Replacements;
+
+            if (args.Length > 0)
+            {
+                ProcessArg(args[0]);
+            }
         }
 
         Fragments frMgr = null;
@@ -333,6 +388,7 @@ namespace ProgrammersNotebook
             SaveChanges();
             selectedPage = pd;
             imageTree1.SelectedNode = tn;
+            imageTree1.SelectedNode.BeginEdit();
         }
 
         private async void AddFragment(PageFragment frag)

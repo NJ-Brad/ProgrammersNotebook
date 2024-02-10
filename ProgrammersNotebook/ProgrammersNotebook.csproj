@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MarkDownHelper\MarkDownHelper.csproj" />
+    <ProjectReference Include="..\WinForms.JumpLists\WinForms.JumpLists.csproj" />
   </ItemGroup>
 
   <ItemGroup>
