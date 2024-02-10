@@ -63,7 +63,6 @@ namespace ProgrammersNotebook
             //}
         }
 
-
         protected override void WndProc(ref Message m)
         {
             //if the coming message has the same number as our registered message

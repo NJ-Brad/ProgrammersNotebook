@@ -6,13 +6,15 @@ namespace WinForms.JumpLists
 {
     public class JumpListHandler
     {
-        public static bool Process()
+        Mutex mtx = null;
+
+        public bool Process()
         {
             bool firstInstance = false;
 
             // some Mutex notes : https://stackoverflow.com/questions/6486195/ensuring-only-one-application-instance
 
-            Mutex mtx = new Mutex(true, MutexName, out firstInstance);
+            mtx = new Mutex(true, MutexName, out firstInstance);
 
             if (!firstInstance)
             {
@@ -35,6 +37,38 @@ namespace WinForms.JumpLists
 
             return !firstInstance;
         }
+
+
+        // this always says that it is the first time.  The mutex is destroyed at the end of the method
+        //public static bool Process()
+        //{
+        //    bool firstInstance = false;
+
+        //    // some Mutex notes : https://stackoverflow.com/questions/6486195/ensuring-only-one-application-instance
+
+        //    Mutex mtx = new Mutex(true, MutexName, out firstInstance);
+
+        //    if (!firstInstance)
+        //    {
+        //        string[] args = Environment.GetCommandLineArgs();
+        //        if (args.Length > 1)
+        //        {
+        //            IntPtr val = GlobalAddAtom(args[1]);
+
+        //            PostMessage(HWND_BROADCAST, MessageId, val, IntPtr.Zero);
+        //        }
+        //        //else
+        //        //{
+        //        //    MessageBox.Show("Nothing passed - application already running - start not necessary");
+        //        //}
+        //    }
+        //    //else
+        //    //{
+        //    //    MessageBox.Show("First Instance");
+        //    //}
+
+        //    return !firstInstance;
+        //}
 
         public static string AppName
         {
