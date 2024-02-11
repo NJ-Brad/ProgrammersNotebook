@@ -80,7 +80,6 @@ namespace MarkDownHelper
             splitContainer1.Location = new Point(0, 84);
             splitContainer1.Margin = new Padding(4);
             splitContainer1.Name = "splitContainer1";
-            splitContainer1.Orientation = Orientation.Horizontal;
             // 
             // splitContainer1.Panel1
             // 
@@ -90,7 +89,7 @@ namespace MarkDownHelper
             // 
             splitContainer1.Panel2.Controls.Add(browserWrapper1);
             splitContainer1.Size = new Size(1200, 535);
-            splitContainer1.SplitterDistance = 273;
+            splitContainer1.SplitterDistance = 589;
             splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 0;
             // 
@@ -103,7 +102,7 @@ namespace MarkDownHelper
             richTextBox1.Location = new Point(0, 0);
             richTextBox1.Margin = new Padding(4);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(1200, 273);
+            richTextBox1.Size = new Size(589, 535);
             richTextBox1.TabIndex = 1;
             richTextBox1.Text = "";
             richTextBox1.TextChanged += richTextBox1_TextChanged;
@@ -119,7 +118,7 @@ namespace MarkDownHelper
             browserWrapper1.Name = "browserWrapper1";
             browserWrapper1.NavComplete = false;
             browserWrapper1.RootPath = "";
-            browserWrapper1.Size = new Size(1200, 257);
+            browserWrapper1.Size = new Size(606, 535);
             browserWrapper1.TabIndex = 2;
             // 
             // toolStripButton15

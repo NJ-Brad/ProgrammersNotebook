@@ -11,12 +11,19 @@ namespace MarkDownHelper
     {
         // https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor2
 
+        System.Windows.Forms.Timer refreshTimer = null;
+
         public MarkDownEditor()
         {
             InitializeComponent();
             // http://stackoverflow.com/questions/4823468/comments-in-markdown
             // (empty line)
             // [comment]: # (This actually is the most platform independent comment)
+
+            refreshTimer = new();
+            refreshTimer.Tick += RefreshTimer_Tick;
+            refreshTimer.Interval = 1000;
+            refreshTimer.Start();
 
             ContextMenuStrip contextMenu = new();
             contextMenu.Font = new Font(Font.FontFamily, 14);
@@ -194,6 +201,22 @@ namespace MarkDownHelper
             //richTextBox1.AllowDrop = true;
             //richTextBox1.DragDrop += RichTextBox1_DragDrop;
             //richTextBox1.DragEnter += RichTextBox1_DragEnter;
+        }
+
+        bool titleChanged = false;
+        bool bodyChanged = false;
+
+        private void RefreshTimer_Tick(object? sender, EventArgs e)
+        {
+            if (viewMode == EditorMode.Edit)
+            {
+                if (titleChanged || bodyChanged)
+                {
+                    titleChanged = false;
+                    bodyChanged = false;
+                    ShowText(richTextBox1.Text);
+                }
+            }
         }
 
         //private void RichTextBox1_DragEnter(object? sender, DragEventArgs e)
@@ -885,6 +908,7 @@ This project is supported by the [.NET Foundation](http://www.dotnetfoundation.o
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
+            bodyChanged = true;
             Dirty = true;
         }
 
@@ -1388,6 +1412,8 @@ Finally, include a section for the license of your project. For more information
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             Dirty = true;
+            titleChanged = true;
+            Replacements.Set("PAGE_TITLE", textBox1.Text);
         }
 
         //private async void dataGridView1_DragDrop(object sender, DragEventArgs e)
