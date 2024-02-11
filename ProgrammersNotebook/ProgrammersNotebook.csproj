@@ -7,6 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>notebook_4_icon-icons.com_54606.ico</ApplicationIcon>
+	<AssemblyName>Programmer's Notebook</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
