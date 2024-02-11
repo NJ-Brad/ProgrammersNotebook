@@ -336,6 +336,7 @@ namespace MarkDownHelper
             imageList1.Images.SetKeyName(28, "UnorderedList.png");
             imageList1.Images.SetKeyName(29, "OrderedList.png");
             imageList1.Images.SetKeyName(30, "outdent.png");
+            imageList1.Images.SetKeyName(31, "warning.png");
             // 
             // contextMenuStrip1
             // 

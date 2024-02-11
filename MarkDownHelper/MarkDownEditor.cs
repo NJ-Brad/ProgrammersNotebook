@@ -22,8 +22,8 @@ namespace MarkDownHelper
 
             refreshTimer = new();
             refreshTimer.Tick += RefreshTimer_Tick;
-            refreshTimer.Interval = 1000;
-            refreshTimer.Start();
+            refreshTimer.Interval = 2000;
+            //refreshTimer.Start();
 
             ContextMenuStrip contextMenu = new();
             contextMenu.Font = new Font(Font.FontFamily, 14);
@@ -139,9 +139,8 @@ namespace MarkDownHelper
                 return string.Empty;
             });
 
-            //ConnectButton(buttonTxtBlock, t => { return $"####{t}####"; });
+            CreateMenuItem(contextMenu.Items, "Alert", "warning.png", t => { return AlertForm.CreateAlertText(); });
 
-            //CreateMenuItem(contextMenu.Items, "Image", "Image.png", t => { return ImageForm.CreateImageText(Path.GetDirectoryName(fileName)); });
             CreateMenuItem(contextMenu.Items, "Image", "Image.png", t =>
             {
                 ImageForm if2 = new()
@@ -154,7 +153,6 @@ namespace MarkDownHelper
                 }
 
                 return string.Empty;
-                //return ImageForm2.CreateImageText(EmbeddedFragmentHandler, "");
             });
 
             CreateMenuItem(contextMenu.Items, "Fragment", "outdent.png", t =>
@@ -206,16 +204,24 @@ namespace MarkDownHelper
         bool titleChanged = false;
         bool bodyChanged = false;
 
-        private void RefreshTimer_Tick(object? sender, EventArgs e)
+        bool timerProcessing = false;
+
+        private async void RefreshTimer_Tick(object? sender, EventArgs e)
         {
-            if (viewMode == EditorMode.Edit)
+            refreshTimer.Stop();
+            if (!timerProcessing)
             {
-                if (titleChanged || bodyChanged)
+                if (viewMode == EditorMode.Edit)
                 {
-                    titleChanged = false;
-                    bodyChanged = false;
-                    ShowText(richTextBox1.Text);
+                    if (titleChanged || bodyChanged)
+                    {
+                        timerProcessing = true;
+                        titleChanged = false;
+                        bodyChanged = false;
+                        ShowText(richTextBox1.Text);
+                    }
                 }
+                timerProcessing = false;
             }
         }
 
@@ -909,6 +915,7 @@ This project is supported by the [.NET Foundation](http://www.dotnetfoundation.o
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
             bodyChanged = true;
+            //refreshTimer.Start();
             Dirty = true;
         }
 
@@ -1413,6 +1420,7 @@ Finally, include a section for the license of your project. For more information
         {
             Dirty = true;
             titleChanged = true;
+            //refreshTimer.Start();
             Replacements.Set("PAGE_TITLE", textBox1.Text);
         }
 
