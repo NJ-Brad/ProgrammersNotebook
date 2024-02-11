@@ -643,10 +643,13 @@ namespace ProgrammersNotebook
 
                 int index = coll.IndexOf(imageTree1.SelectedNode);
 
-                context.Remove(selectedPage);
-                context.SaveChanges();
+                if (ConfirmationForm.ConfirmRemoval(selectedPage.Name))
+                {
+                    context.Remove(selectedPage);
+                    context.SaveChanges();
 
-                coll.RemoveAt(index);
+                    coll.RemoveAt(index);
+                }
             }
         }
 
