@@ -348,8 +348,29 @@ namespace MarkDownHelper
             }
         }
 
-        private bool viewMode = true;
-        public bool ViewMode
+        //private bool viewMode = true;
+        //public bool ViewMode
+        //{
+        //    get { return viewMode; }
+        //    set
+        //    {
+        //        SuspendLayout();
+
+        //        viewMode = value;
+        //        toolStripButtonSave.Visible = !handleFiles && !viewMode;
+        //        splitContainer1.Panel1Collapsed = viewMode;
+        //        //toolStrip1.Visible = !viewMode;
+        //        toolStrip3.Visible = !viewMode;
+        //        toolStrip2.Visible = viewMode;
+
+        //        ResumeLayout(false);
+        //        PerformLayout();
+        //    }
+        //}
+
+        EditorMode viewMode = EditorMode.ViewEdit;
+
+        public EditorMode ViewMode
         {
             get { return viewMode; }
             set
@@ -357,15 +378,24 @@ namespace MarkDownHelper
                 SuspendLayout();
 
                 viewMode = value;
-                toolStripButtonSave.Visible = !handleFiles && !viewMode;
-                splitContainer1.Panel1Collapsed = viewMode;
+                toolStripButtonSave.Visible = !handleFiles && (viewMode == EditorMode.Edit);
+                splitContainer1.Panel1Collapsed = (viewMode != EditorMode.Edit);
                 //toolStrip1.Visible = !viewMode;
-                toolStrip3.Visible = !viewMode;
-                toolStrip2.Visible = viewMode;
+                toolStrip3.Visible = (viewMode == EditorMode.Edit);
+                toolStrip2.Visible = (viewMode == EditorMode.ViewEdit);
+
+                textBox1.ReadOnly = (viewMode != EditorMode.Edit);
 
                 ResumeLayout(false);
                 PerformLayout();
             }
+        }
+
+        public enum EditorMode
+        {
+            ViewOnly,
+            ViewEdit,
+            Edit
         }
 
         Operations operations = new Operations();
@@ -613,6 +643,19 @@ namespace MarkDownHelper
                 richTextBox1.Text = value;
                 //ShowText(richTextBox1.Text, webBrowser1);
                 ShowText(richTextBox1.Text);
+                Dirty = false;
+            }
+        }
+
+        public string DocumentTitle
+        {
+            get
+            {
+                return textBox1.Text;
+            }
+            set
+            {
+                textBox1.Text = value;
                 Dirty = false;
             }
         }
@@ -1077,12 +1120,12 @@ Finally, include a section for the license of your project. For more information
 
         private void toolStripButtonEditView_Click(object sender, EventArgs e)
         {
-            ViewMode = true;
+            ViewMode = EditorMode.ViewEdit;
         }
 
         private void toolStripButtonEdit_Click(object sender, EventArgs e)
         {
-            ViewMode = false;
+            ViewMode = EditorMode.Edit;
         }
 
         // from : https://stackoverflow.com/questions/85137/how-to-add-an-event-to-a-class
@@ -1340,6 +1383,11 @@ Finally, include a section for the license of your project. For more information
             //    if (e.KeyData == Keys.V && e.Modifiers == Keys.Control)
             //        (sender as Textbox).Paste();
             //}
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            Dirty = true;
         }
 
         //private async void dataGridView1_DragDrop(object sender, DragEventArgs e)

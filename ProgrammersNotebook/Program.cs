@@ -30,6 +30,8 @@ namespace ProgrammersNotebook
 
                         services.AddLogging(configure => configure.AddDebug())
                         .AddScoped<NotebookForm>()     // this puts the form under DI
+                        .AddTransient<PageForm>()     // this puts the form under DI
+                        .AddSingleton(new PNContext())
                         ;
                         // configure other services here
                     }).Build();

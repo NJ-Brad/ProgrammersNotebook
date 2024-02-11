@@ -61,6 +61,9 @@ namespace MarkDownHelper
             contextMenuStrip1 = new ContextMenuStrip(components);
             testToolStripMenuItem = new ToolStripMenuItem();
             test2ToolStripMenuItem = new ToolStripMenuItem();
+            panel1 = new Panel();
+            textBox1 = new TextBox();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -68,12 +71,13 @@ namespace MarkDownHelper
             toolStrip2.SuspendLayout();
             toolStrip3.SuspendLayout();
             contextMenuStrip1.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 56);
+            splitContainer1.Location = new Point(0, 84);
             splitContainer1.Margin = new Padding(4);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = Orientation.Horizontal;
@@ -85,8 +89,8 @@ namespace MarkDownHelper
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(browserWrapper1);
-            splitContainer1.Size = new Size(1200, 563);
-            splitContainer1.SplitterDistance = 288;
+            splitContainer1.Size = new Size(1200, 535);
+            splitContainer1.SplitterDistance = 273;
             splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 0;
             // 
@@ -99,7 +103,7 @@ namespace MarkDownHelper
             richTextBox1.Location = new Point(0, 0);
             richTextBox1.Margin = new Padding(4);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(1200, 288);
+            richTextBox1.Size = new Size(1200, 273);
             richTextBox1.TabIndex = 1;
             richTextBox1.Text = "";
             richTextBox1.TextChanged += richTextBox1_TextChanged;
@@ -115,7 +119,7 @@ namespace MarkDownHelper
             browserWrapper1.Name = "browserWrapper1";
             browserWrapper1.NavComplete = false;
             browserWrapper1.RootPath = "";
-            browserWrapper1.Size = new Size(1200, 270);
+            browserWrapper1.Size = new Size(1200, 257);
             browserWrapper1.TabIndex = 2;
             // 
             // toolStripButton15
@@ -353,11 +357,40 @@ namespace MarkDownHelper
             test2ToolStripMenuItem.Size = new Size(104, 22);
             test2ToolStripMenuItem.Text = "test2";
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(label1);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 56);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1200, 28);
+            panel1.TabIndex = 3;
+            // 
+            // textBox1
+            // 
+            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textBox1.Location = new Point(50, 2);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(1136, 25);
+            textBox1.TabIndex = 1;
+            textBox1.TextChanged += textBox1_TextChanged;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(9, 5);
+            label1.Name = "label1";
+            label1.Size = new Size(35, 17);
+            label1.TabIndex = 0;
+            label1.Text = "Title:";
+            // 
             // MarkDownEditor
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(splitContainer1);
+            Controls.Add(panel1);
             Controls.Add(toolStrip3);
             Controls.Add(toolStrip2);
             Enabled = false;
@@ -374,6 +407,8 @@ namespace MarkDownHelper
             toolStrip3.ResumeLayout(false);
             toolStrip3.PerformLayout();
             contextMenuStrip1.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -409,5 +444,8 @@ namespace MarkDownHelper
         private ToolStripMenuItem testToolStripMenuItem;
         private ToolStripMenuItem test2ToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
+        private Panel panel1;
+        private TextBox textBox1;
+        private Label label1;
     }
 }
