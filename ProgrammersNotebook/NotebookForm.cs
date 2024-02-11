@@ -143,7 +143,11 @@ namespace ProgrammersNotebook
                     DocumentType = p.DocumentType,
                     Pages = p.Pages
                 })
-                .OrderBy(p => p.Name)
+                //.OrderBy(p => p.Name)
+
+                .AsEnumerable()     // this makes local 
+                .OrderBy(p => p.Name.ToLowerInvariant())
+
                 .ToList();
 
             imageTree1.Nodes.Clear();
