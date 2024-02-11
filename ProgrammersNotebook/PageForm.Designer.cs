@@ -55,6 +55,7 @@ namespace ProgrammersNotebook
             markDownEditor1.Dirty = false;
             markDownEditor1.Dock = DockStyle.Fill;
             markDownEditor1.DocumentText = "";
+            markDownEditor1.DocumentTitle = "";
             markDownEditor1.EmbeddedFragmentHandler = null;
             markDownEditor1.Enabled = false;
             markDownEditor1.FileName = "";
@@ -78,6 +79,7 @@ namespace ProgrammersNotebook
             Margin = new Padding(4);
             Name = "PageForm";
             Text = "Programmer's Notbook";
+            FormClosing += PageForm_FormClosing;
             contextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);
         }

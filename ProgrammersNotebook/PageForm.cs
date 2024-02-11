@@ -621,6 +621,24 @@ namespace ProgrammersNotebook
             int numUpdated = context.SaveChanges();
         }
 
+        private void PageForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (markDownEditor1.Dirty)
+            {
+                switch (MessageBox.Show("Save changes before closing?", "Save Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                {
+                    case DialogResult.Yes:
+                        markDownEditor1_SaveClicked(this, EventArgs.Empty);
+                        break;
+                    case DialogResult.No:
+                        break;
+                    case DialogResult.Cancel:
+                        e.Cancel = true;
+                        break;
+                }
+            }
+        }
+
         //private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         //{
         //    if (imageTree1.SelectedNode == null)
