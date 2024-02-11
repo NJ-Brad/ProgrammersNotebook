@@ -2,15 +2,19 @@
 
 using MarkDownHelper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using WinForms.JumpLists;
+using static MarkDownHelper.MarkDownEditor;
 
 namespace ProgrammersNotebook
 {
     public partial class NotebookForm : Form
     {
+        bool integratedEdit = false;
+
         private readonly ILogger _logger;
         private readonly IHost _host;
         private readonly IConfiguration _config;
@@ -20,6 +24,7 @@ namespace ProgrammersNotebook
         private List<TreeFragment> treeFragments = new();
         private Page? selectedPage = null;
         private PageFragment? selectedFragment = null;
+        private PNContext? context = null;
 
         string userName = "Unkown";
         string longUserName = "Unkown";
@@ -28,13 +33,14 @@ namespace ProgrammersNotebook
 
         public string[] args { get; set; } = new string[] { };
 
-        public NotebookForm(ILogger<NotebookForm> logger, IConfiguration config, IHost host)
+        public NotebookForm(ILogger<NotebookForm> logger, IConfiguration config, IHost host, PNContext context)
         {
             InitializeComponent();
 
             _logger = logger;
             _config = config;
             _host = host;
+            this.context = context;
 
             // "<$LOCATION$>
 
@@ -61,6 +67,12 @@ namespace ProgrammersNotebook
             //{
             //    Replacements.Add("LOCATION", "notebook://");
             //}
+
+            if (!integratedEdit)
+            {
+                imageTree1.LabelEdit = false;
+                imageTree2.LabelEdit = false;
+            }
         }
 
         protected override void WndProc(ref Message m)
@@ -102,8 +114,6 @@ namespace ProgrammersNotebook
             }
         }
 
-
-        PNContext context = new PNContext();
 
         protected override void OnShown(EventArgs e)
         {
@@ -172,6 +182,7 @@ namespace ProgrammersNotebook
             markDownEditor1.ProtocolHandlers.Add(new CustomProtocolHandler { Prefix = "notebook://*", Handler = ResolveProtocolRequest });
             markDownEditor1.EmbeddedFragmentHandler = ResolveEmbeddedFragmentRequest;
             markDownEditor1.SetUpHandlers();
+            markDownEditor1.ViewMode = integratedEdit ? MarkDownEditor.EditorMode.ViewEdit : MarkDownEditor.EditorMode.ViewOnly;
 
             markDownEditor1.Replacements = Replacements;
 
@@ -387,7 +398,59 @@ namespace ProgrammersNotebook
             SaveChanges();
             selectedPage = pd;
             imageTree1.SelectedNode = tn;
-            imageTree1.SelectedNode.BeginEdit();
+            //            imageTree1.SelectedNode.BeginEdit();
+
+            PageForm pf = _host.Services.GetRequiredService<PageForm>();
+            pf.ViewMode = EditorMode.Edit;
+            pf.IsPage = true;
+            pf.PageFragmentId = pd.Id;
+            pf.FormClosed += PageClosed;
+            pf.Show();
+        }
+
+        private void PageClosed(object? sender, FormClosedEventArgs e)
+        {
+            PageForm pf = sender as PageForm;
+
+            if (pf != null)
+            {
+                if (pf.IsPage)
+                {
+                    foreach (TreeNode node in imageTree1.Nodes)
+                    {
+                        TreePage tp = node.Tag as TreePage;
+                        if (tp != null)
+                        {
+                            if (tp.Id == pf.PageFragmentId)
+                            {
+                                tp.Name = pf.Text;
+                                node.Text = tp.Name;
+                                imageTree1.Sort();
+                                imageTree1.SelectedNode = node;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (TreeNode node in imageTree2.Nodes)
+                    {
+                        TreeFragment tp = node.Tag as TreeFragment;
+                        if (tp != null)
+                        {
+                            if (tp.Id == pf.PageFragmentId)
+                            {
+                                tp.Name = pf.Text;
+                                node.Text = tp.Name;
+                                imageTree2.Sort();
+                                imageTree2.SelectedNode = node;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private async void AddFragment(PageFragment frag)
@@ -454,6 +517,13 @@ namespace ProgrammersNotebook
             SaveChanges();
             selectedFragment = frag;
             imageTree2.SelectedNode = tn;
+            //            imageTree2.SelectedNode.BeginEdit();
+            PageForm pf = _host.Services.GetRequiredService<PageForm>();
+            pf.ViewMode = EditorMode.Edit;
+            pf.IsPage = false;
+            pf.PageFragmentId = frag.Id;
+            pf.FormClosed += PageClosed;
+            pf.Show();
         }
 
         public Dictionary<string, string> Replacements = new();
@@ -481,8 +551,9 @@ namespace ProgrammersNotebook
             Replacements.Set("MODIFIED_BY", selectedPage.ModifiedBy);
             Replacements.Set("MODIFIED", selectedPage.Modified.ToString("g"));
             markDownEditor1.DocumentText = selectedPage.PageContent;
+            markDownEditor1.DocumentTitle = selectedPage.Name;
 
-            markDownEditor1.ViewMode = true;
+            markDownEditor1.ViewMode = integratedEdit ? MarkDownEditor.EditorMode.ViewEdit : MarkDownEditor.EditorMode.ViewOnly;
             markDownEditor1.Enabled = true;
         }
 
@@ -610,7 +681,7 @@ namespace ProgrammersNotebook
                 }
                 else
                 {
-                    if (!pg.PageContent.Equals(markDownEditor1.DocumentText))
+                    if ((!pg.PageContent.Equals(markDownEditor1.DocumentText)) || (!pg.Name.Equals(markDownEditor1.DocumentTitle)))
                     {
                         pg = StampPage(pg);
                         Replacements.Set("AUTHOR", pg.Author);
@@ -619,6 +690,7 @@ namespace ProgrammersNotebook
                         Replacements.Set("MODIFIED", pg.Modified.ToString("g"));
                     }
                     pg.PageContent = markDownEditor1.DocumentText;
+                    pg.Name = markDownEditor1.DocumentTitle;
                 }
             }
             else
@@ -636,7 +708,7 @@ namespace ProgrammersNotebook
                 }
                 else
                 {
-                    if (!frag.Content.Equals(markDownEditor1.DocumentText))
+                    if ((!frag.Content.Equals(markDownEditor1.DocumentText)) || (!frag.Name.Equals(markDownEditor1.DocumentTitle)))
                     {
                         frag = StampFragment(frag);
                         Replacements.Set("AUTHOR", frag.Author);
@@ -645,6 +717,7 @@ namespace ProgrammersNotebook
                         Replacements.Set("MODIFIED", frag.Modified.ToString("g"));
                     }
                     frag.Content = markDownEditor1.DocumentText;
+                    frag.Name = markDownEditor1.DocumentTitle;
                 }
             }
 
@@ -675,9 +748,11 @@ namespace ProgrammersNotebook
             exportFolder = Path.Combine(Folders.DownloadsFolder, $"PNEXP_{name}");
             Directory.CreateDirectory(exportFolder);
 
-            markDownEditor1.ViewMode = true;
+            markDownEditor1.ViewMode = integratedEdit ? MarkDownEditor.EditorMode.ViewEdit : MarkDownEditor.EditorMode.ViewOnly;
+
             markDownEditor1.Enabled = true;
             markDownEditor1.DocumentText = selectedPage.PageContent;
+            markDownEditor1.DocumentTitle = selectedPage.Name;
             Replacements.Set("PAGE_TITLE", selectedPage.Name);
 
             Replacer rep = new Replacer();
@@ -711,14 +786,103 @@ namespace ProgrammersNotebook
 
         private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Point position = imageTree1.PointToClient(Control.MousePosition);
+            Point position = (tabControl1.SelectedIndex == 0) ? imageTree1.PointToClient(Control.MousePosition) : imageTree2.PointToClient(Control.MousePosition);
 
-            TreeViewHitTestInfo hti = imageTree1.HitTest(position);
+            TreeViewHitTestInfo hti = (tabControl1.SelectedIndex == 0) ? imageTree1.HitTest(position) : imageTree2.HitTest(position);
             if (hti.Node == null)
-                e.Cancel = true;
+            {
+                contextMenuStrip1.Items.Clear();
+                CreateMenuItem(contextMenuStrip1.Items, "Add", "", t =>
+                {
+                    toolStripButtonAdd_Click(sender, EventArgs.Empty);
+                    return "";
+                });
+                //                e.Cancel = true;
+            }
             else
-                imageTree1.SelectedNode = hti.Node;
+            {
+                if (tabControl1.SelectedIndex == 0)
+                    imageTree1.SelectedNode = hti.Node;
+                else
+                    imageTree2.SelectedNode = hti.Node;
+
+                contextMenuStrip1.Items.Clear();
+                CreateMenuItem(contextMenuStrip1.Items, "Open in new window", "", t =>
+                {
+                    PageForm pf = _host.Services.GetRequiredService<PageForm>();
+                    pf.ViewMode = EditorMode.ViewEdit;
+                    pf.IsPage = true;
+                    pf.PageFragmentId = t;
+                    pf.FormClosed += PageClosed;
+                    pf.Show();
+                    return "";
+                });
+                CreateMenuItem(contextMenuStrip1.Items, "Edit", "", t =>
+                {
+                    PageForm pf = _host.Services.GetRequiredService<PageForm>();
+                    pf.ViewMode = EditorMode.Edit;
+                    pf.IsPage = true;
+                    pf.PageFragmentId = t;
+                    pf.FormClosed += PageClosed;
+                    pf.Show();
+                    return "";
+                });
+                CreateMenuItem(contextMenuStrip1.Items, "Export", "", t =>
+                {
+                    exportToolStripMenuItem_Click(sender, EventArgs.Empty);
+                    return "";
+                });
+                contextMenuStrip1.Items.Add(new ToolStripSeparator());
+                CreateMenuItem(contextMenuStrip1.Items, "Add", "", t =>
+                {
+                    toolStripButtonAdd_Click(sender, EventArgs.Empty);
+                    return "";
+                });
+
+                if (tabControl1.SelectedIndex == 0)
+                {
+                    CreateMenuItem(contextMenuStrip1.Items, "Remove", "", t =>
+                    {
+                        toolStripButtonRemove_Click(sender, EventArgs.Empty);
+                        return "";
+                    });
+                }
+            }
         }
+
+        private ToolStripMenuItem CreateMenuItem(ToolStripItemCollection items, string label, string imageKey, OperationDelegate del)
+        {
+            ToolStripMenuItem menuItem = new ToolStripMenuItem(label);
+
+            menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+            //            menuItem.Image = imageList1.Images[imageKey];
+
+            menuItem.Click += (sender, args) =>
+            {
+                DoOperation
+                (
+                    del
+                );
+            };
+
+            items.Add(menuItem);
+
+            return menuItem;
+        }
+
+        private void DoOperation(OperationDelegate del)
+        {
+            switch (tabControl1.SelectedIndex)
+            {
+                case 0:
+                    del((selectedPage == null) ? "" : selectedPage.Id);
+                    break;
+                case 1:
+                    del((selectedFragment == null) ? "" : selectedFragment.Id);
+                    break;
+            }
+        }
+
 
         private void imageTree2_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -743,8 +907,9 @@ namespace ProgrammersNotebook
             Replacements.Set("MODIFIED_BY", selectedFragment.ModifiedBy);
             Replacements.Set("MODIFIED", selectedFragment.Modified.ToString("g"));
             markDownEditor1.DocumentText = selectedFragment.Content;
+            markDownEditor1.DocumentTitle = selectedFragment.Name;
 
-            markDownEditor1.ViewMode = true;
+            markDownEditor1.ViewMode = integratedEdit ? MarkDownEditor.EditorMode.ViewEdit : MarkDownEditor.EditorMode.ViewOnly;
             markDownEditor1.Enabled = true;
         }
 
@@ -773,9 +938,11 @@ namespace ProgrammersNotebook
             imageTree2.SelectedNode = null;
 
             markDownEditor1.DocumentText = string.Empty;
+            markDownEditor1.DocumentTitle = string.Empty;
+
             Replacements.Set("PAGE_TITLE", string.Empty);
 
-            markDownEditor1.ViewMode = true;
+            markDownEditor1.ViewMode = integratedEdit ? MarkDownEditor.EditorMode.ViewEdit : MarkDownEditor.EditorMode.ViewOnly;
             markDownEditor1.Enabled = false;
 
         }

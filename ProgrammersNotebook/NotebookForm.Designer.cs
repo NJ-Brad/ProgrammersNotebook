@@ -1,4 +1,6 @@
-﻿namespace ProgrammersNotebook
+﻿using MarkDownHelper;
+
+namespace ProgrammersNotebook
 {
     partial class NotebookForm
     {
@@ -240,7 +242,7 @@
             markDownEditor1.Name = "markDownEditor1";
             markDownEditor1.Size = new Size(929, 742);
             markDownEditor1.TabIndex = 1;
-            markDownEditor1.ViewMode = true;
+            markDownEditor1.ViewMode = MarkDownEditor.EditorMode.ViewEdit;
             markDownEditor1.SaveClicked += markDownEditor1_SaveClicked;
             // 
             // NotebookForm
