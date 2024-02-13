@@ -1,8 +1,7 @@
 {
   "profiles": {
     "ProgrammersNotebook": {
-      "commandName": "Project",
-      "commandLineArgs": "Test"
+      "commandName": "Project"
     }
   }
 }

@@ -1,6 +1,7 @@
 ﻿// split buttion, if necessary - https://wyday.com/splitbutton/
 
 using MarkDownHelper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +25,8 @@ namespace ProgrammersNotebook
         private List<TreeFragment> treeFragments = new();
         private Page? selectedPage = null;
         private PageFragment? selectedFragment = null;
-        private PNContext? context = null;
+        //private PNContext? context = null;
+        private readonly IDbContextFactory<PNContext> _contextFactory;
 
         string userName = "Unkown";
         string longUserName = "Unkown";
@@ -33,14 +35,16 @@ namespace ProgrammersNotebook
 
         public string[] args { get; set; } = new string[] { };
 
-        public NotebookForm(ILogger<NotebookForm> logger, IConfiguration config, IHost host, PNContext context)
+        // https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/
+        public NotebookForm(ILogger<NotebookForm> logger, IConfiguration config, IHost host, IDbContextFactory<PNContext> contextFactory)
         {
             InitializeComponent();
 
             _logger = logger;
             _config = config;
             _host = host;
-            this.context = context;
+            //this.context = context;
+            _contextFactory = contextFactory;
 
             // "<$LOCATION$>
 
@@ -122,7 +126,37 @@ namespace ProgrammersNotebook
 
             JumpLists.AddAppkicationTask("Actions", "Create New Note", "Create New Note", "JL:Create:ASDF");
 
-            //_logger.LogInformation("NotebookForm.OnShown at {dateTime}", "Started", DateTime.UtcNow);
+            VerifyDatabase();
+
+            LoadData();
+
+            if (args.Length > 0)
+            {
+                ProcessArg(args[0]);
+            }
+        }
+
+        private void VerifyDatabase()
+        {
+            using (PNContext context = _contextFactory.CreateDbContext())
+            {
+                List<string> pending = context.Database.GetPendingMigrations().ToList<string>();
+
+                //if (pending.Count == 0)
+                //{
+                //    MessageBox.Show("There are no pending updates");
+                //    return;
+                //}
+
+                // do migrations
+                context.Database.Migrate();
+            }
+        }
+
+        private void LoadData()
+        {
+            imageTree1.Nodes.Clear();
+            imageTree2.Nodes.Clear();
 
             imageTree1.Font = Font;
             imageTree1.ShowRootLines = false;
@@ -135,7 +169,10 @@ namespace ProgrammersNotebook
 
             // this leaves out the content - need to query that only if editing
             // https://www.brentozar.com/archive/2016/09/select-specific-columns-entity-framework-query/
-            treePages = context.Pages
+
+            using (PNContext context = _contextFactory.CreateDbContext())
+            {
+                treePages = context.Pages
                 .Select(p => new TreePage()
                 {
                     Id = p.Id,
@@ -150,37 +187,38 @@ namespace ProgrammersNotebook
 
                 .ToList();
 
-            imageTree1.Nodes.Clear();
-            AddToTree(imageTree1.Nodes, treePages);
+                imageTree1.Nodes.Clear();
+                AddToTree(imageTree1.Nodes, treePages);
 
-            tabControl1.SelectedIndex = 1;
-            // fragments
-            imageTree2.Font = Font;
-            imageTree2.ShowRootLines = false;
-            imageTree2.SelectImages(ShellIconSize.SmallIcon);
+                tabControl1.SelectedIndex = 1;
+                // fragments
+                imageTree2.Font = Font;
+                imageTree2.ShowRootLines = false;
+                imageTree2.SelectImages(ShellIconSize.SmallIcon);
 
-            // this loads everything, including page content
-            //pages = context.Pages.ToList();
-            //imageTree1.Nodes.Clear();
-            //AddToTree(imageTree1.Nodes, pages);
+                // this loads everything, including page content
+                //pages = context.Pages.ToList();
+                //imageTree1.Nodes.Clear();
+                //AddToTree(imageTree1.Nodes, pages);
 
-            // this leaves out the content - need to query that only if editing
-            // https://www.brentozar.com/archive/2016/09/select-specific-columns-entity-framework-query/
-            treeFragments = context.Fragments
-                .Where(p => p.FragmentType == "Text")
-                .Select(p => new TreeFragment()
-                {
-                    Id = p.Id,
-                    Name = p.Name
-                })
-                //.OrderBy(p => p.Name)
-                .AsEnumerable()     // this makes
-                .OrderBy(p => p.Name.ToLowerInvariant())
-                .ToList();
+                // this leaves out the content - need to query that only if editing
+                // https://www.brentozar.com/archive/2016/09/select-specific-columns-entity-framework-query/
+                treeFragments = context.Fragments
+                    .Where(p => p.FragmentType == "Text")
+                    .Select(p => new TreeFragment()
+                    {
+                        Id = p.Id,
+                        Name = p.Name
+                    })
+                    //.OrderBy(p => p.Name)
+                    .AsEnumerable()     // this makes
+                    .OrderBy(p => p.Name.ToLowerInvariant())
+                    .ToList();
 
-            imageTree2.Nodes.Clear();
-            AddToTree(imageTree2.Nodes, treeFragments);
-            tabControl1.SelectedIndex = 0;
+                imageTree2.Nodes.Clear();
+                AddToTree(imageTree2.Nodes, treeFragments);
+                tabControl1.SelectedIndex = 0;
+            }
 
             // work with this.  remembering the format may become an issue
             markDownEditor1.ProtocolHandlers.Add(new CustomProtocolHandler { Prefix = "notebook://*", Handler = ResolveProtocolRequest });
@@ -190,10 +228,6 @@ namespace ProgrammersNotebook
 
             markDownEditor1.Replacements = Replacements;
 
-            if (args.Length > 0)
-            {
-                ProcessArg(args[0]);
-            }
         }
 
         Fragments frMgr = null;
@@ -201,27 +235,30 @@ namespace ProgrammersNotebook
 
         public void ResolveEmbeddedFragmentRequest(object sender, EmbeddedFragmentEventArgs e)
         {
-            if (frMgr == null)
-                frMgr = new Fragments(context);
+            using (PNContext context = _contextFactory.CreateDbContext())
+            {
+                if (frMgr == null)
+                    frMgr = new Fragments(context);
 
-            if (e.Operation == "GET")
-            {
-                PageFragment fragment = frMgr.GetFragment(e.Key);
+                if (e.Operation == "GET")
+                {
+                    PageFragment fragment = frMgr.GetFragment(e.Key);
 
-                // e.Value = fragment.Content;
-                e.Value = fragment;
-            }
-            if (e.Operation == "LIST_TEXT_BLOCKS")
-            {
-                e.Names = frMgr.GetFragmentList(false);
-            }
-            if (e.Operation == "LIST_IMAGE_BLOCKS")
-            {
-                e.Names = frMgr.GetFragmentList(true);
-            }
-            if (e.Operation == "SAVE")
-            {
-                frMgr.SaveFragment(e.Value);
+                    // e.Value = fragment.Content;
+                    e.Value = fragment;
+                }
+                if (e.Operation == "LIST_TEXT_BLOCKS")
+                {
+                    e.Names = frMgr.GetFragmentList(false);
+                }
+                if (e.Operation == "LIST_IMAGE_BLOCKS")
+                {
+                    e.Names = frMgr.GetFragmentList(true);
+                }
+                if (e.Operation == "SAVE")
+                {
+                    frMgr.SaveFragment(e.Value);
+                }
             }
         }
 
@@ -270,13 +307,11 @@ namespace ProgrammersNotebook
 
         private PageFragment GetFragment(string key)
         {
-            Fragments fragMgr = new Fragments(context);
-            return fragMgr.GetFragment(key);
-        }
-
-        private async void SaveChanges()
-        {
-            context.SaveChanges();
+            using (PNContext context = _contextFactory.CreateDbContext())
+            {
+                Fragments fragMgr = new Fragments(context);
+                return fragMgr.GetFragment(key);
+            }
         }
 
         private async void AddToTree(TreeNodeCollection coll, List<Page> pageList)
@@ -398,8 +433,11 @@ namespace ProgrammersNotebook
 
             // it's new here
             pd = StampPage(pd);
-            context.Add(pd);
-            SaveChanges();
+            using (PNContext context = _contextFactory.CreateDbContext())
+            {
+                context.Add(pd);
+                context.SaveChanges();
+            }
             selectedPage = pd;
             imageTree1.SelectedNode = tn;
             //            imageTree1.SelectedNode.BeginEdit();
@@ -517,8 +555,11 @@ namespace ProgrammersNotebook
 
             // it's new here
             frag = StampFragment(frag);
-            context.Add(frag);
-            SaveChanges();
+            using (PNContext context = _contextFactory.CreateDbContext())
+            {
+                context.Add(frag);
+                context.SaveChanges();
+            }
             selectedFragment = frag;
             imageTree2.SelectedNode = tn;
             //            imageTree2.SelectedNode.BeginEdit();
@@ -541,7 +582,10 @@ namespace ProgrammersNotebook
             selectedPage = null;
             if ((pd != null) && (pd.DocumentType != "Folder"))
             {
-                selectedPage = context.Pages.Where(p => p.Id == pd.Id).FirstOrDefault();
+                using (PNContext context = _contextFactory.CreateDbContext())
+                {
+                    selectedPage = context.Pages.Where(p => p.Id == pd.Id).FirstOrDefault();
+                }
             }
 
             if (selectedPage == null)
@@ -575,15 +619,21 @@ namespace ProgrammersNotebook
             if (selectedPage == null)
                 return;
 
-            //Page pd = e.Node.Tag as Page;
-            Page pd = selectedPage;
-            if ((pd != null) && (!string.IsNullOrEmpty(e.Label)))
+            using (PNContext context = _contextFactory.CreateDbContext())
             {
-                pd.Name = e.Label;
-                e.Node.Text = pd.Name;
-                Replacements.Set("PAGE_TITLE", pd.Name);
+                selectedPage = context.Pages.Where(p => p.Id == selectedPage.Id).FirstOrDefault();
+
+                //Page pd = e.Node.Tag as Page;
+                Page pd = selectedPage;
+                if ((pd != null) && (!string.IsNullOrEmpty(e.Label)))
+                {
+                    pd.Name = e.Label;
+                    e.Node.Text = pd.Name;
+                    Replacements.Set("PAGE_TITLE", pd.Name);
+                }
+
+                context.SaveChanges();
             }
-            SaveChanges();
         }
 
         private Page StampPage(Page pg)
@@ -649,9 +699,11 @@ namespace ProgrammersNotebook
 
                 if (ConfirmationForm.ConfirmRemoval(selectedPage.Name))
                 {
-                    context.Remove(selectedPage);
-                    context.SaveChanges();
-
+                    using (PNContext context = _contextFactory.CreateDbContext())
+                    {
+                        context.Remove(selectedPage);
+                        context.SaveChanges();
+                    }
                     coll.RemoveAt(index);
                 }
             }
@@ -675,60 +727,67 @@ namespace ProgrammersNotebook
         {
             if (tabControl1.SelectedIndex == 0)
             {
-                Page pg = context.Pages.Where(p => p.Id == selectedPage.Id).FirstOrDefault();
-                if (pg == null)
+                using (PNContext context = _contextFactory.CreateDbContext())
                 {
-                    // it's new here
-                    selectedPage = StampPage(selectedPage);
-                    context.Add(selectedPage);
-                    Replacements.Set("AUTHOR", pg.Author);
-                    Replacements.Set("CREATED", pg.Created.ToString("g"));
-                    Replacements.Set("MODIFIED_BY", pg.ModifiedBy);
-                    Replacements.Set("MODIFIED", pg.Modified.ToString("g"));
-                }
-                else
-                {
-                    if ((!pg.PageContent.Equals(markDownEditor1.DocumentText)) || (!pg.Name.Equals(markDownEditor1.DocumentTitle)))
+                    Page pg = context.Pages.Where(p => p.Id == selectedPage.Id).FirstOrDefault();
+                    if (pg == null)
                     {
-                        pg = StampPage(pg);
+                        // it's new here
+                        selectedPage = StampPage(selectedPage);
+                        context.Add(selectedPage);
                         Replacements.Set("AUTHOR", pg.Author);
                         Replacements.Set("CREATED", pg.Created.ToString("g"));
                         Replacements.Set("MODIFIED_BY", pg.ModifiedBy);
                         Replacements.Set("MODIFIED", pg.Modified.ToString("g"));
                     }
-                    pg.PageContent = markDownEditor1.DocumentText;
-                    pg.Name = markDownEditor1.DocumentTitle;
+                    else
+                    {
+                        if ((!pg.PageContent.Equals(markDownEditor1.DocumentText)) || (!pg.Name.Equals(markDownEditor1.DocumentTitle)))
+                        {
+                            pg = StampPage(pg);
+                            Replacements.Set("AUTHOR", pg.Author);
+                            Replacements.Set("CREATED", pg.Created.ToString("g"));
+                            Replacements.Set("MODIFIED_BY", pg.ModifiedBy);
+                            Replacements.Set("MODIFIED", pg.Modified.ToString("g"));
+                        }
+                        pg.PageContent = markDownEditor1.DocumentText;
+                        pg.Name = markDownEditor1.DocumentTitle;
+                    }
+                    context.SaveChanges();
                 }
             }
             else
             {
-                PageFragment frag = context.Fragments.Where(p => p.Id == selectedFragment.Id).FirstOrDefault();
-                if (frag == null)
+                using (PNContext context = _contextFactory.CreateDbContext())
                 {
-                    // it's new here
-                    selectedFragment = StampFragment(selectedFragment);
-                    context.Add(selectedFragment);
-                    Replacements.Set("AUTHOR", frag.Author);
-                    Replacements.Set("CREATED", frag.Created.ToString("g"));
-                    Replacements.Set("MODIFIED_BY", frag.ModifiedBy);
-                    Replacements.Set("MODIFIED", frag.Modified.ToString("g"));
-                }
-                else
-                {
-                    if ((!frag.Content.Equals(markDownEditor1.DocumentText)) || (!frag.Name.Equals(markDownEditor1.DocumentTitle)))
+
+                    PageFragment frag = context.Fragments.Where(p => p.Id == selectedFragment.Id).FirstOrDefault();
+                    if (frag == null)
                     {
-                        frag = StampFragment(frag);
+                        // it's new here
+                        selectedFragment = StampFragment(selectedFragment);
+                        context.Add(selectedFragment);
                         Replacements.Set("AUTHOR", frag.Author);
                         Replacements.Set("CREATED", frag.Created.ToString("g"));
                         Replacements.Set("MODIFIED_BY", frag.ModifiedBy);
                         Replacements.Set("MODIFIED", frag.Modified.ToString("g"));
                     }
-                    frag.Content = markDownEditor1.DocumentText;
-                    frag.Name = markDownEditor1.DocumentTitle;
+                    else
+                    {
+                        if ((!frag.Content.Equals(markDownEditor1.DocumentText)) || (!frag.Name.Equals(markDownEditor1.DocumentTitle)))
+                        {
+                            frag = StampFragment(frag);
+                            Replacements.Set("AUTHOR", frag.Author);
+                            Replacements.Set("CREATED", frag.Created.ToString("g"));
+                            Replacements.Set("MODIFIED_BY", frag.ModifiedBy);
+                            Replacements.Set("MODIFIED", frag.Modified.ToString("g"));
+                        }
+                        frag.Content = markDownEditor1.DocumentText;
+                        frag.Name = markDownEditor1.DocumentTitle;
+                    }
+                    context.SaveChanges();
                 }
             }
-
-            int numUpdated = context.SaveChanges();
         }
 
         private string exportFolder = string.Empty;
@@ -744,7 +803,10 @@ namespace ProgrammersNotebook
 
             if ((pd != null) && (pd.DocumentType != "Folder"))
             {
-                selectedPage = context.Pages.Where(p => p.Id == pd.Id).FirstOrDefault();
+                using (PNContext context = _contextFactory.CreateDbContext())
+                {
+                    selectedPage = context.Pages.Where(p => p.Id == pd.Id).FirstOrDefault();
+                }
             }
             else
             {
@@ -900,7 +962,10 @@ namespace ProgrammersNotebook
             selectedPage = null;
             if (pd != null)
             {
-                selectedFragment = context.Fragments.Where(p => p.Id == pd.Id).FirstOrDefault();
+                using (PNContext context = _contextFactory.CreateDbContext())
+                {
+                    selectedFragment = context.Fragments.Where(p => p.Id == pd.Id).FirstOrDefault();
+                }
             }
 
             if (selectedFragment == null)
@@ -925,15 +990,19 @@ namespace ProgrammersNotebook
             if (selectedFragment == null)
                 return;
 
-            //Page pd = e.Node.Tag as Page;
-            PageFragment pd = selectedFragment;
-            if ((pd != null) && (!string.IsNullOrEmpty(e.Label)))
+            using (PNContext context = _contextFactory.CreateDbContext())
             {
-                pd.Name = e.Label;
-                e.Node.Text = pd.Name;
-                Replacements.Set("PAGE_TITLE", pd.Name);
+                selectedFragment = context.Fragments.Where(p => p.Id == selectedFragment.Id).FirstOrDefault();
+
+                PageFragment pd = selectedFragment;
+                if ((pd != null) && (!string.IsNullOrEmpty(e.Label)))
+                {
+                    pd.Name = e.Label;
+                    e.Node.Text = pd.Name;
+                    Replacements.Set("PAGE_TITLE", pd.Name);
+                }
+                context.SaveChanges();
             }
-            SaveChanges();
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -952,6 +1021,24 @@ namespace ProgrammersNotebook
             markDownEditor1.ViewMode = integratedEdit ? MarkDownEditor.EditorMode.ViewEdit : MarkDownEditor.EditorMode.ViewOnly;
             markDownEditor1.Enabled = false;
 
+        }
+
+        private void toolStripButtonDataMaintenance_Click(object sender, EventArgs e)
+        {
+            DatabaseMaintenanceForm dmf = _host.Services.GetRequiredService<DatabaseMaintenanceForm>();
+            dmf.ShowDialog();
+
+            //Application.Restart();
+            ////Application.Exit();
+
+            //var v = System.Diagnostics.Process.Start(Application.ExecutablePath);
+
+            //Application.ExitThread();
+            ////Application.Exit();
+
+            ////Refresh();
+
+            ////LoadData();
         }
     }
 }

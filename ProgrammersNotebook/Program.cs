@@ -13,6 +13,15 @@ namespace ProgrammersNotebook
         static void Main(string[] args)
         {
             JumpListHandler handler = new();
+            RestartHandler restart = new();
+
+            string dataFile = Path.Combine(Folders.DbFolder, "ProgrammersNotebook.db");
+            string recoverFile = Path.Combine(Folders.DbFolder, "ProgrammersNotebook.recover");
+            if (File.Exists(recoverFile))
+            {
+                File.Copy(recoverFile, dataFile, true);
+                File.Delete(recoverFile);
+            }
 
             //if (!JumpListHandler.Process())
             if (!handler.Process())
@@ -31,15 +40,21 @@ namespace ProgrammersNotebook
                         services.AddLogging(configure => configure.AddDebug())
                         .AddScoped<NotebookForm>()     // this puts the form under DI
                         .AddTransient<PageForm>()     // this puts the form under DI
-                        .AddSingleton(new PNContext())
+                        .AddTransient<DatabaseMaintenanceForm>()
+                        .AddSingleton<RestartHandler>(restart)
+                        .AddDbContextFactory<PNContext>(
+                        //options =>
+                        //    options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Test"))
+                        )
                         ;
                         // configure other services here
                     }).Build();
 
-                //var form1 = host.Services.GetRequiredService<Form1>();
                 var form1 = host.Services.GetRequiredService<NotebookForm>();
                 form1.args = args;
                 Application.Run(form1);
+
+                restart.RestartIfRequired();
             }
         }
     }

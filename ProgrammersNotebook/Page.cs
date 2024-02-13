@@ -1,4 +1,6 @@
-﻿namespace ProgrammersNotebook
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ProgrammersNotebook
 {
     public class Page
     {
@@ -11,5 +13,9 @@
         public DateTime Created { get; set; } = DateTime.Now;
         public string ModifiedBy { get; set; } = string.Empty;
         public DateTime Modified { get; set; } = DateTime.Now;
+        //public string MigrationTest { get; set; } = string.Empty;
+
+        [NotMapped]
+        public string LowerName { get { return Name.ToLowerInvariant(); } set { } }
     }
 }

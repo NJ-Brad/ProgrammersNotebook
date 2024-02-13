@@ -46,7 +46,8 @@ namespace ProgrammersNotebook
             toolStripButtonAdd = new ToolStripButton();
             toolStripButtonRemove = new ToolStripButton();
             splitContainer1 = new SplitContainer();
-            markDownEditor1 = new MarkDownHelper.MarkDownEditor();
+            markDownEditor1 = new MarkDownEditor();
+            toolStripButtonDataMaintenance = new ToolStripButton();
             panel1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPagePages.SuspendLayout();
@@ -99,10 +100,10 @@ namespace ProgrammersNotebook
             tabControl1.Controls.Add(tabPagePages);
             tabControl1.Controls.Add(tabPageFragments);
             tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(0, 25);
+            tabControl1.Location = new Point(0, 27);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(464, 717);
+            tabControl1.Size = new Size(464, 715);
             tabControl1.TabIndex = 2;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -112,7 +113,7 @@ namespace ProgrammersNotebook
             tabPagePages.Location = new Point(4, 4);
             tabPagePages.Name = "tabPagePages";
             tabPagePages.Padding = new Padding(3);
-            tabPagePages.Size = new Size(456, 683);
+            tabPagePages.Size = new Size(456, 681);
             tabPagePages.TabIndex = 0;
             tabPagePages.Text = "Pages";
             tabPagePages.UseVisualStyleBackColor = true;
@@ -130,7 +131,7 @@ namespace ProgrammersNotebook
             imageTree1.Margin = new Padding(4);
             imageTree1.Name = "imageTree1";
             imageTree1.SelectedImageIndex = 0;
-            imageTree1.Size = new Size(450, 677);
+            imageTree1.Size = new Size(450, 675);
             imageTree1.TabIndex = 1;
             imageTree1.AfterLabelEdit += imageTree1_AfterLabelEdit;
             imageTree1.AfterSelect += imageTree1_AfterSelect;
@@ -139,13 +140,13 @@ namespace ProgrammersNotebook
             // 
             contextMenuStrip1.Items.AddRange(new ToolStripItem[] { exportToolStripMenuItem });
             contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(115, 26);
+            contextMenuStrip1.Size = new Size(122, 28);
             contextMenuStrip1.Opening += contextMenuStrip1_Opening;
             // 
             // exportToolStripMenuItem
             // 
             exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            exportToolStripMenuItem.Size = new Size(114, 22);
+            exportToolStripMenuItem.Size = new Size(121, 24);
             exportToolStripMenuItem.Text = "Export";
             exportToolStripMenuItem.Click += exportToolStripMenuItem_Click;
             // 
@@ -155,7 +156,7 @@ namespace ProgrammersNotebook
             tabPageFragments.Location = new Point(4, 4);
             tabPageFragments.Name = "tabPageFragments";
             tabPageFragments.Padding = new Padding(3);
-            tabPageFragments.Size = new Size(456, 683);
+            tabPageFragments.Size = new Size(456, 682);
             tabPageFragments.TabIndex = 1;
             tabPageFragments.Text = "Fragments";
             tabPageFragments.UseVisualStyleBackColor = true;
@@ -173,7 +174,7 @@ namespace ProgrammersNotebook
             imageTree2.Margin = new Padding(4);
             imageTree2.Name = "imageTree2";
             imageTree2.SelectedImageIndex = 0;
-            imageTree2.Size = new Size(450, 677);
+            imageTree2.Size = new Size(450, 676);
             imageTree2.TabIndex = 2;
             imageTree2.AfterLabelEdit += imageTree2_AfterLabelEdit;
             imageTree2.AfterSelect += imageTree2_AfterSelect;
@@ -181,11 +182,11 @@ namespace ProgrammersNotebook
             // toolStrip1
             // 
             toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
-            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButtonAdd, toolStripButtonRemove });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButtonAdd, toolStripButtonRemove, toolStripButtonDataMaintenance });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.ShowItemToolTips = false;
-            toolStrip1.Size = new Size(464, 25);
+            toolStrip1.Size = new Size(464, 27);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -195,7 +196,7 @@ namespace ProgrammersNotebook
             toolStripButtonAdd.Image = (Image)resources.GetObject("toolStripButtonAdd.Image");
             toolStripButtonAdd.ImageTransparentColor = Color.Magenta;
             toolStripButtonAdd.Name = "toolStripButtonAdd";
-            toolStripButtonAdd.Size = new Size(36, 22);
+            toolStripButtonAdd.Size = new Size(41, 24);
             toolStripButtonAdd.Text = "Add";
             toolStripButtonAdd.Click += toolStripButtonAdd_Click;
             // 
@@ -205,7 +206,7 @@ namespace ProgrammersNotebook
             toolStripButtonRemove.Image = (Image)resources.GetObject("toolStripButtonRemove.Image");
             toolStripButtonRemove.ImageTransparentColor = Color.Magenta;
             toolStripButtonRemove.Name = "toolStripButtonRemove";
-            toolStripButtonRemove.Size = new Size(59, 22);
+            toolStripButtonRemove.Size = new Size(67, 24);
             toolStripButtonRemove.Text = "Remove";
             toolStripButtonRemove.Click += toolStripButtonRemove_Click;
             // 
@@ -233,17 +234,28 @@ namespace ProgrammersNotebook
             markDownEditor1.Dirty = false;
             markDownEditor1.Dock = DockStyle.Fill;
             markDownEditor1.DocumentText = "";
+            markDownEditor1.DocumentTitle = "";
             markDownEditor1.EmbeddedFragmentHandler = null;
             markDownEditor1.Enabled = false;
             markDownEditor1.FileName = "";
             markDownEditor1.HandleFiles = false;
             markDownEditor1.Location = new Point(0, 0);
-            markDownEditor1.Margin = new Padding(5);
+            markDownEditor1.Margin = new Padding(5, 5, 5, 5);
             markDownEditor1.Name = "markDownEditor1";
             markDownEditor1.Size = new Size(929, 742);
             markDownEditor1.TabIndex = 1;
             markDownEditor1.ViewMode = MarkDownEditor.EditorMode.ViewEdit;
             markDownEditor1.SaveClicked += markDownEditor1_SaveClicked;
+            // 
+            // toolStripButtonDataMaintenance
+            // 
+            toolStripButtonDataMaintenance.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButtonDataMaintenance.Image = (Image)resources.GetObject("toolStripButtonDataMaintenance.Image");
+            toolStripButtonDataMaintenance.ImageTransparentColor = Color.Magenta;
+            toolStripButtonDataMaintenance.Name = "toolStripButtonDataMaintenance";
+            toolStripButtonDataMaintenance.Size = new Size(134, 24);
+            toolStripButtonDataMaintenance.Text = "Data Maintenance";
+            toolStripButtonDataMaintenance.Click += toolStripButtonDataMaintenance_Click;
             // 
             // NotebookForm
             // 
@@ -294,5 +306,6 @@ namespace ProgrammersNotebook
         private TabPage tabPagePages;
         private TabPage tabPageFragments;
         private ImageTree imageTree2;
+        private ToolStripButton toolStripButtonDataMaintenance;
     }
 }
